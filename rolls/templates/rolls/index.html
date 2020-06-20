@@ -1,0 +1,9 @@
+{% if rollTypes %}
+    <ul>
+    {% for roll in rollTypes %}
+        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.name}}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No rolltypes are available.</p>
+{% endif %}
