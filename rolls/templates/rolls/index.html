@@ -1,7 +1,7 @@
 {% if rolls_list %}
     <ul>
     {% for roll in rolls_list %}
-        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time}}</a></li>
+        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.timeStamp}}</a></li>
     {% endfor %}
     </ul>
 {% else %}

@@ -29,7 +29,7 @@ with open(name, newline='') as myFile:
 
     notes= row[9]
 
-    roll, created = Rolls.objects.get_or_create(time=timeStamp,rollType=type,finalValue=totalVal, naturalValue=natVal, notes=notes)
+    roll, created = Rolls.objects.get_or_create(timeStamp=timeStamp,rollType=type,finalValue=totalVal, naturalValue=natVal, notes=notes)
     if created == False:
       print("duplicate roll, did not add to DB")
 
