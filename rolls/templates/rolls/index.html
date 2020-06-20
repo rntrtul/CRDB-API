@@ -1,0 +1,11 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'rolls/style.css' %}">
+{% if rolls_list %}
+    <ul>
+    {% for roll in rolls_list %}
+        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No rolls are available.</p>
+{% endif %}
