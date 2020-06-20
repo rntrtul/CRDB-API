@@ -16,4 +16,4 @@ class Rolls(models.Model):
   rollType = models.ForeignKey(RollType,on_delete=models.CASCADE)
 
   def time_formated (self):
-    return time.strftime('%H:%M:%S', self.timeStamp)
+    return time.strftime("%-H:%M:%S", time.gmtime(self.timeStamp))
