@@ -1,3 +1,5 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'rolls/style.css' %}">
 {% if rolls_list %}
     <ul>
     {% for roll in rolls_list %}
