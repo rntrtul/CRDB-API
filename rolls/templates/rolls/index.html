@@ -1,9 +1,9 @@
-{% if rollTypes %}
+{% if rolls_list %}
     <ul>
-    {% for roll in rollTypes %}
-        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.name}}</a></li>
+    {% for roll in rolls_list %}
+        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time}}</a></li>
     {% endfor %}
     </ul>
 {% else %}
-    <p>No rolltypes are available.</p>
+    <p>No rolls are available.</p>
 {% endif %}

@@ -1,12 +1,18 @@
 from django.shortcuts import get_object_or_404,  render
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.views import generic
 
-from .models import RollType
+from .models import Rolls
 # Create your views here.
-def index(request):
-  rollTypes = RollType.objects.order_by('name')[:5]
-  context = {'rollTypes': rollTypes}
-  return render(request, 'rolls/index.html', context)
 
-def detail(request, roll_id):
-    roll = get_object_or_404(RollType, pk=roll_id)
-    return render(request, 'rolls/detail.html', {'roll' : roll})
+class IndexView(generic.ListView):
+  template_name = 'rolls/index.html'
+  context_object_name = 'rolls_list'
+
+  def get_queryset(self):
+    return Rolls.objects.order_by('-time')[:5]
+
+class DetailView(generic.DetailView):
+  model = Rolls
+  template_name = 'rolls/detail.html'
