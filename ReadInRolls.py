@@ -1,20 +1,46 @@
 from rolls.models import Rolls, RollType
-import sys
+from episodes.models import Episode, Campaign
 import csv
-import re
 
-#date = re.compile(r"^...\s...\s\d{2}\s\d{4}")
-#stdTime = datetime(year = 1899, month = 12, day = 30, hour = 0)
-#name = sys.argv[1]
-name = "C1-E001-CR.csv"
+def findCamp (campaignNum):
+  import csv
+  campInfo = "campaign.csv"
+  campReader = csv.reader(open(campInfo))
+  camp = []
+  for row in campReader:
+    if campaignNum == row[0]:
+      camp = row
+      break
+  
+  campaign = Campaign.objects.get_or_create(num=camp[0])
+  return campaign[0]
+
+def getEp(Epnum):
+  import csv
+  epInfo = "Episode-list.csv"
+  epReader = csv.reader(open(epInfo))
+  ep = []
+  for row in epReader:
+    if Epnum == row[1]:
+      ep = row
+      break
+  
+  camp = findCamp(row[0])
+  episode = Episode.objects.get_or_create(campaign= camp, num = ep[1], title=ep[2], description=ep[3])
+  return episode[0]
+
+rollsName = "C1-E001-CR.csv"
 
 Rolls.objects.all().delete()
-with open(name, newline='') as myFile:
-  reader = csv.reader(myFile)
-  next(reader)
-  for row in reader:
+RollType.objects.all().delete()
+with open(rollsName, newline='') as myFile:
+  rollReader = csv.reader(myFile)
+
+  next(rollReader)
+  for row in rollReader:
+    ep = getEp(row[0])
     timeStamp = int(float(row[1]))
-    type, created = RollType.objects.get_or_create(name=row[3])
+    type = RollType.objects.get_or_create(name=row[3])
     totalVal = 0
     if row[4] == "Nat1":
        totalVal = 1
@@ -29,7 +55,7 @@ with open(name, newline='') as myFile:
 
     notes= row[9]
 
-    roll, created = Rolls.objects.get_or_create(timeStamp=timeStamp,rollType=type,finalValue=totalVal, naturalValue=natVal, notes=notes)
+    roll, created = Rolls.objects.get_or_create(ep=ep, timeStamp=timeStamp,rollType=type[0],finalValue=totalVal, naturalValue=natVal, notes=notes)
     if created == False:
       print("duplicate roll, did not add to DB")
 

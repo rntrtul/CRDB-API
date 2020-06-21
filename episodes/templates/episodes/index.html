@@ -1,0 +1,11 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'episodes/style.css' %}">
+{% if ep_list %}
+    <ul>
+    {% for ep in ep_list %}
+        <li><a href="{%url 'episodes:detail' ep.id%}">{{ ep.title}}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No episodes are available.</p>
+{% endif %}

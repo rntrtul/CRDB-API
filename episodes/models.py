@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 # Create your models here.
 class Campaign(models.Model):
@@ -7,9 +8,9 @@ class Campaign(models.Model):
 
 class Episode(models.Model):
   campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
-  number = models.IntegerField()
+  num = models.IntegerField()
   title = models.TextField()
-  airDate = models.DateField()
+  airDate = models.DateField(auto_now_add=True, blank=True)
   description = models.TextField()
   length = models.IntegerField(default=0)
   gameStart = models.IntegerField(default=0)
