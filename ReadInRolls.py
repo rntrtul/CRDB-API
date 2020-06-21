@@ -2,32 +2,31 @@ from rolls.models import Rolls, RollType
 from episodes.models import Episode, Campaign
 import csv
 
-def findCamp (campaignNum):
+def getEpisode(num):
   import csv
-  campInfo = "campaign.csv"
-  campReader = csv.reader(open(campInfo))
-  camp = []
+  from episodes.models import Episode, Campaign
+  file = "Episode-list.csv"
+  reader = csv.reader(open(file))
+  next(reader)
+  foundRow = []
+  for row in reader:
+    if num == row[1]:
+      foundRow = row
+      break
+  
+  campFile = "campaign.csv"
+  campReader = csv.reader(open(campFile))
+  next(campReader)
+  campRow = []
   for row in campReader:
-    if campaignNum == row[0]:
-      camp = row
+    if foundRow[0] == row[0]:
+      campRow = row
       break
   
-  campaign = Campaign.objects.get_or_create(num=camp[0])
-  return campaign[0]
-
-def getEp(Epnum):
-  import csv
-  epInfo = "Episode-list.csv"
-  epReader = csv.reader(open(epInfo))
-  ep = []
-  for row in epReader:
-    if Epnum == row[1]:
-      ep = row
-      break
-  
-  camp = findCamp(row[0])
-  episode = Episode.objects.get_or_create(campaign= camp, num = ep[1], title=ep[2], description=ep[3])
+  campaign = Campaign.objects.get_or_create(num=campRow[0], name=campRow[1])
+  episode = Episode.objects.get_or_create(campaign= campaign[0], num = foundRow[1], title=foundRow[2], description=foundRow[3])
   return episode[0]
+
 
 rollsName = "C1-E001-CR.csv"
 
@@ -38,7 +37,7 @@ with open(rollsName, newline='') as myFile:
 
   next(rollReader)
   for row in rollReader:
-    ep = getEp(row[0])
+    ep = getEpisode(row[0])
     timeStamp = int(float(row[1]))
     type = RollType.objects.get_or_create(name=row[3])
     totalVal = 0
