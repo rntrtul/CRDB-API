@@ -14,7 +14,7 @@ class IndexView(generic.ListView):
   context_object_name = 'ep_list'
 
   def get_queryset(self):
-    return Episode.objects.order_by('title')
+    return Episode.objects.order_by('campaign','num')
 
 class DetailView(generic.DetailView):
   model = Episode

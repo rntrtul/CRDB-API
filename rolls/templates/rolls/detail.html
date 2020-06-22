@@ -1,3 +1,5 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'rolls/style.css' %}">
 <h1>Time: {{ rolls.time_formated }}</h1>
 <p>
   Episode: <a href="{%url 'episodes:detail' rolls.ep.id%}">{{rolls.ep.title}}</a>
