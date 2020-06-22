@@ -32,6 +32,9 @@ rollsName = "C1-E001-CR.csv"
 
 Rolls.objects.all().delete()
 RollType.objects.all().delete()
+Episode.objects.all().delete()
+Campaign.objects.all().delete()
+
 with open(rollsName, newline='') as myFile:
   rollReader = csv.reader(myFile)
 
@@ -54,7 +57,7 @@ with open(rollsName, newline='') as myFile:
 
     notes= row[9]
 
-    roll, created = Rolls.objects.get_or_create(ep=ep, timeStamp=timeStamp,rollType=type[0],finalValue=totalVal, naturalValue=natVal, notes=notes)
+    roll, created = Rolls.objects.get_or_create(ep=ep, time_stamp=timeStamp,roll_type=type[0],final_value=totalVal, natural_value=natVal, notes=notes)
     if created == False:
       print("duplicate roll, did not add to DB")
 

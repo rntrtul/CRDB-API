@@ -5,3 +5,8 @@
 <p>Game Time: {{episode.game_time}}</p>
 <p>Break Time: {{episode.break_time}}</p>
 
+    <ul>
+    {% for roll in episode.rolls.all %}
+        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
+    {% endfor %}
+    </ul>

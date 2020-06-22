@@ -10,12 +10,12 @@ class RollType(models.Model):
     return self.name
 #maybe add advantage type table instead of advantage field
 class Rolls(models.Model):
-  timeStamp = models.IntegerField(default=0)
-  naturalValue = models.IntegerField(default=0)
-  finalValue = models.IntegerField(default=0)
+  time_stamp = models.IntegerField(default=0)
+  natural_value = models.IntegerField(default=0)
+  final_value = models.IntegerField(default=0)
   notes = models.TextField()
-  rollType = models.ForeignKey(RollType,on_delete=models.CASCADE)
-  ep = models.ForeignKey(Episode, on_delete=models.CASCADE)
+  roll_type = models.ForeignKey(RollType,on_delete=models.CASCADE)
+  ep = models.ForeignKey(Episode, related_name='rolls', on_delete=models.CASCADE)
 
   def time_formated (self):
-    return time.strftime("%-H:%M:%S", time.gmtime(self.timeStamp))
+    return time.strftime("%-H:%M:%S", time.gmtime(self.time_stamp))
