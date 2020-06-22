@@ -1,0 +1,17 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'episodes/style.css' %}">
+
+{% if ep_list %}
+    <h1>Episode List:</h1>
+    <ul>
+    {% for ep in ep_list %}
+        {%if ep.num == 1%}
+            <h3>Campaign {{ep.campaign.num}}: {{ep.campaign.name}}</h3>
+        {%endif%}
+        <li>EP: {{ep.num}}<a href="{%url 'episodes:detail' ep.id%}">{{ ep.title}}</a></li>
+        
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No episodes are available.</p>
+{% endif %}
