@@ -16,8 +16,8 @@ for row in reader:
       campRow = line
       break
   
-  campaign = Campaign.objects.get_or_create(num=campRow[0], name=campRow[1])
+  campaign = Campaign.objects.update_or_create(num=campRow[0], name=campRow[1])
   num = int(row[1])
   title = row[2]
   description = row[3]
-  episode = Episode.objects.get_or_create(campaign= campaign[0], num=num, title=title, description=description)
+  episode = Episode.objects.update_or_create(campaign= campaign[0], num=num, title=title, description=description)

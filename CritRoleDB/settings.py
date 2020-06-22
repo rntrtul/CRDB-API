@@ -56,7 +56,9 @@ ROOT_URLCONF = 'CritRoleDB.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/home/lightbulb/CritRoleDB/polls/templates'],
+        'DIRS': ['/home/lightbulb/CritRoleDB/rolls/templates',
+                 '/home/lightbulb/CritRoleDB/episodes/templates',
+                 (os.path.join(BASE_DIR, 'templates')),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
