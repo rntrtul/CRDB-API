@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'characters.apps.CharactersConfig',
     'episodes.apps.EpisodesConfig',
     'rolls.apps.RollsConfig',
     'django.contrib.admin',
