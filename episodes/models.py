@@ -17,9 +17,15 @@ class Episode(models.Model):
   break_start = models.IntegerField(default=0)
   break_end =  models.IntegerField(default=0)
   game_end =  models.IntegerField(default=0)
-
-  def game_time (self):
-    return (self.game_end - self.break_end) + (self.break_start - self. game_start)
   
   def break_time (self):
     return self.break_end - self.break_start
+
+  def first_half_time (self):
+    return self.break_start - self. game_start
+  
+  def second_half_time (self):
+    return (self.game_end - self.break_end)
+
+  def game_time (self):
+    return self.first_half_time() + self.second_half_time()
