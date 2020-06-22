@@ -4,6 +4,7 @@
 <p>
   Episode: <a href="{%url 'episodes:detail' rolls.ep.id%}">{{rolls.ep.title}}</a>
 </p>
+<p>Rolled By: {{rolls.character.first_name}}</p>
 <p>Natural Value: {{ rolls.natural_value }}</p>
 <p>Total Value: {{ rolls.final_value }}</p>
 <p>Notes: {{ rolls.notes }}</p>

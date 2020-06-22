@@ -1,5 +1,6 @@
 from rolls.models import Rolls, RollType
 from episodes.models import Episode, Campaign
+from characters.models import Character
 import csv
 
 def getEpisode(num):
@@ -30,6 +31,7 @@ def getEpisode(num):
 
 rollsName = "C1-E001-CR.csv"
 
+Rolls.objects.all().delete()
 with open(rollsName, newline='') as myFile:
   rollReader = csv.reader(myFile)
 
@@ -37,6 +39,7 @@ with open(rollsName, newline='') as myFile:
   for row in rollReader:
     ep = getEpisode(row[0])
     timeStamp = int(float(row[1]))
+    character = Character.objects.get(first_name=row[2])
     type = RollType.objects.get_or_create(name=row[3])
     totalVal = 0
     if row[4] == "Nat1":
@@ -52,7 +55,8 @@ with open(rollsName, newline='') as myFile:
 
     notes= row[9]
 
-    roll, created = Rolls.objects.update_or_create(ep=ep, time_stamp=timeStamp,roll_type=type[0],final_value=totalVal, natural_value=natVal, notes=notes)
+    roll, created = Rolls.objects.update_or_create(ep=ep, time_stamp=timeStamp,roll_type=type[0],final_value=totalVal,
+                                                   natural_value=natVal, notes=notes, character=character)
     if created == False:
       print("duplicate roll, did not add to DB")
 
