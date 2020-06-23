@@ -1,10 +1,8 @@
 from django.db import models
 from races.models import Race
+from classes.models import Class
 
 # Create your models here.
-class Class(models.Model):
-  name = models.CharField(max_length=100)
-
 class CharacterType(models.Model):
   name = models.CharField(max_length=50)
 
@@ -22,6 +20,6 @@ class Character(models.Model):
       return True
 
 class ClassTaken(models.Model):
-  character_id = models.ForeignKey(Character,related_name='classes', on_delete=models.CASCADE)
-  class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
+  character = models.ForeignKey(Character,related_name='classes', on_delete=models.CASCADE)
+  class_id = models.ForeignKey(Class, related_name = 'characters', on_delete=models.CASCADE)
   level = models.IntegerField(default=0)

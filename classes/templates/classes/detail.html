@@ -1,0 +1,11 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'rolls/style.css' %}">
+<h1>{{class.name}}</h1>
+{%with all_chars=class.characters.all%}
+<h3>Total Characters ({{all_chars|length}}):</h3>
+<ul>
+  {% for char in all_chars %}
+      <li><a href="{%url 'characters:detail' char.character_id%}">{{ char.character.first_name}}</a></li>
+  {% endfor %}
+</ul>
+{%endwith%}
