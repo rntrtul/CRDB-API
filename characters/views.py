@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
 
-from .models import Character
+from .models import Character, CharacterType
 
 class IndexView(generic.ListView):
   template_name = 'characters/index.html'
@@ -17,3 +17,15 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
   model = Character
   template_name = 'characters/detail.html'
+
+class TypeListView(generic.ListView):
+  template_name = 'characters/typeIndex.html'
+  context_object_name = 'type_list'
+
+  def get_queryset(self):
+    return CharacterType.objects.order_by('name')
+
+class TypeDetailView(generic.DetailView):
+  model = CharacterType
+  template_name = 'characters/typeDetail.html'
+

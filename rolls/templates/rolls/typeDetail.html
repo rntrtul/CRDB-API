@@ -1,0 +1,12 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'rolls/style.css' %}">
+<h1>{{rolltype.name}}</h1>
+
+{%with all_rolls=rolltype.rolls.all%}
+<h3>Total rolls ({{all_rolls|length}}):</h3>
+<ul>
+  {% for roll in all_rolls %}
+      <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
+  {% endfor %}
+</ul>
+{%endwith%}
