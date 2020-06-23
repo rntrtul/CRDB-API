@@ -1,12 +1,13 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'rolls/style.css' %}">
-<h1>{{charactertype.name}}</h1>
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>{{charactertype.name}}</h1>
 
-{%with chars=charactertype.list_of_chars.all%}
-<h3>Total chars ({{chars|length}}):</h3>
-<ul>
-  {% for char in chars %}
-      <li><a href="{%url 'characters:detail' char.id%}">{{ char.first_name}}</a></li>
-  {% endfor %}
-</ul>
-{%endwith%}
+  {%with chars=charactertype.list_of_chars.all%}
+  <h3>Total chars ({{chars|length}}):</h3>
+  <ul>
+    {% for char in chars %}
+        <li><a href="{%url 'characters:detail' char.id%}">{{ char.first_name}}</a></li>
+    {% endfor %}
+  </ul>
+  {%endwith%}
+{%endblock%}

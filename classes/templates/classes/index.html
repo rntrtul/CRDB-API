@@ -1,11 +1,13 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'rolls/style.css' %}">
-{% if class_list %}
-    <ul>
-    {% for class in class_list %}
-        <li><a href="{%url 'classes:detail' class.id%}">{{ class.name}}</a> ({{class.characters.count}})</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>Sorry, no classes are currently available.</p>
-{% endif %}
+{% extends 'base.html' %}
+{% block content %} 
+    {% if class_list %}
+        <h1>All Classes:</h1>
+        <ul>
+        {% for class in class_list %}
+            <li><a href="{%url 'classes:detail' class.id%}">{{ class.name}}</a> ({{class.characters.count}})</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sorry, no classes are currently available.</p>
+    {% endif %}
+{%endblock%}
