@@ -1,4 +1,5 @@
-from characters.models import Character, Race, Class, ClassTaken, CharacterType
+from characters.models import Character, Class, ClassTaken, CharacterType
+from races.models import Race
 import csv
 
 rollsName = "characters.csv"

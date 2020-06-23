@@ -1,7 +1,9 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'rolls/style.css' %}">
 <h1>{{character.first_name}}</h1>
-<p>Race: {{character.race.name}}</p>
+<p>
+  Race: <a href="{%url 'races:detail' character.race_id%}">{{character.race.name}}</a>
+</p>
 <p>Class: {{character.classes.name}}</p>
 <p>Character Type: {{character.char_type.name}}</p>
 {%with all_rolls=character.rolls.all%}

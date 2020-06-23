@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'races.apps.RacesConfig',
     'characters.apps.CharactersConfig',
     'episodes.apps.EpisodesConfig',
     'rolls.apps.RollsConfig',
