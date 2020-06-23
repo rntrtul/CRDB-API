@@ -31,7 +31,7 @@ def getEpisode(num):
 
 rollsName = "C1-E001-CR.csv"
 
-Rolls.objects.all().delete()
+#Rolls.objects.all().delete()
 with open(rollsName, newline='') as myFile:
   rollReader = csv.reader(myFile)
 

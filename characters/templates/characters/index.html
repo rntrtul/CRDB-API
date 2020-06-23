@@ -1,0 +1,11 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'rolls/style.css' %}">
+{% if character_list %}
+    <ul>
+    {% for character in character_list %}
+        <li><a href="{%url 'characters:detail' character.id%}">{{ character.first_name}}</a> ({{character.rolls.count}})</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Sorry, no characters are currently available.</p>
+{% endif %}
