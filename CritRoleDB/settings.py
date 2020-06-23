@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'campaigns.apps.CampaignsConfig',
     'classes.apps.ClassesConfig',
     'races.apps.RacesConfig',
     'characters.apps.CharactersConfig',

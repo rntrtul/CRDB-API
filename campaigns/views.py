@@ -4,16 +4,16 @@ from django.urls import reverse
 from django.views import generic
 import logging
 
-from .models import Episode
-from rolls.models import Rolls
+from .models import Campaign
 # Create your views here.
+
 class IndexView(generic.ListView):
-  template_name = 'episodes/index.html'
-  context_object_name = 'ep_list'
+  template_name = 'campaigns/index.html'
+  context_object_name = 'campaign_list'
 
   def get_queryset(self):
-    return Episode.objects.order_by('campaign','num')
+    return Campaign.objects.order_by('num')
 
 class DetailView(generic.DetailView):
-  model = Episode
-  template_name = 'episodes/detail.html'
+  model = Campaign
+  template_name = 'campaigns/detail.html'

@@ -1,13 +1,10 @@
 from django.db import models
 from datetime import datetime
+from campaigns.models import Campaign
 
 # Create your models here.
-class Campaign(models.Model):
-  num = models.IntegerField(default=0)
-  name = models.TextField()
-
 class Episode(models.Model):
-  campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
+  campaign = models.ForeignKey(Campaign, related_name='episodes', on_delete=models.CASCADE)
   num = models.IntegerField()
   title = models.TextField()
   air_date = models.DateField(auto_now_add=True, blank=True)
