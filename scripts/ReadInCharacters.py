@@ -1,10 +1,11 @@
-from characters.models import Character, Class, ClassTaken, CharacterType
+from characters.models import Character, ClassTaken, CharacterType
+from classes.models import Class
 from races.models import Race
 import csv
 
-rollsName = "characters.csv"
+charName = "characters.csv"
 
-with open(rollsName, newline='') as myFile:
+with open(charName, newline='') as myFile:
   rollReader = csv.reader(myFile)
 
   next(rollReader)
@@ -20,10 +21,5 @@ with open(rollsName, newline='') as myFile:
     classCharRelation = ClassTaken.objects.update_or_create(character_id = character[0], class_id=classs[0],level=level)
 
     if character[1] == False:
-      print("duplicate character, did not add to DB")
+      print("duplicate character " + first_name + ", did not add to DB")
     
-      
-
-#delete these after testing views and stuff
-#as reading in rolls will create a new rolltype, episode, character name if not found 
-

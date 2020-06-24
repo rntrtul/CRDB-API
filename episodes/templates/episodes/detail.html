@@ -2,11 +2,12 @@
 {% block content %} 
     <h1>Title: {{episode.title }}</h1>
     <p>Campaign: {{episode.campaign.num}}/
-        <a href="{%url 'campaigns:detail' episode.campaign_id%}">{{episode.campaign.name}}</a></p>
+        <a href="{%url 'campaigns:detail' episode.campaign_id%}">{{episode.campaign.name}}</a>
+    </p>
     <p>Description: {{episode.description}}</p>
-    <p>Length: {{episode.length}}</p>
-    <p>Game Time: {{episode.game_time}}</p>
-    <p>Break Time: {{episode.break_time}}</p>
+    <p>Length: {{episode.length_formatted}}</p>
+    <p>Game Time: {{episode.game_time_formatted}}</p>
+    <p>Break Time: {{episode.break_time_formatted}}</p>
 
     <ul>
     {% for roll in episode.rolls.all %}

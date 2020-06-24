@@ -3,14 +3,19 @@
 
 <h1>CritRoleDB</h1>
 <ul id='nav-bar'>
-  <li><a href="/rolls/">Rolls</a></li>
-  <li><a href="/rolls/types">Roll Types</a></li>
-  <li><a href="/episodes/">Episodes</a></li>
-  <li><a href="/characters/">Characters</a></li>
-  <li><a href="/characters/types">Characters types</a></li>
-  <li><a href="/races/">Races</a></li>
-  <li><a href="/classes/">Classes</a></li>
+  <li><a href="{%url 'rolls:index'%}">Rolls</a></li>
+  <li><a href="{%url 'rolls:typeIndex'%}">Roll Types</a></li>
+  <li><a href="{%url 'episodes:index'%}">Episodes</a></li>
+  <li><a href="{%url 'campaigns:index'%}">Campaigns</a></li>
+  <li><a href="{%url 'characters:index'%}">Characters</a></li>
+  <li><a href="{%url 'characters:typeIndex'%}">Characters Types</a></li>
+  <li><a href="{%url 'races:index'%}">Races</a></li>
+  <li><a href="{%url 'classes:index'%}">Classes</a></li>
 </ul>
-{% block content %}
-{% endblock %}
-<p id='footer'>Data from CritRole Stats.</p>
+
+<div id="block">
+  {% block content %}
+  {% endblock %}
+</div>
+
+<footer>Data from CritRole Stats</footer>

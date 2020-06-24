@@ -30,10 +30,10 @@
   background-color: #111;
 }
 
-#footer{
-  position: absolute;
-  bottom: 0%;
+footer{
   text-align: center;
-  width: 100%;
   color: #333333;
+  position: relative;
+  bottom: 0;
+  padding: 1rem;
 }
