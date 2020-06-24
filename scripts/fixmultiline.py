@@ -9,7 +9,7 @@ def appendAsCols(row, appendTo):
 
 name = sys.argv[1]
 newName = "LF" + name
-
+print(name)
 with open(name, newline='') as myFile:
   reader = csv.reader(myFile)
   writer = csv.writer (open (newName, 'w'))
@@ -22,12 +22,20 @@ with open(name, newline='') as myFile:
       continue
 
     if len(row) == 1:
-      prevLine = appendAsCols(row, prevLine)
+      prevLine[9] += ''.join(row)
+      print(prevLine[9] + ''.join(row))
     elif not row[1].endswith('.0'):
-      prevLine = appendAsCols(row, prevLine)
+      try:
+        prevLine[9] += ''.join(row)
+        print(prevLine[9] + ''.join(row))
+      except:
+        prevLine[7] += ''.join(row)
+        print(prevLine[7] + ''.join(row))
+      
       currHasTime = False
     elif len(row) < 9 and not currHasTime:
-      prevLine = appendAsCols(row, prevLine)
+      prevLine[9] += ''.join(row)
+      print(prevLine[9] + ''.join(row))
     else:
         writer.writerow(prevLine)
         prevLine = row

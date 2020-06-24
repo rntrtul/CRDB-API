@@ -8,8 +8,13 @@
     <p>Description: {{episode.description}}</p>
     <p>Length: {{episode.length_formatted}}</p>
     <p>Game Time: {{episode.game_time_formatted}}</p>
+    <p>First Half time: {{episode.first_half_time_formatted}}</p>
+    <p>Second Half time: {{episode.second_half_time_formatted}}</p>
+    <p>First Half end: {{episode.first_half_end_formatted}}</p>
     <p>Break Time: {{episode.break_time_formatted}}</p>
 
+    <h3>All Rolls  ({{ episode.rolls.count}}):</h3>
+    
     <ul>
     {% for roll in episode.rolls.all %}
         <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
