@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %} 
     <h1>Title: {{episode.title }}</h1>
+    <h2>Number: {{episode.num}}</h2>
     <p>Campaign: {{episode.campaign.num}}/
         <a href="{%url 'campaigns:detail' episode.campaign_id%}">{{episode.campaign.name}}</a>
     </p>

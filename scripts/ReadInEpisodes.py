@@ -6,6 +6,7 @@ DATADIR = "zdata/"
 C1DIR = "C1/"
 C1TA = DATADIR + C1DIR + "C1 Times + Attendance"
 
+#Episode.objects.all().delete()
 file = "Episode-list.csv"
 metaReader = csv.reader(open(file))
 next(metaReader)

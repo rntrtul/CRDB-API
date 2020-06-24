@@ -5,6 +5,8 @@ import csv
 
 charName = "characters.csv"
 
+Character.objects.all().delete()
+ClassTaken.objects.all().delete()
 with open(charName, newline='') as myFile:
   rollReader = csv.reader(myFile)
 
@@ -18,7 +20,7 @@ with open(charName, newline='') as myFile:
     
     character = Character.objects.update_or_create(first_name = first_name, last_name = last_name,race = race[0], char_type=charType[0])
     level = 10
-    classCharRelation = ClassTaken.objects.update_or_create(character_id = character[0], class_id=classs[0],level=level)
+    classCharRelation = ClassTaken.objects.update_or_create(character_id = character[0].id, class_id=classs[0],level=level)
 
     if character[1] == False:
       print("duplicate character " + first_name + ", did not add to DB")

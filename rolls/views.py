@@ -11,7 +11,7 @@ class IndexView(generic.ListView):
   context_object_name = 'rolls_list'
 
   def get_queryset(self):
-    return Rolls.objects.order_by('time_stamp')
+    return Rolls.objects.order_by('time_stamp')[100:]#only get first 100 otherwise too many
 
 class DetailView(generic.DetailView):
   model = Rolls

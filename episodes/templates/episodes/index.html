@@ -7,7 +7,7 @@
             {%if ep.num == 1%}
                 <h3>Campaign {{ep.campaign.num}}: {{ep.campaign.name}}</h3>
             {%endif%}
-            <li>EP {{ ep.num }}:<a href="{%url 'episodes:detail' ep.id%}">{{ ep.title}}</a></li>
+            <li>EP {{ ep.num }}:<a href="{%url 'episodes:detail' ep.id%}">{{ ep.title}}</a> ({{ep.rolls.count}})</li>
             
         {% endfor %}
         </ul>
