@@ -1,5 +1,6 @@
 from django.db import models
 from episodes.models import Episode
+from characters.models import Character
 import time
 
 # Create your models here.
@@ -14,8 +15,9 @@ class Rolls(models.Model):
   natural_value = models.IntegerField(default=0)
   final_value = models.IntegerField(default=0)
   notes = models.TextField()
-  roll_type = models.ForeignKey(RollType,on_delete=models.CASCADE)
+  roll_type = models.ForeignKey(RollType, related_name='rolls', on_delete=models.CASCADE)
   ep = models.ForeignKey(Episode, related_name='rolls', on_delete=models.CASCADE)
+  character = models.ForeignKey(Character, related_name='rolls', on_delete=models.CASCADE)
 
   def time_formated (self):
     return time.strftime("%-H:%M:%S", time.gmtime(self.time_stamp))

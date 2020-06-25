@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %} 
+    {% if campaign_list %}
+        <h1>Campaign List:</h1>
+        <ul>
+        {% for camp in campaign_list %}
+          <li>Campaign {{ camp.num }}:<a href="{%url 'campaigns:detail' camp.id%}">{{ camp.name}}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sorry, no campaigns are currently available.</p>
+{% endif %}
+{%endblock%}

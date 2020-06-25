@@ -1,14 +1,23 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'episodes/style.css' %}">
-<h1>Title: {{episode.title }}</h1>
-<p>Campaign: {{episode.campaign.num}}/{{episode.campaign.name}}</p>
-<p>Description: {{episode.description}}</p>
-<p>Length: {{episode.length}}</p>
-<p>Game Time: {{episode.game_time}}</p>
-<p>Break Time: {{episode.break_time}}</p>
+{% extends 'base.html' %}
+{% block content %} 
+    <h1>Title: {{episode.title }}</h1>
+    <h2>Number: {{episode.num}}</h2>
+    <p>Campaign: {{episode.campaign.num}}/
+        <a href="{%url 'campaigns:detail' episode.campaign_id%}">{{episode.campaign.name}}</a>
+    </p>
+    <p>Description: {{episode.description}}</p>
+    <p>Length: {{episode.length_formatted}}</p>
+    <p>Game Time: {{episode.game_time_formatted}}</p>
+    <p>First Half time: {{episode.first_half_time_formatted}}</p>
+    <p>Second Half time: {{episode.second_half_time_formatted}}</p>
+    <p>First Half end: {{episode.first_half_end_formatted}}</p>
+    <p>Break Time: {{episode.break_time_formatted}}</p>
 
-<ul>
-{% for roll in episode.rolls.all %}
-    <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
-{% endfor %}
-</ul>
+    <h3>All Rolls  ({{ episode.rolls.count}}):</h3>
+    
+    <ul>
+    {% for roll in episode.rolls.all %}
+        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
+    {% endfor %}
+    </ul>
+{%endblock%}

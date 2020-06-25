@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>{{character.first_name}}</h1>
+  <p>
+    Race: <a href="{%url 'races:detail' character.race_id%}">{{character.race.name}}</a>
+  </p>
+  <p>Class: 
+    {%for class in character.classes.all%}
+      <a href = "{%url 'classes:detail' class.class_id_id%}"">{{class.class_id.name}}</a> 
+    {%endfor%}
+  </p>
+  <p>Character Type: <a href="{%url 'characters:typeDetail' character.char_type_id%}">{{character.char_type.name}}</a></p>
+  {%with all_rolls=character.rolls.all%}
+  <h3>Total Rolls ({{all_rolls|length}}):</h3>
+  <ul>
+    {% for roll in all_rolls %}
+        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
+    {% endfor %}
+  </ul>
+  {%endwith%}
+{%endblock%}

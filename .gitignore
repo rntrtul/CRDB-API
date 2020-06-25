@@ -15,3 +15,4 @@ tests/report/
 .vscode
 *.csv
 *IME*
+zdata

@@ -1,31 +1,44 @@
 from django.db import models
 from datetime import datetime
+from campaigns.models import Campaign
+import time
 
 # Create your models here.
-class Campaign(models.Model):
-  num = models.IntegerField(default=0)
-  name = models.TextField()
-
 class Episode(models.Model):
-  campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
+  campaign = models.ForeignKey(Campaign, related_name='episodes', on_delete=models.CASCADE)
   num = models.IntegerField()
   title = models.TextField()
   air_date = models.DateField(auto_now_add=True, blank=True)
   description = models.TextField()
   length = models.IntegerField(default=0)
-  game_start = models.IntegerField(default=0)
-  break_start = models.IntegerField(default=0)
-  break_end =  models.IntegerField(default=0)
-  game_end =  models.IntegerField(default=0)
-  
+  first_half_start = models.IntegerField(default=0)
+  first_half_end = models.IntegerField(default=0)
+  second_half_start =  models.IntegerField(default=0,blank=True, null=True)
+  second_half_end =  models.IntegerField(default=0,blank=True, null=True)
+
   def break_time (self):
-    return self.break_end - self.break_start
+     return self.second_half_start - self.first_half_end
 
   def first_half_time (self):
-    return self.break_start - self. game_start
+    return  self.first_half_end - self.first_half_start
   
   def second_half_time (self):
-    return (self.game_end - self.break_end)
+    return  self.second_half_end - self.second_half_start
 
   def game_time (self):
     return self.first_half_time() + self.second_half_time()
+
+  def break_time_formatted (self):
+    return time.strftime("%-H:%M:%S", time.gmtime(self.break_time()))
+
+  def first_half_time_formatted (self):
+    return time.strftime("%-H:%M:%S", time.gmtime(self.first_half_time()))
+  
+  def second_half_time_formatted (self):
+    return time.strftime("%-H:%M:%S", time.gmtime(self.second_half_time()))
+
+  def game_time_formatted (self):
+    return time.strftime("%-H:%M:%S", time.gmtime(self.game_time()))
+  
+  def length_formatted(self):
+    return time.strftime("%-H:%M:%S", time.gmtime(self.length))

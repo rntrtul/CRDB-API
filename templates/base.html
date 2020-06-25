@@ -1,0 +1,21 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'main.css'%}">
+
+<h1>CritRoleDB</h1>
+<ul id='nav-bar'>
+  <li><a href="{%url 'rolls:index'%}">Rolls</a></li>
+  <li><a href="{%url 'rolls:typeIndex'%}">Roll Types</a></li>
+  <li><a href="{%url 'episodes:index'%}">Episodes</a></li>
+  <li><a href="{%url 'campaigns:index'%}">Campaigns</a></li>
+  <li><a href="{%url 'characters:index'%}">Characters</a></li>
+  <li><a href="{%url 'characters:typeIndex'%}">Characters Types</a></li>
+  <li><a href="{%url 'races:index'%}">Races</a></li>
+  <li><a href="{%url 'classes:index'%}">Classes</a></li>
+</ul>
+
+<div id="block">
+  {% block content %}
+  {% endblock %}
+</div>
+
+<footer>Data from CritRole Stats</footer>
