@@ -94,7 +94,7 @@ def storeCharSheet(fileName,dirpath):
   curPdf.close()
 
 
-C1SHEETS = "/home/lightbulb/Desktop/CRDB Data May 25 2020/C1"
+C1SHEETS = "/home/lightbulb/CritRoleDB/zdata/C1"
 
 for dirpath,dirnames,files in os.walk(C1SHEETS):
   files.sort()
