@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
 
-from .models import Episode
+from .models import Episode, Apperance
 from rolls.models import Rolls
 # Create your views here.
 class IndexView(generic.ListView):
@@ -18,3 +18,14 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
   model = Episode
   template_name = 'episodes/detail.html'
+
+class ApperanceIndexView(generic.ListView):
+  template_name = 'episodes/apperanceIndex.html'
+  context_object_name = 'apperance_list'
+  paginate_by = 100
+  def get_queryset(self):
+    return Apperance.objects.order_by('episode')
+
+class ApperanceDetailView(generic.DetailView):
+  model = Apperance
+  template_name = 'episodes/apperanceDetail.html'

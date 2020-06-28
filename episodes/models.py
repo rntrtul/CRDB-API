@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from campaigns.models import Campaign
+from characters.models import Character
 import time
 
 # Create your models here.
@@ -27,4 +28,12 @@ class Episode(models.Model):
 
   def gameplay_length (self):
     return self.first_half_length() + self.second_half_length()
-  
+
+class ApperanceType(models.Model):
+  name = models.CharField(max_length=100)
+
+class Apperance(models.Model):
+  episode = models.ForeignKey(Episode, related_name='apperances', on_delete=models.CASCADE)
+  character = models.ForeignKey(Character, related_name='apperances', on_delete=models.CASCADE)
+  apperance_type = models.ForeignKey(ApperanceType, related_name='apperances', on_delete=models.CASCADE)
+  #add player id when player model done

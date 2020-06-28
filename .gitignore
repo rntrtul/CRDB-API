@@ -16,3 +16,4 @@ tests/report/
 *.csv
 *IME*
 zdata
+dump
