@@ -15,6 +15,16 @@
         <abbr title= "{%format_duration episode.first_half_end episode.second_half_start%}" >{%format_time episode.break_length%}</abbr>
     </p>
 
+    {%if episode.apperances%}
+        <h3>Characters: </h3>
+
+        <ul>
+        {%for app in episode.apperances.all%}
+            <li><a href="{%url 'characters:detail' app.character_id%}">{{app.character.first_name}}</a></li>
+        {%endfor%}
+        </ul>
+    {%endif%}
+
     <h3>All Rolls  ({{ episode.rolls.count}}):</h3>
     
     <ul>

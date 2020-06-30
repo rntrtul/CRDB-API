@@ -10,6 +10,17 @@
     {%endfor%}
   </p>
   <p>Character Type: <a href="{%url 'characters:typeDetail' character.char_type_id%}">{{character.char_type.name}}</a></p>
+
+  {%if character.apperances%}
+    <h3>Appears in {{character.apperances.count}} episodes: </h3>
+      
+    <ul>
+    {%for app in character.apperances.all%}
+        <li><a href="{%url 'episodes:detail' app.episode_id%}">{{app.episode.title}}</a></li>
+    {%endfor%}
+    </ul>
+  {%endif%}
+
   {%with all_rolls=character.rolls.all%}
   <h3>Total Rolls ({{all_rolls|length}}):</h3>
   <ul>
@@ -18,4 +29,5 @@
     {% endfor %}
   </ul>
   {%endwith%}
+
 {%endblock%}

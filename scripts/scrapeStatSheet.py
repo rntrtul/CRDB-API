@@ -38,7 +38,7 @@ wantedFields = ["ClassLevel","PlayerName","CharacterName","Race","Alignment","In
               "Wpn3 AtkBonus","Wpn3 Damage","Spellcasting Class 2","SpellSaveDC 2","SpellAtkBonus 2"]
 
 def storeCharSheet(fileName,dirpath):
-  path = os.path.join(dirpath,file)
+  path = os.path.join(dirpath,fileName)
   curPdf = open(path,'rb')
   pdfReader = PyPDF2.PdfFileReader(curPdf)
 
@@ -49,18 +49,20 @@ def storeCharSheet(fileName,dirpath):
   lvl = "cantrip"
 
   for field in fields.items():
+    toWrite = ""
     cleanField = field[0].strip()
+    failed = False
     if cleanField in wantedFields:
         try:
           value = str(field[1]['/V'])
         except:
           value = "None"
-        writer.write(cleanField + ": " + value + "\n")  
+        toWrite = cleanField + ": \"" + value.strip() + "\"\n"  
     elif cleanField.startswith("Check Box"):
         boxNum = int(field[0][10:])
         try:
           isProf = field[1]['/V'][1:]
-          writer.write("Proffcient in: " + boxList[boxNum] + "\n")
+          toWrite = "Proffcient in: \"" + boxList[boxNum] + "\"\n"
         except:
           failed = True
     elif cleanField.startswith("Spells"):
@@ -78,23 +80,26 @@ def storeCharSheet(fileName,dirpath):
         try:
           spell = field[1]['/V']
           if spell != '' and spell != "???":
-            writer.write("Spell lvl " + lvl + ": " + spell + "\n")
+            toWrite = "Spell lvl " + lvl + ": \"" + spell + "\"\n"
         except:
           failed = True
     elif cleanField.startswith("SlotsTotal"):
         try:
-          slots = field[1]['V']
+          slots = field[1]['/V']
           if lvl == "cantrip":
-            writer.write("Slots at lvl 1: " + slots + "\n")
+            toWrite = "Slots at lvl 1: " + slots + "\n"
           elif slots != "":
-            writer.write("Slots at lvl " + str(int(lvl) + 1) + ": " + slots + '\n')
+            toWrite = "Slots at lvl " + str(int(lvl) + 1) + ": " + slots + '\n'
         except:
           failed = True
-    
+    if not failed:
+      writer.write(toWrite)
   curPdf.close()
 
 
-C1SHEETS = "/home/lightbulb/CritRoleDB/zdata/C1"
+C1SHEETS = "/home/lightbulb/Desktop/CRDB Data May 25 2020/C1/C1 char sheets/"
+
+#storeCharSheet("Keyleth_L14.pdf", C1SHEETS)
 
 for dirpath,dirnames,files in os.walk(C1SHEETS):
   files.sort()
