@@ -11,6 +11,7 @@ class Character(models.Model):
   #Combine first_name + last_name + middle name into field name, add nicknames table
   #full_name = models.TextField()
   #name = models.TextField() #generaly use first name or nickName like Percy.
+  #background = models.TextField() OR models.ForeignKey(Background)
   first_name = models.CharField(max_length=100)
   last_name = models.CharField(max_length=100, blank=True)
   middle_name = models.CharField(max_length=100, blank=True)
@@ -65,9 +66,9 @@ class StatSheet(models.Model):
   proficiencies = models.TextField(blank=True)
 
   casting_ability = models.ForeignKey(Ability, on_delete=models.CASCADE, null=True)
-  casting_class = models.TextField(blank=True)
-  spell_attack_bonus = models.IntegerField(default=0)
-  spell_save = models.IntegerField(default=0)
+  casting_class = models.TextField(blank=True) # maybe make foreignkey
+  spell_attack_bonus = models.IntegerField(default=0, blank=True, null =True)
+  spell_save = models.IntegerField(default=0, blank=True, null =True)
   #spell slots
   cantrips    = models.IntegerField(default=0)
   slots_one   = models.IntegerField(default=0)
@@ -80,11 +81,17 @@ class StatSheet(models.Model):
   slots_eight = models.IntegerField(default=0)
   slots_nine  = models.IntegerField(default=0)
 
+  def get_level(self):
+    lvl = 0
+    for cls in self.classes.all():
+      lvl += cls.level
+    return lvl
+
 class SkillList(models.Model):
   stat_sheet = models.ForeignKey(StatSheet, related_name='skills', on_delete=models.CASCADE)
   skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
   modifier = models.IntegerField(default=0)
-  profcient = models.BooleanField(default=False)
+  proficient = models.BooleanField(default=False)
 
 class AbilityScore(models.Model):
   stat_sheet = models.ForeignKey(StatSheet, related_name='ability_scores', on_delete=models.CASCADE)
@@ -98,7 +105,7 @@ class SavingThrow(models.Model):
   stat_sheet = models.ForeignKey(StatSheet, related_name='saving_throws', on_delete=models.CASCADE)
   ability = models.ForeignKey(Ability, related_name='saves', on_delete=models.CASCADE)
   modifier = models.IntegerField(default=0)
-  profcient = models.BooleanField(default=False)
+  proficient = models.BooleanField(default=False)
 
 class LearnedLanguage (models.Model):
   language = models.ForeignKey(Language, related_name='known_by', on_delete=models.CASCADE)

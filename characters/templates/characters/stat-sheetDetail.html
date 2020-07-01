@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>{{statsheet.character.first_name}}</h1>
+  <h3>Level: {{statsheet.get_level}}</h3>
+  <p>Class: 
+    {% for class in statsheet.classes.all %}
+    {{class.class_id.name}},  {{class.level}}/
+    {%endfor%}
+  </p>
+  <h3>Ability Scores:</h3>
+  {% for abil in ability_scores%}
+    <p><b>{{abil.ability.name}}:</b> {{abil.score}} ({{abil.get_modifier}})</p>
+  {%endfor%}
+
+  <h3>Saving Throws:</h3>
+  {% for st in saving_throws%}
+    <p>
+      <b>{{st.ability.name}}:</b>
+      {{st.modifier}} {% if st.proficient %} is proficient{%endif%}
+    </p>
+  {%endfor%}
+
+  <h3>Skills:</h3>
+  {% for skill in skills%}
+    <p>
+      <b>{{skill.skill.name}}:</b>
+      {{skill.modifier}} {% if skill.proficient %} is proficient{%endif%}
+    </p>
+  {%endfor%}
+
+  <p>Alignment: {{statsheet.alignment.name}}</p>
+  <p>Health: {{statsheet.max_health}}</p>
+  <p>AC: {{statsheet.armour_class}}</p>
+  <p>Speed: {{statsheet.speed}}</p>
+  <p>Initative bonus: {{statsheet.initiative_bonus}}</p>
+  <p>Profciency bonus: {{statsheet.proficiency_bonus}}</p>
+  <p>Hit Die: {{statsheet.hit_die}}</p>
+  <p>Inspiration_die: {{statsheet.inspiration_die}}</p>
+  <p>equipment: {{statsheet.equipment}}</p>
+  <p>Features and Traits: {{statsheet.features_traits}}</p>
+  <p>Attacks and Spell Casting: {{statsheet.attacks}}</p>
+  <p>weapons: {{statsheet.weapons|linebreaks}}</p>
+  <p>Proffciencies and Languages: {{statsheet.proficiencies}}</p>
+  
+  <h3>Spell Casting:</h3>
+
+  <p>Casting Class: {{statsheet.casting_class}}</p>
+  <p>Spell attack Bonus: {{statsheet.spell_attack_bonus}}</p>
+  <p>Spell Save: {{statsheet.spell_save}}</p>
+  <p>Casting Ability: {{statsheet.casting_ability.name}}</p>
+  <p>Slots Level 1: {{statsheet.slots_one}}</p>
+  <p>Slots Level 2: {{statsheet.slots_two}}</p>
+  <p>Slots Level 3: {{statsheet.slots_three}}</p>
+  <p>Slots Level 4: {{statsheet.slots_four}}</p>
+  <p>Slots Level 5: {{statsheet.slots_five}}</p>
+  <p>Slots Level 6: {{statsheet.slots_six}}</p>
+  <p>Slots Level 7: {{statsheet.slots_seven}}</p>
+  <p>Slots Level 8: {{statsheet.slots_eight}}</p>
+  <p>Slots Level 9: {{statsheet.slots_nine}}</p>
+  
+  {%if spells.count != 0%}
+    <h3>Known Spells:</h3>
+    {%for spell in spells%}
+      <p>Spell: {{spell.spell.name}}</p>
+    {%endfor%}
+  {%endif%}
+{%endblock%}

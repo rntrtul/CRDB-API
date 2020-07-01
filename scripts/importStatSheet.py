@@ -1,5 +1,6 @@
 from characters.models import ClassTaken, Ability, AbilityScore, Skill, SkillList, Character, StatSheet,SavingThrow, Alignment, Language, Spell, LearnedLanguage, LearnedSpell
 from classes.models import Class
+from episodes.models import LevelProg, Episode
 import os
 import re
 
@@ -106,10 +107,11 @@ def getAbilName(field):
 
 
 C1SHEETS = "/home/lightbulb/CritRoleDB/zdata/sheets"
-
+StatSheet.objects.all().delete()
+LevelProg.objects.all().delete()
 for dirpath,dirnames,files in os.walk(C1SHEETS):
   files.sort()
-  #files = files[95:]
+  #files = files[101:]
   for file in files:
     fileName = file[:-4]
     index = fileName.find("_")
@@ -119,11 +121,11 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
     name = fileName[:index]
     lvl = fileName[index+2:]
     ep_num = findLevelUpEp(name, lvl)
-
+  
     sheet = StatSheet()
     sheet.character = Character.objects.get(first_name=name)
     sheet.save()
-    print(file + " this level at ep: " + str(ep_num) )
+    print(file)
 
     path = os.path.join(dirpath,file)
     reader = open(path, 'r')
@@ -137,7 +139,7 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
         value = value[:-1]
       if value == "None" and field != "Alignment":
           value = "0"
-      #print(value)
+
       if field == "ClassLevel" :
         classes = re.split(',|/| |', value)
         count = 1
@@ -149,6 +151,8 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
           if count % 2 == 1:
             cls = Class.objects.get_or_create(name=one)
           else:
+            if one == 'Hunter':
+              continue
             lvl = int(one)
             clt = ClassTaken.objects.get_or_create(stat_sheet=sheet,class_id=cls[0],level=lvl )
           count += 1
@@ -173,9 +177,13 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
         sheet.initiative_bonus = int(value)
       elif field == "Speed":
         sheet.speed = int(value)
-      elif field == "HPMAX":
+      elif field == "HPMax":
+        if lvl == 9 and len(value) > 2 and value[2] == '-':
+          value = value[:-3]
+        elif value == '':
+          value = "0"
         sheet.max_health = int(value)
-      elif field == "HDT":
+      elif field == "HDTotal":
         sheet.hit_die = value
       elif field in ["STR", "DEX", "CON", "INT", "WIS", "CHA"]:
         abil_name = getAbilName(field)
@@ -202,19 +210,22 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
         sheet.proficiencies = value
       elif field == "Features and Traits":
         sheet.features_traits = value
-      elif field == "Equpiment":
+      elif field == "Equipment":
         sheet.equipment = value
       elif field.startswith("Wpn"):
-        sheet.weapons += value
+        sheet.weapons += " " + value
+        if field.endswith("Damage"):
+          sheet.weapons += '\n'
       elif field == "Spellcasting Class 2":
         sheet.casting_class = value
       elif field == "SpellSaveDC 2":
         sheet.spell_save = value
       elif field == "SpellAtkBonus 2":
-        sheet.spell_attack_bonus = value
+        if value != '':
+          sheet.spell_attack_bonus = value
       elif field.startswith("Spell"):
-        spell = Spell(name=value)
-        lp = LearnedSpell(sheet = sheet, spell = spell)
+        spell = Spell.objects.get_or_create(name=value)
+        lp = LearnedSpell.objects.get_or_create(sheet = sheet, spell = spell[0])
       elif field.startswith("Slots"):
         spellLvl = int(field[13:])
         if value == '':
@@ -223,29 +234,26 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
           sheet.slots_one = value
         elif spellLvl == 2:
           sheet.slots_two = value
-        elif spellLvl == 2:
+        elif spellLvl == 3:
           sheet.slots_three = value
-        elif spellLvl == 2:
+        elif spellLvl == 4:
           sheet.slots_four = value
-        elif spellLvl == 2:
+        elif spellLvl == 5:
           sheet.slots_five = value
-        elif spellLvl == 2:
+        elif spellLvl == 6:
           sheet.slots_six = value 
-        elif spellLvl == 2:
+        elif spellLvl == 7:
           sheet.slots_seven = value
-        elif spellLvl == 2:
+        elif spellLvl == 8:
           sheet.slots_eight = value
-        elif spellLvl == 2:
+        elif spellLvl == 9:
           sheet.slots_nine = value
       elif field.startswith("Proffcient in"):
         if value.endswith("Save"):
           #handle procient in saving throws
           abil_name = value[:-5]
           abil = Ability.objects.get(name=abil_name)
-          st = SavingThrow.objects.get_or_create(ability=abil,stat_sheet=sheet)
-          #st = SavingThrow(ability=abil,stat_sheet=sheet)
-          st[0].proficient = True
-          st[0].save()
+          st = SavingThrow.objects.update_or_create(ability=abil,stat_sheet=sheet, defaults={'proficient': True})
         else:
           #handle proffcient in skill
           if value == "SleightofHand":
@@ -253,9 +261,11 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
           else:
             sk_name = value
           sk = Skill.objects.get(name=sk_name)
-          skl = SkillList.objects.get_or_create(skill=sk, stat_sheet=sheet)
-          #skl =  SkillList(skill=sk, stat_sheet=sheet)
-          skl[0].procient = True
-          skl[0].save()
+          skl = SkillList.objects.update_or_create(skill=sk, stat_sheet=sheet,defaults={'proficient': True} )
 
     sheet.save()
+    if ep_num !=0:
+      ep = Episode.objects.get(num=ep_num)
+      lp = LevelProg.objects.get_or_create(sheet=sheet, episode = ep, level=int(lvl))
+      if lp[1]:
+        print(name + " leveled to " + str(lvl) + " on episode " + str(ep_num))

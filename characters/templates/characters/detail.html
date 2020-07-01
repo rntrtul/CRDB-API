@@ -4,30 +4,30 @@
   <p>
     Race: <a href="{%url 'races:detail' character.race_id%}">{{character.race.name}}</a>
   </p>
-  <p>Class: 
-    {%for class in character.classes.all%}
-      <a href = "{%url 'classes:detail' class.class_id_id%}"">{{class.class_id.name}}</a> 
-    {%endfor%}
-  </p>
   <p>Character Type: <a href="{%url 'characters:typeDetail' character.char_type_id%}">{{character.char_type.name}}</a></p>
 
+  <h3>Stat Sheets: </h3>
+  <ul>
+  {%for sheet in statsheets%}
+    <li><a href="{%url 'characters:statDetail' sheet.id%}"> level: {{sheet.get_level}}</a></li>
+  {%endfor%}
+  </ul>
+  
   {%if character.apperances%}
     <h3>Appears in {{character.apperances.count}} episodes: </h3>
       
     <ul>
-    {%for app in character.apperances.all%}
-        <li><a href="{%url 'episodes:detail' app.episode_id%}">{{app.episode.title}}</a></li>
+    {%for apperance in character.apperances.all%}
+        <li><a href="{%url 'episodes:detail' apperance.episode_id%}">{{apperance.episode.title}}</a></li>
     {%endfor%}
     </ul>
   {%endif%}
 
-  {%with all_rolls=character.rolls.all%}
-  <h3>Total Rolls ({{all_rolls|length}}):</h3>
+  <h3>Total Rolls ({{total_rolls}}):</h3>
   <ul>
-    {% for roll in all_rolls %}
+    {% for roll in display_rolls %}
         <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
     {% endfor %}
   </ul>
-  {%endwith%}
 
 {%endblock%}
