@@ -14,7 +14,7 @@ class Character(models.Model):
   name = models.TextField(blank=True) #generaly use first name or nickName like Percy.
   #background = models.TextField() OR models.ForeignKey(Background)
   race = models.ForeignKey(Race, related_name='characters', on_delete=models.CASCADE)
-  player = models.ForeignKey(Player, related_name='characters', on_delete=models.CASCADE)
+  player = models.ForeignKey(Player, related_name='characters', on_delete=models.CASCADE, blank= True, null = True)
   char_type = models.ForeignKey(CharacterType, related_name='characters', on_delete=models.CASCADE)
 
 class OtherNames(models.Model):

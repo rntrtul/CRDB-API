@@ -4,9 +4,10 @@
   <h3>Level: {{statsheet.get_level}}</h3>
   <p>Class: 
     {% for class in statsheet.classes.all %}
-    {{class.class_id.name}},  {{class.level}}/
+      {{class.class_id.name}},  {{class.level}}/
     {%endfor%}
   </p>
+  <p>Leveled up epsiode: {%for lp in level_up%} <a href="{%url 'episodes:detail' lp.episode_id%}">{{lp.episode.title}} </a> ({{lp.episode.num}}){%endfor%}</p>
   <h3>Ability Scores:</h3>
   {% for abil in ability_scores%}
     <p><b>{{abil.ability.name}}:</b> {{abil.score}} ({{abil.get_modifier}})</p>
