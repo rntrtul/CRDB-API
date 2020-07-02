@@ -31,3 +31,8 @@ class TypeListView(generic.ListView):
 class TypeDetailView(generic.DetailView):
   model = RollType
   template_name = 'rolls/typeDetail.html'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['roll_list'] = context['object'].rolls.order_by('ep__num', 'time_stamp')
+    return context

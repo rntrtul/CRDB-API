@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>{{player.full_name}}</h1>
+  <h3>Characters:</h3>
+  
+  <ul>
+  {%for char in char_list%}
+    <li><a href="{%url 'characters:detail' char.id%}">{{char.full_name}}</a></li>
+  {%endfor%}
+  </ul>
+{%endblock%}

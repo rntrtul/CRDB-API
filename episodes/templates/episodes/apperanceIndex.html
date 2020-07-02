@@ -4,7 +4,7 @@
         <h1>Apperance List: ({{apperance_list.count}})</h1>
         <ul>
         {% for app in apperance_list %}
-            <li><a href="{%url 'episodes:apperanceDetail' app.id%}">{{ app.character.first_name}} in EP {{ app.episode.title }}:</a></li>
+            <li><a href="{%url 'episodes:apperanceDetail' app.id%}">{{ app.character.full_name}} in EP {{ app.episode.title }}:</a></li>
         {% endfor %}
         </ul>
     {% else %}

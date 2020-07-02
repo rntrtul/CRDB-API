@@ -7,10 +7,13 @@
   </p>
   <p>
     Rolled By: 
-    <a href="{%url 'characters:detail' rolls.character_id%}">{{rolls.character.first_name}}</a>
+    <a href="{%url 'characters:detail' rolls.character_id%}">{{rolls.character.full_name}}</a>
   </p>
   <p>Type: {{rolls.roll_type}}</p>
   <p>Natural Value: {{ rolls.natural_value }}</p>
   <p>Total Value: {{ rolls.final_value }}</p>
   <p>Notes: {{ rolls.notes }}</p>
+  {%if rolls.damage%}
+    <p>Damage: {{rolls.damage}}</p>
+  {%endif%}
 {% endblock%}

@@ -15,20 +15,20 @@
         <abbr title= "{%format_duration episode.first_half_end episode.second_half_start%}" >{%format_time episode.break_length%}</abbr>
     </p>
 
-    {%if episode.apperances%}
+    {%if apperances%}
         <h3>Characters: </h3>
 
         <ul>
-        {%for app in episode.apperances.all%}
-            <li><a href="{%url 'characters:detail' app.character_id%}">{{app.character.first_name}}</a></li>
+        {%for app in apperances%}
+            <li><a href="{%url 'characters:detail' app.character_id%}">{{app.character.full_name}}</a></li>
         {%endfor%}
         </ul>
     {%endif%}
 
-    <h3>All Rolls  ({{ episode.rolls.count}}):</h3>
+    <h3>All Rolls  ({{rolls.count}}):</h3>
     
     <ul>
-    {% for roll in episode.rolls.all %}
+    {% for roll in rolls %}
         <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
     {% endfor %}
     </ul>

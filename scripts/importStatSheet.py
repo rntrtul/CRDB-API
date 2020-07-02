@@ -107,8 +107,8 @@ def getAbilName(field):
 
 
 C1SHEETS = "/home/lightbulb/CritRoleDB/zdata/sheets"
-StatSheet.objects.all().delete()
-LevelProg.objects.all().delete()
+#StatSheet.objects.all().delete()
+#LevelProg.objects.all().delete()
 for dirpath,dirnames,files in os.walk(C1SHEETS):
   files.sort()
   #files = files[101:]

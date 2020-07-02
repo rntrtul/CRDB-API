@@ -19,10 +19,17 @@ class DetailView(generic.DetailView):
   model = Episode
   template_name = 'episodes/detail.html'
 
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['apperances'] = context['object'].apperances.order_by('episode__num')
+    context['rolls'] = context['object'].rolls.order_by('time_stamp')
+    return context
+
 class ApperanceIndexView(generic.ListView):
   template_name = 'episodes/apperanceIndex.html'
   context_object_name = 'apperance_list'
   paginate_by = 100
+
   def get_queryset(self):
     return Apperance.objects.order_by('episode')
 

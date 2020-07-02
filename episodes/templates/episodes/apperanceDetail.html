@@ -2,6 +2,6 @@
 {% block content %} 
     <h1>Apperance: </h1>
     <p>Episode: <a href="{%url 'episodes:detail' apperance.episode_id%}">{{apperance.episode.title}}</a></p>
-    <p>Character: <a href="{%url 'characters:detail' apperance.character_id%}">{{apperance.character.first_name}}</a></p>
+    <p>Character: <a href="{%url 'characters:detail' apperance.character_id%}">{{apperance.character.full_name}}</a></p>
     <p>Type: {{apperance.apperance_type.name}}</p>
 {%endblock%}

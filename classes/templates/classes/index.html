@@ -4,7 +4,7 @@
         <h1>All Classes:</h1>
         <ul>
         {% for class in class_list %}
-            <li><a href="{%url 'classes:detail' class.id%}">{{ class.name}}</a> ({{class.characters.count}})</li>
+            <li><a href="{%url 'classes:detail' class.id%}">{{ class.name}}</a></li>
         {% endfor %}
         </ul>
     {% else %}

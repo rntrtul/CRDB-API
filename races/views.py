@@ -15,3 +15,8 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
   model = Race
   template_name = 'races/detail.html'
+  
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['char_list'] = context['object'].characters.order_by('full_name')
+    return context
