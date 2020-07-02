@@ -11,9 +11,10 @@ from .models import Rolls, RollType
 class IndexView(generic.ListView):
   template_name = 'rolls/index.html'
   context_object_name = 'rolls_list'
+  paginate_by = 100
 
   def get_queryset(self):
-    return Rolls.objects.order_by('time_stamp')[:100]#only get first 100 otherwise too many
+    return Rolls.objects.order_by('ep','time_stamp')#only get first 100 otherwise too many
 
 class DetailView(generic.DetailView):
   model = Rolls
@@ -30,3 +31,8 @@ class TypeListView(generic.ListView):
 class TypeDetailView(generic.DetailView):
   model = RollType
   template_name = 'rolls/typeDetail.html'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['roll_list'] = context['object'].rolls.order_by('ep__num', 'time_stamp')
+    return context

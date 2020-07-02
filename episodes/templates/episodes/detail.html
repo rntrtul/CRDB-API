@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{%load episodes_extra%}
 {% block content %} 
     <h1>Title: {{episode.title }}</h1>
     <h2>Number: {{episode.num}}</h2>
@@ -6,17 +7,28 @@
         <a href="{%url 'campaigns:detail' episode.campaign_id%}">{{episode.campaign.name}}</a>
     </p>
     <p>Description: {{episode.description}}</p>
-    <p>Length: {{episode.length_formatted}}</p>
-    <p>Game Time: {{episode.game_time_formatted}}</p>
-    <p>First Half time: {{episode.first_half_time_formatted}}</p>
-    <p>Second Half time: {{episode.second_half_time_formatted}}</p>
-    <p>First Half end: {{episode.first_half_end_formatted}}</p>
-    <p>Break Time: {{episode.break_time_formatted}}</p>
+    <p>Length: {%format_time episode.length%}</p>
+    <p>Gameplay Time: {%format_time episode.gameplay_length%}</p>
+    <p>First Half length: {%format_time episode.first_half_length%}</p>
+    <p>Second Half length: {%format_time episode.second_half_length%}</p>
+    <p>Break length:
+        <abbr title= "{%format_duration episode.first_half_end episode.second_half_start%}" >{%format_time episode.break_length%}</abbr>
+    </p>
 
-    <h3>All Rolls  ({{ episode.rolls.count}}):</h3>
+    {%if apperances%}
+        <h3>Characters: </h3>
+
+        <ul>
+        {%for app in apperances%}
+            <li><a href="{%url 'characters:detail' app.character_id%}">{{app.character.full_name}}</a></li>
+        {%endfor%}
+        </ul>
+    {%endif%}
+
+    <h3>All Rolls  ({{rolls.count}}):</h3>
     
     <ul>
-    {% for roll in episode.rolls.all %}
+    {% for roll in rolls %}
         <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
     {% endfor %}
     </ul>

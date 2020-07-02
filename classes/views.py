@@ -12,7 +12,14 @@ class IndexView(generic.ListView):
 
   def get_queryset(self):
     return Class.objects.order_by('name')
+    #filter(first_name__in=[item['first_name'] for item in distinct])
+
 
 class DetailView(generic.DetailView):
   model = Class
   template_name = 'classes/detail.html'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['char_list'] = context['object'].sheets.distinct('stat_sheet__character_id')
+    return context

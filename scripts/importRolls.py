@@ -8,8 +8,9 @@ import os
 DATADIR = "zdata/"
 C1DIR = "C1/"
 C1ROLLS = DATADIR + C1DIR + "C1 Character Rolls/"
-INVALID_VALS= ['Unknown', 'Unkown', 'N/A', 'NA' '--', '', '#REF!','unknown', 'unkown', 'Misfire', 'Success','Fail', 'Unnknown', 'unnknown', 'uknown', 'Uknown', 'Unkknown', 'unkknown']
-EPSDONE = 112
+INVALID_VALS= ['Unknown', 'Unkown', 'N/A', 'NA', '--', '', '#REF!','unknown', 'unkown', 'Misfire', 'Success','Fail', 'Unnknown', 'unnknown', 'uknown', 'Uknown', 'Unkknown', 'unkknown']
+EPSDONE = 0
+
 #Success for pepperbox c1e33
 #Rolls.objects.all().delete()
 for dirpath,dirnames,files in os.walk(C1ROLLS):
@@ -72,10 +73,12 @@ for dirpath,dirnames,files in os.walk(C1ROLLS):
         totalVal = int(row[5][1:]) - 1
       elif row[5] not in INVALID_VALS:
         natVal = int(row[5])
-
-      notes += row[9] # read all columns left as notes, will read non-roll kills from ep c1 e1-e40 (only like 2-3 per episode)
+      damage = ""
+      damage +=  row[7]
+      notes += row[9]
 
       roll, created = Rolls.objects.update_or_create(ep=ep, time_stamp=timeStamp,roll_type=type[0],final_value=totalVal,
-                                                    natural_value=natVal, notes=notes, character=character)
+                                                    natural_value=natVal, notes=notes, character=character,
+                                                    defaults={'damage':damage})
       if created == False:
         print("duplicate roll at time: " + str(timeStamp) + "in ep: " + row[0] + ", did not add to DB")

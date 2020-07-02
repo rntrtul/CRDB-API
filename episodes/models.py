@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from campaigns.models import Campaign
+from characters.models import Character, StatSheet
 import time
 
 # Create your models here.
@@ -16,29 +17,28 @@ class Episode(models.Model):
   second_half_start =  models.IntegerField(default=0,blank=True, null=True)
   second_half_end =  models.IntegerField(default=0,blank=True, null=True)
 
-  def break_time (self):
+  def break_length (self):
      return self.second_half_start - self.first_half_end
 
-  def first_half_time (self):
+  def first_half_length (self):
     return  self.first_half_end - self.first_half_start
   
-  def second_half_time (self):
+  def second_half_length (self):
     return  self.second_half_end - self.second_half_start
 
-  def game_time (self):
-    return self.first_half_time() + self.second_half_time()
+  def gameplay_length (self):
+    return self.first_half_length() + self.second_half_length()
 
-  def break_time_formatted (self):
-    return time.strftime("%-H:%M:%S", time.gmtime(self.break_time()))
+class ApperanceType(models.Model):
+  name = models.CharField(max_length=100)
 
-  def first_half_time_formatted (self):
-    return time.strftime("%-H:%M:%S", time.gmtime(self.first_half_time()))
-  
-  def second_half_time_formatted (self):
-    return time.strftime("%-H:%M:%S", time.gmtime(self.second_half_time()))
+class Apperance(models.Model):
+  episode = models.ForeignKey(Episode, related_name='apperances', on_delete=models.CASCADE)
+  character = models.ForeignKey(Character, related_name='apperances', on_delete=models.CASCADE)
+  apperance_type = models.ForeignKey(ApperanceType, related_name='apperances', on_delete=models.CASCADE)
+  #add player id when player model done
 
-  def game_time_formatted (self):
-    return time.strftime("%-H:%M:%S", time.gmtime(self.game_time()))
-  
-  def length_formatted(self):
-    return time.strftime("%-H:%M:%S", time.gmtime(self.length))
+class LevelProg(models.Model):
+  episode = models.ForeignKey(Episode, related_name='level_ups', on_delete=models.CASCADE)
+  sheet = models.ForeignKey(StatSheet, related_name='level_ups', on_delete=models.CASCADE)
+  level = models.IntegerField(default=0)

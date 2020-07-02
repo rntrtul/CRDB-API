@@ -7,15 +7,36 @@
   <li><a href="{%url 'rolls:typeIndex'%}">Roll Types</a></li>
   <li><a href="{%url 'episodes:index'%}">Episodes</a></li>
   <li><a href="{%url 'campaigns:index'%}">Campaigns</a></li>
+  <li><a href="{%url 'episodes:apperanceIndex'%}">Apperances</a></li>
   <li><a href="{%url 'characters:index'%}">Characters</a></li>
   <li><a href="{%url 'characters:typeIndex'%}">Characters Types</a></li>
   <li><a href="{%url 'races:index'%}">Races</a></li>
   <li><a href="{%url 'classes:index'%}">Classes</a></li>
+  <li><a href="{%url 'players:index'%}">Players</a></li>
 </ul>
 
 <div id="block">
   {% block content %}
   {% endblock %}
 </div>
+{% if page_obj%}
+  <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+{%endif%}
 
 <footer>Data from CritRole Stats</footer>

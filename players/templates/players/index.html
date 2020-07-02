@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %} 
+    {% if player_list %}
+        <h1>All Players:</h1>
+        <ul>
+        {% for player in player_list %}
+            <li><a href="{%url 'players:detail' player.id%}">{{player.full_name}}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sorry, no players are currently available.</p>
+    {% endif %}
+{%endblock%}
