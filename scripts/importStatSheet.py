@@ -1,4 +1,5 @@
-from characters.models import ClassTaken, Ability, AbilityScore, Skill, SkillList, Character, StatSheet,SavingThrow, Alignment, Language, Spell, LearnedLanguage, LearnedSpell
+from characters.models import ClassTaken, Ability, AbilityScore, Skill, SkillList, Character, StatSheet,SavingThrow, Alignment
+from spells.models import Spell, SpellCast, LearnedSpell
 from classes.models import Class
 from episodes.models import LevelProg, Episode
 import os
@@ -49,7 +50,7 @@ def initAlignment(alligns):
       print(align + " was created.")
 
 def initLanguages(langs):
-  from characters.models import Language
+  from languages.models import Language
   print("Creating Languages:")
   for lang in langs:
     l = Language.objects.get_or_create(name=lang)
@@ -123,7 +124,7 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
     ep_num = findLevelUpEp(name, lvl)
   
     sheet = StatSheet()
-    sheet.character = Character.objects.get(first_name=name)
+    sheet.character = Character.objects.get(name=name)
     sheet.save()
     print(file)
 
@@ -159,7 +160,7 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
       elif field == "PlayerName":
         print("add player values")
       elif field == "CharacterName":
-        sheet.character = Character.objects.get(first_name=name)
+        sheet.character = Character.objects.get(name=name)
       elif field == "Race":
         print("add racde values")
       elif field == "Alignment":
@@ -266,6 +267,6 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
     sheet.save()
     if ep_num !=0:
       ep = Episode.objects.get(num=ep_num)
-      lp = LevelProg.objects.get_or_create(sheet=sheet, episode = ep, level=int(lvl))
+      lp = LevelProg.objects.get_or_create(sheet=sheet, episode = ep, level=sheet.get_level())
       if lp[1]:
         print(name + " leveled to " + str(lvl) + " on episode " + str(ep_num))

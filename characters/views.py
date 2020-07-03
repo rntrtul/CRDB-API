@@ -52,5 +52,6 @@ class StatDetailView(generic.DetailView):
     context['skills'] = context['object'].skills.order_by('skill__name')
     context['spells'] = context['object'].learned_spells.all()
     context['level_up'] = context['object'].level_ups.all()
+    context['langs'] = context['object'].languages.all()
     return context
 

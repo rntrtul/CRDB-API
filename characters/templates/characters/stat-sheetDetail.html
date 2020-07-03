@@ -43,6 +43,10 @@
   <p>weapons: {{statsheet.weapons|linebreaks}}</p>
   <p>Proffciencies and Languages: {{statsheet.proficiencies}}</p>
   
+  <h3>Can Understand: </h3>
+  {%for lang in langs%}
+    <p>{{lang.language.name}}</p>
+  {%endfor%}
   <h3>Spell Casting:</h3>
 
   <p>Casting Class: {{statsheet.casting_class}}</p>
