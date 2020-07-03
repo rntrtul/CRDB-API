@@ -9,25 +9,39 @@ import os
 DATADIR = "zdata/"
 C1DIR = "C1/"
 C1ROLLS = DATADIR + C1DIR + "C1 Spells Cast/"
-EPSDONE = 0
+EPSDONE = 96
+C2SPELLS = "/home/lightbulb/CritRoleDB/zdata/C2/C2 Spells Cast/"
 
-for dirpath,dirnames,files in os.walk(C1ROLLS):
-  camp = Campaign.objects.get(num="1")
+for dirpath,dirnames,files in os.walk(C2SPELLS):
+  camp = Campaign.objects.get(num="2")
   files.sort()
-  filesLeft = files[EPSDONE:]  #speed up inserting rollss
+  filesLeft = files[EPSDONE:]  #speed up inserting rollss when restarting due to error
 
   for file_name in filesLeft:
     if not file_name.endswith("-SC.csv"):
       continue
     
-    spellReader = csv.reader(open(C1ROLLS +  file_name))
+    spellReader = csv.reader(open(C2SPELLS +  file_name))
     
     ep_num = int(file_name[4:7])
     ep = Episode.objects.get(num=ep_num, campaign=camp)
 
     next(spellReader)  
     for row in spellReader:
-      timestamp = row[0]
+      TIMEROW = 0
+      NAMEROW = 1
+      SPELLROW = 2
+      LVLROW = 3
+      CASTROW = 4
+      NOTEROW = 5
+      if camp.num == 2 and ep.num >=20 and ep.num <=51:
+        TIMEROW = 1
+        NAMEROW = 2
+        SPELLROW = 3
+        LVLROW = 4
+        CASTROW = 5
+        NOTEROW = 6
+      timestamp = row[TIMEROW]
       if timestamp.startswith('p'):
         part = timestamp[1]
         timestamp = timestamp[4:]
@@ -42,19 +56,23 @@ for dirpath,dirnames,files in os.walk(C1ROLLS):
             timestamp+= 7704 # 2:08:24 p1 length
       else:
         timestamp = int(float(timestamp))
-      char = Character.objects.get(name=row[1])
-      lvl  = row[3].strip()
+
+      if row[NAMEROW] == "Veth":
+        char = Character.objects.get(name="Nott")
+      else:
+        char = Character.objects.get(name=row[NAMEROW].strip())
+      lvl  = row[LVLROW].strip()
       if lvl == "Cantrip" or lvl == 'cantrip':
-        spell,created = Spell.objects.update_or_create(name=row[2], defaults={'cantrip': True})
+        spell,created = Spell.objects.update_or_create(name=row[SPELLROW], defaults={'cantrip': True})
       elif lvl == '-' or lvl == "Unknown":
         lvl = 0
       else:
         lvl = int(lvl)
-        spell,created = Spell.objects.update_or_create(name=row[2], defaults={'level': lvl})
+        spell,created = Spell.objects.update_or_create(name=row[SPELLROW], defaults={'level': lvl})
       if created:
         print(spell.name + " created")
 
-      cast_at = row[4].strip()
+      cast_at = row[CASTROW].strip()
       if cast_at == "Cantrip" or cast_at == 'cantrip' or cast_at == 'Cantrrip':
         cast_at=0
       elif cast_at == '-' or cast_at == "Unknown":
@@ -62,7 +80,7 @@ for dirpath,dirnames,files in os.walk(C1ROLLS):
       else:
         cast_at = int(cast_at)
       
-      note = row[5]
+      note = row[NOTEROW]
 
       spellcast, created = SpellCast.objects.update_or_create(spell=spell,episode=ep,character=char,cast_level=cast_at,notes=note)
       if created:
