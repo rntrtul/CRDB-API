@@ -53,5 +53,6 @@ class StatDetailView(generic.DetailView):
     context['spells'] = context['object'].learned_spells.all()
     context['level_up'] = context['object'].level_ups.all()
     context['langs'] = context['object'].languages.all()
+    context['weapons'] = context['object'].weapons_owned.all()
     return context
 

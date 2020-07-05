@@ -40,9 +40,12 @@
   <p>equipment: {{statsheet.equipment}}</p>
   <p>Features and Traits: {{statsheet.features_traits}}</p>
   <p>Attacks and Spell Casting: {{statsheet.attacks}}</p>
-  <p>weapons: {{statsheet.weapons|linebreaks}}</p>
   <p>Proffciencies and Languages: {{statsheet.proficiencies}}</p>
-  
+  <h3>Weapons: </h3>
+  {%for weapons in weapons%}
+    <p><a href = "{%url 'items:weaponDetail' weapons.weapon_id%}">{{weapons.weapon.name}}</a></p>
+  {%endfor%}
+
   <h3>Can Understand: </h3>
   {%for lang in langs%}
     <p>{{lang.language.name}}</p>

@@ -18,7 +18,7 @@ class WeaponDamage(models.Model):
   die_num  = models.IntegerField()
   modifier = models.IntegerField()
   damage_type =  models.ForeignKey(DamageType, related_name="weapons", on_delete=models.CASCADE, blank=True, null=True)
-  weapon =  models.ForeignKey(Weapon, related_name="damage_die", on_delete=models.CASCADE)
+  weapon =  models.ForeignKey(Weapon, related_name="damages", on_delete=models.CASCADE)
   die =  models.ForeignKey(Die, on_delete=models.CASCADE, blank=True, null=True)
 
 class WeaponeOwned(models.Model):

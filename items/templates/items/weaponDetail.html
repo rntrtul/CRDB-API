@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>{{weapon.name }}</h1>
+  <p>Attack Bonus: {{weapon.attack_bonus}}</p>
+  {%for damage in damages%}
+    <p>Damage Die: {{damage.die_num}}d{{damage.die.sides}} + {{damage.modifier}} ({{damage.damage_type.name}})</p>
+  {%endfor%}
+  {%for owner in owners%}
+    <p>Owner: {{owner.sheet.character.name}}</p>
+  {%endfor%}
+{% endblock%}
