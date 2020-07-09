@@ -23,13 +23,25 @@
             <li><a href="{%url 'characters:detail' app.character_id%}">{{app.character.full_name}}</a></li>
         {%endfor%}
         </ul>
+		{%endif%}
+		
+    {%if level_progs%}
+        <h3>Level Progressions: </h3>
+        <ul>
+        {%for lp in level_progs%}
+					<li>{{lp.sheet.character.full_name}} leveled up to level {{lp.level}}</li>
+        {%endfor%}
+        </ul>
+        
     {%endif%}
-
     <h3>All Rolls  ({{rolls.count}}):</h3>
     
-    <ul>
+    <ol>
     {% for roll in rolls %}
-        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
+        <li>
+            <a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a>
+            by: {{roll.character.name}} type: {{roll.roll_type.name}} final: {{roll.final_value}}
+        </li>
     {% endfor %}
-    </ul>
+    </ol>
 {%endblock%}

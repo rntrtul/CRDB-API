@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
 
-from .models import Episode, Apperance
+from .models import Episode, Apperance, LevelProg
 from rolls.models import Rolls
 # Create your views here.
 class IndexView(generic.ListView):
@@ -23,6 +23,7 @@ class DetailView(generic.DetailView):
     context = super().get_context_data(**kwargs)
     context['apperances'] = context['object'].apperances.order_by('episode__num')
     context['rolls'] = context['object'].rolls.order_by('time_stamp')
+    context['level_progs'] = context['object'].level_ups.order_by('sheet__character__full_name')
     return context
 
 class ApperanceIndexView(generic.ListView):

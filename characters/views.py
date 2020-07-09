@@ -51,5 +51,8 @@ class StatDetailView(generic.DetailView):
     context['saving_throws'] = reversed(context['object'].saving_throws.all())
     context['skills'] = context['object'].skills.order_by('skill__name')
     context['spells'] = context['object'].learned_spells.all()
+    context['level_up'] = context['object'].level_ups.all()
+    context['langs'] = context['object'].languages.all()
+    context['weapons'] = context['object'].weapons_owned.all()
     return context
 

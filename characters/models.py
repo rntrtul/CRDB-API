@@ -9,13 +9,15 @@ class CharacterType(models.Model):
   name = models.CharField(max_length=50)
 
 class Character(models.Model):
-  #Combine first_name + last_name + middle name into field name, add nicknames table
   full_name = models.TextField(blank=True)
   name = models.TextField(blank=True) #generaly use first name or nickName like Percy.
   #background = models.TextField() OR models.ForeignKey(Background)
   race = models.ForeignKey(Race, related_name='characters', on_delete=models.CASCADE)
-  player = models.ForeignKey(Player, related_name='characters', on_delete=models.CASCADE)
+  player = models.ForeignKey(Player, related_name='characters', on_delete=models.CASCADE, blank= True, null = True)
   char_type = models.ForeignKey(CharacterType, related_name='characters', on_delete=models.CASCADE)
+
+  def curr_sheet(self):
+    return self.stat_sheets.order_by('-max_health')[0]
 
 class OtherNames(models.Model):
   #maybe add field to say if its a title or just a nickname
@@ -28,17 +30,9 @@ class Ability(models.Model):
 class Alignment(models.Model):
   name = models.TextField()
 
-class Language(models.Model):
-  #maybe add what script language is written in (serpate model)
-  name = models.CharField(max_length=100)
-
 class Skill(models.Model):
   name = models.CharField(max_length=25)
   ability = models.ForeignKey(Ability, related_name='skills', on_delete=models.CASCADE)
-
-class Spell(models.Model):
-  #Split into own app eventually. App will have spell cast logic and some info on spells
-  name = models.TextField()
 
 class StatSheet(models.Model):
   #add field for what episode they levelled up on default = 0, use level prog sheet
@@ -46,6 +40,7 @@ class StatSheet(models.Model):
   character = models.ForeignKey(Character,related_name='stat_sheets', on_delete=models.CASCADE)
   alignment = models.ForeignKey(Alignment,related_name='stat_sheets', on_delete=models.CASCADE, null=True)
   max_health = models.IntegerField(default=0)
+  level = models.IntegerField(default=0)
   armour_class = models.IntegerField(default=0)
   speed = models.IntegerField(default=30)
   initiative_bonus = models.IntegerField(default=0)
@@ -99,14 +94,6 @@ class SavingThrow(models.Model):
   ability = models.ForeignKey(Ability, related_name='saves', on_delete=models.CASCADE)
   modifier = models.IntegerField(default=0)
   proficient = models.BooleanField(default=False)
-
-class LearnedLanguage (models.Model):
-  language = models.ForeignKey(Language, related_name='known_by', on_delete=models.CASCADE)
-  sheet = models.ForeignKey(StatSheet, related_name='languages', on_delete=models.CASCADE)
-
-class LearnedSpell(models.Model):
-  spell = models.ForeignKey(Spell, related_name='known_by', on_delete=models.CASCADE)
-  sheet = models.ForeignKey(StatSheet, related_name='learned_spells', on_delete=models.CASCADE)
 
 class ClassTaken(models.Model):
   #need to change so its foreign_id to a stat sheet and character points to sheet

@@ -24,3 +24,6 @@ class Rolls(models.Model):
 
   def time_formated (self):
     return time.strftime("%-H:%M:%S", time.gmtime(self.time_stamp))
+
+class Die(models.Model):
+  sides = models.IntegerField()

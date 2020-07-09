@@ -5,7 +5,7 @@
     <h2>Episode List:</h2>
     <ul>
     {% for ep in ep_list %}
-        <li>EP {{ ep.num }}:<a href="{%url 'episodes:detail' ep.id%}">{{ ep.title}}</a></li>
+        <li>EP {{ ep.num }}:<a href="{%url 'episodes:detail' ep.id%}">{{ ep.title}}</a>({{ep.rolls.count}})</li>
     {% endfor %}
     </ul>
 {%endblock%}

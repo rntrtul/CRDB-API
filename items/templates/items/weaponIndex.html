@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>All Weapons: </h1>
+
+  {%for weapon in weapon_list%}
+    <li><a href="{%url 'items:weaponDetail' weapon.id%}">{{weapon.name}}</a> ({{weapon.uses.all|length}})</li>
+  {%endfor%}
+{% endblock%}

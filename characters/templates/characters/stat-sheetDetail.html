@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% block content %} 
   <h1>{{statsheet.character.first_name}}</h1>
-  <h3>Level: {{statsheet.get_level}}</h3>
+  <h3>Level: {{statsheet.level}}</h3>
   <p>Class: 
     {% for class in statsheet.classes.all %}
-    {{class.class_id.name}},  {{class.level}}/
+      {{class.class_id.name}},  {{class.level}}/
     {%endfor%}
   </p>
+  <p>Leveled up epsiode: {%for lp in level_up%} <a href="{%url 'episodes:detail' lp.episode_id%}">{{lp.episode.title}} </a> ({{lp.episode.num}}){%endfor%}</p>
   <h3>Ability Scores:</h3>
   {% for abil in ability_scores%}
     <p><b>{{abil.ability.name}}:</b> {{abil.score}} ({{abil.get_modifier}})</p>
@@ -39,9 +40,16 @@
   <p>equipment: {{statsheet.equipment}}</p>
   <p>Features and Traits: {{statsheet.features_traits}}</p>
   <p>Attacks and Spell Casting: {{statsheet.attacks}}</p>
-  <p>weapons: {{statsheet.weapons|linebreaks}}</p>
   <p>Proffciencies and Languages: {{statsheet.proficiencies}}</p>
-  
+  <h3>Weapons: </h3>
+  {%for weapons in weapons%}
+    <p><a href = "{%url 'items:weaponDetail' weapons.weapon_id%}">{{weapons.weapon.name}}</a></p>
+  {%endfor%}
+
+  <h3>Can Understand: </h3>
+  {%for lang in langs%}
+    <p>{{lang.language.name}}</p>
+  {%endfor%}
   <h3>Spell Casting:</h3>
 
   <p>Casting Class: {{statsheet.casting_class}}</p>

@@ -2,7 +2,9 @@
 {% block content %} 
   <h1>{{rolltype.name}}</h1>
 
-  <h3>Total rolls ({{roll_list|length}}):</h3>
+  <h2>Total rolls ({{roll_list|length}}):</h2>
+  <h3>Campaing 1: {{c1_count}}</h3>
+  <h3>Campaing 2: {{c2_count}}</h3>
   <ul>
     {% for roll in roll_list %}
         <li>{{roll.character.full_name}}:<a href="{%url 'rolls:detail' roll.id%}">{{roll.time_formated}}</a></li>

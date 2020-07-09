@@ -31,6 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'languages.apps.LanguagesConfig',
+    'spells.apps.SpellsConfig',
+    'items.apps.ItemsConfig',
     'players.apps.PlayersConfig',
     'campaigns.apps.CampaignsConfig',
     'classes.apps.ClassesConfig',
