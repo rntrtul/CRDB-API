@@ -10,7 +10,7 @@
   <h3>Stat Sheets: </h3>
   <ul>
   {%for sheet in statsheets%}
-    <li><a href="{%url 'characters:statDetail' sheet.id%}"> level: {{sheet.get_level}}</a></li>
+    <li><a href="{%url 'characters:statDetail' sheet.id%}"> level: {{sheet.level}}</a></li>
   {%endfor%}
   </ul>
   

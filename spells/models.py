@@ -9,6 +9,7 @@ class Spell(models.Model):
   cantrip = models.BooleanField(default=False, blank=True)
 
 class SpellCast(models.Model):
+  timestamp = models.IntegerField(default = 0)
   episode = models.ForeignKey(Episode, related_name='casts', on_delete=models.CASCADE)
   spell = models.ForeignKey(Spell, related_name='casts', on_delete=models.CASCADE)
   character = models.ForeignKey(Character, related_name='casts', on_delete=models.CASCADE)

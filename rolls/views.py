@@ -34,5 +34,7 @@ class TypeDetailView(generic.DetailView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    context['roll_list'] = context['object'].rolls.order_by('ep__num', 'time_stamp')
+    context['roll_list'] = context['object'].rolls.order_by('ep__num', 'time_stamp')[:100]
+    context['c1_count'] = context['object'].rolls.filter(ep__campaign_id=5).count()
+    context['c2_count'] = context['object'].rolls.filter(ep__campaign_id=6).count()
     return context

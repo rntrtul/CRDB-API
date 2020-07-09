@@ -8,8 +8,8 @@ import os
 
 DATADIR = "zdata/"
 C1DIR = "C1/"
-C1ROLLS = DATADIR + C1DIR + "C1 Spells Cast/"
-EPSDONE = 96
+C1SPELLS = DATADIR + C1DIR + "C1 Spells Cast/"
+EPSDONE = 0
 C2SPELLS = "/home/lightbulb/CritRoleDB/zdata/C2/C2 Spells Cast/"
 
 for dirpath,dirnames,files in os.walk(C2SPELLS):
@@ -24,6 +24,7 @@ for dirpath,dirnames,files in os.walk(C2SPELLS):
     spellReader = csv.reader(open(C2SPELLS +  file_name))
     
     ep_num = int(file_name[4:7])
+    #print(ep_num)
     ep = Episode.objects.get(num=ep_num, campaign=camp)
 
     next(spellReader)  
@@ -66,6 +67,7 @@ for dirpath,dirnames,files in os.walk(C2SPELLS):
         spell,created = Spell.objects.update_or_create(name=row[SPELLROW], defaults={'cantrip': True})
       elif lvl == '-' or lvl == "Unknown":
         lvl = 0
+        spell,created = Spell.objects.update_or_create(name=row[SPELLROW], defaults={'level': 0})
       else:
         lvl = int(lvl)
         spell,created = Spell.objects.update_or_create(name=row[SPELLROW], defaults={'level': lvl})
@@ -81,7 +83,8 @@ for dirpath,dirnames,files in os.walk(C2SPELLS):
         cast_at = int(cast_at)
       
       note = row[NOTEROW]
-
-      spellcast, created = SpellCast.objects.update_or_create(spell=spell,episode=ep,character=char,cast_level=cast_at,notes=note)
+      #add timestamp to spellcast objecct, reset character ids and stuff per loop
+      spellcast, created = SpellCast.objects.update_or_create(spell=spell,episode=ep,character=char,cast_level=cast_at,notes=note,
+                                                              defaults = {'timestamp': timestamp})
       if created:
         print(str(ep.num) + " @ " + str(timestamp) + " " + char.name + " casted: " + spell.name + " :" + note)

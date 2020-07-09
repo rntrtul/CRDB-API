@@ -40,6 +40,7 @@ class StatSheet(models.Model):
   character = models.ForeignKey(Character,related_name='stat_sheets', on_delete=models.CASCADE)
   alignment = models.ForeignKey(Alignment,related_name='stat_sheets', on_delete=models.CASCADE, null=True)
   max_health = models.IntegerField(default=0)
+  level = models.IntegerField(default=0)
   armour_class = models.IntegerField(default=0)
   speed = models.IntegerField(default=30)
   initiative_bonus = models.IntegerField(default=0)

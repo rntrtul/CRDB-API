@@ -38,7 +38,10 @@
     
     <ol>
     {% for roll in rolls %}
-        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
+        <li>
+            <a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a>
+            by: {{roll.character.name}} type: {{roll.roll_type.name}} final: {{roll.final_value}}
+        </li>
     {% endfor %}
     </ol>
 {%endblock%}

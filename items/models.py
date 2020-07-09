@@ -1,7 +1,7 @@
 from django.db import models
 from characters.models import Character, StatSheet
 from episodes.models import Episode
-from rolls.models import Die
+from rolls.models import Die, Rolls
 # Create your models here.
 class Potion(models.Model):
   name = models.TextField()
@@ -32,3 +32,8 @@ class PotionUsage(models.Model):
   potion = models.ForeignKey(Potion, related_name='uses', on_delete=models.CASCADE)
   timestamp = models.IntegerField(default=0)
   notes = models.TextField(blank=True)
+
+class WeaponUsage(models.Model):
+  roll = models.ForeignKey(Rolls, on_delete = models.CASCADE)
+  weapon = models.ForeignKey(Weapon, related_name='uses', on_delete=models.CASCADE)
+  #eventually add damage foreign key here
