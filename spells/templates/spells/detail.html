@@ -7,6 +7,6 @@
 
   <h3>Castings:</h3>
   {%for cast in cast_list%}
-    <li><a href="{%url 'spells:castDetail' cast.id%}">{{cast.character.name}}</a></li>
+    <li>Ep {{cast.episode.num}}  {{cast.episode.title}} <a href="{%url 'spells:castDetail' cast.id%}"> {{cast.character.name}}</a></li>
   {%endfor%}
 {% endblock%}

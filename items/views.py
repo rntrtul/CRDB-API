@@ -40,4 +40,5 @@ class WeaponDetailView(generic.DetailView):
     context = super().get_context_data(**kwargs)
     context['damages'] = context['object'].damages.all()
     context['owners'] = context['object'].owners.distinct('sheet__character__name')
+    context['uses'] = context['object'].uses.all()
     return context

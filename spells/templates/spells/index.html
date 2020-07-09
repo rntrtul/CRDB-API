@@ -3,6 +3,6 @@
   <h1>All Spells: </h1>
 
   {%for spell in spell_list%}
-    <li><a href="{%url 'spells:detail' spell.id%}">{{spell.name}}</a></li>
+    <li><a href="{%url 'spells:detail' spell.id%}">{{spell.name}}</a>  lvl: {{spell.level}}</li>
   {%endfor%}
 {% endblock%}
