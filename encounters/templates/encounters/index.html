@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %} 
+    {% if encounters_list %}
+        <h1>All Combat Encounters ({{encounters_list|length}}):</h1>
+        <ul>
+        {% for encounter in encounters_list %}
+            <li><a href="{%url 'encounters:detail' encounter.id%}">{{encounter.name}}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No encounters are available.</p>
+    {% endif %}
+{% endblock %}
