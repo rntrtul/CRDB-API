@@ -10,11 +10,11 @@ C1DIR = "C1/"
 C1ROLLS = DATADIR + C1DIR + "C1 Character Rolls/"
 C2ROLLS = "/home/lightbulb/CritRoleDB/zdata/C2/C2 Character Rolls/"
 INVALID_VALS= ['Unknown', 'Unkown', 'N/A', 'NA', '--', '', '#REF!','unknown', 'unkown', 'Misfire', 'Success','Fail', 'Unnknown', 'unnknown', 'uknown', 'Uknown', 'Unkknown', 'unkknown']
-EPSDONE = 95
+EPSDONE = 0
 
 #Success for pepperbox c1e33
 #Rolls.objects.all().delete()
-for dirpath,dirnames,files in os.walk(C2ROLLS):
+for dirpath,dirnames,files in os.walk(C1ROLLS):
   
   files.sort()
   filesLeft = files[EPSDONE:]  #speed up inserting rollss
@@ -23,7 +23,7 @@ for dirpath,dirnames,files in os.walk(C2ROLLS):
     if not file_name.endswith("-CR.csv"):
       continue
     
-    rollReader = csv.reader(open(C2ROLLS +  file_name))
+    rollReader = csv.reader(open(C1ROLLS +  file_name))
 
     next(rollReader)  
     camp = Campaign.objects.get(num=int(file_name[1]))
@@ -36,7 +36,11 @@ for dirpath,dirnames,files in os.walk(C2ROLLS):
       DAMAGEROW = 7
       NOTEROW = 9
       notes = ''
-      ep_num = row[0][3:]
+      if camp.num == 1 :
+        ep_num = row[0]
+      else:
+        ep_num = row[0][3:]
+
       #print(ep_num)
       if row[0].endswith('p1') or row[0].endswith('p2'):
         ep = Episode.objects.get(num=int(row[0][:-3]),campaign=camp)
@@ -44,7 +48,7 @@ for dirpath,dirnames,files in os.walk(C2ROLLS):
       else:
         ep = Episode.objects.get(num=int(ep_num),campaign=camp)
       
-      if ep.num >=20 and ep.num <=51:
+      if camp.num == 2 and ep.num >=20 and ep.num <=51:
         TIMEROW = 2
         NAMEROW = 3
         TYPEROW = 4
