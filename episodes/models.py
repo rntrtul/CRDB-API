@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from campaigns.models import Campaign
 from characters.models import Character, StatSheet
+from players.models import Player
 import time
 
 # Create your models here.
@@ -34,11 +35,22 @@ class ApperanceType(models.Model):
 
 class Apperance(models.Model):
   episode = models.ForeignKey(Episode, related_name='apperances', on_delete=models.CASCADE)
-  character = models.ForeignKey(Character, related_name='apperances', on_delete=models.CASCADE)
   apperance_type = models.ForeignKey(ApperanceType, related_name='apperances', on_delete=models.CASCADE)
-  #add player id when player model done
+  character = models.ForeignKey(Character, related_name='apperances', on_delete=models.CASCADE)
 
 class LevelProg(models.Model):
   episode = models.ForeignKey(Episode, related_name='level_ups', on_delete=models.CASCADE)
   sheet = models.ForeignKey(StatSheet, related_name='level_ups', on_delete=models.CASCADE)
   level = models.IntegerField(default=0)
+
+class AttendanceType(models.Model):
+  name = models.TextField()
+
+class Attendance(models.Model):
+  episode= models.ForeignKey(Episode, related_name='attendance', on_delete=models.CASCADE)
+  player = models.ForeignKey(Player, related_name='attendance', on_delete=models.CASCADE)
+  attendance_type = models.ForeignKey(AttendanceType, related_name='attendances', on_delete=models.CASCADE)
+
+class Live(models.Model):
+  episode= models.ForeignKey(Episode, related_name='live_episodes', on_delete=models.CASCADE)
+  venue = models.TextField()

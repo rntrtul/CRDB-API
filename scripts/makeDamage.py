@@ -7,6 +7,7 @@ from races.models import Race
 import csv
 import re
 import os
+from collections import deque
 
 def getChars(reader):
   import csv
@@ -32,7 +33,9 @@ def getChars(reader):
   
   return char_list
 
-
+#some duplicates in this list due to misspellings
+#put nott/veth and veth into nott
+# Vax and keyleth
 def makeNPC(list):
   from characters.models import Character, CharacterType
   from races.models import Race
@@ -55,7 +58,7 @@ def makeNPC(list):
 
 C1DD = "/home/lightbulb/CritRoleDB/zdata/C1/C1 Damage Dealt/"
 C2DD = "/home/lightbulb/CritRoleDB/zdata/C2/C2 Damage Dealt/"
-EPSDONE = 0
+EPSDONE = 100
 
 currDD =  C1DD
 currCamp = 1
@@ -71,6 +74,7 @@ encounter_matches = 0;
 multi_match = 0
 count = 0
 damage_to = []
+que_lengths = 0
 
 for dirpath,dirnames,files in os.walk(currDD):
   files.sort()
@@ -92,46 +96,40 @@ for dirpath,dirnames,files in os.walk(currDD):
     next(damageReader)
 
     char_rolls = {}
-    ep_damage = damageRolls.filter(ep=ep)
+    ep_damage = damageRolls.filter(ep=ep).order_by('time_stamp')
 
+    damage_que = deque()
+
+    for roll in ep_damage:
+      dealt_to = personMatch.findall(roll.damage)
+      for person in dealt_to:
+        clean = person[3:].strip().lower().capitalize()
+        #ch = Character.objects.get(name=clean)
+        damage_que.append((roll.final_value, clean,roll))
+    
+    que_lengths += len(damage_que)
 
     for char in char_list.items():
       char_rolls[char[0]] = ep_damage.filter(character=char[1]).order_by('time_stamp')
-   
-    # Do simple matching and see if char has damage roll (won't be good for 2 diff rolls with same value, probably map to first of 2)
 
+    
+    # Do simple matching and see if char has damage roll (won't be good for 2 diff rolls with same value, probably map to first of 2)
+    sheet_count = 0
     for row in damageReader:
       for col_num, damage in enumerate(row):
         if col_num not in char_rolls or damage == "":
           continue
 
-        count+=1
-        roll_matches = char_rolls[col_num].filter(final_value = int(damage)).all()
-        length = len(roll_matches)
+        sheet_count+=1
+        
 
-        if length == 1:
-          matches+=1
-          to = personMatch.findall(roll_matches[0].damage.strip())
-          
-          for person in to:
-            clean = person[3:].strip().lower().capitalize()
-            if clean not in damage_to:
-              damage_to.append(clean)
-
-          for en in encounters:
-            if en.isIn(roll_matches[0].time_stamp):
-              encounter_matches +=1
-              break
-
-        elif length > 1:
-          multi_match +=1
+    count += sheet_count
+    print(ep.title, " sheet conut: ", str(sheet_count), " que len: ", str(len(damage_que)))
 
 
 total_length = len(damageRolls)
 
-#some duplicates in this list due to misspellings
-#put nott/veth and veth into nott
-# Vax and keyleth
+
 
 non_PC = 0
 
@@ -143,6 +141,7 @@ print("Multi-Matches: ", str(multi_match))
 print("Numbers in sheet: ", count)
 print("Characters dealt to: ", str(len(damage_to)))
 print("Non-PC characters: ", str(non_PC))
+print("Qeued total: ", str(que_lengths))
 
 
     
