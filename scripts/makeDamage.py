@@ -142,6 +142,6 @@ print("Numbers in sheet: ", count)
 print("Characters dealt to: ", str(len(damage_to)))
 print("Non-PC characters: ", str(non_PC))
 print("Qeued total: ", str(que_lengths))
-
+"(to [a-zA-Z ']*)|x \d+ [a-zA-Z ']*"
 
     

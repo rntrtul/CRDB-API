@@ -27,3 +27,12 @@ class Rolls(models.Model):
 
 class Die(models.Model):
   sides = models.IntegerField()
+
+class AdvantageType (models.Model):
+  name = models.TextField()
+
+class Advantage(models.Model):
+  type = models.ForeignKey(AdvantageType, related_name='rolls', on_delete=models.CASCADE)
+  used = models.ForeignKey(Rolls, related_name='advantages_used', on_delete = models.CASCADE, blank=True, null= True)
+  disregarded = models.ForeignKey(Rolls, related_name='advantages_disregarded', on_delete = models.CASCADE, blank=True, null= True)
+  #null since some are just single advantage rolls
