@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %} 
   <h1>{{weapon.name }}</h1>
+  <h2>Total Damage Output: {{total_dealt}} points</h2>
   <p>Attack Bonus: {{weapon.attack_bonus}}</p>
   {%for damage in damages%}
     <p>Damage Die: {{damage.die_num}}d{{damage.die.sides}} + {{damage.modifier}} ({{damage.damage_type.name}})</p>

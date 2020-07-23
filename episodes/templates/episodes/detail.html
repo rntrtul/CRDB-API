@@ -36,12 +36,28 @@
     {%endif%}
     <h3>All Rolls  ({{rolls.count}}):</h3>
     
-    <ol>
+    <table>
+        <tr>
+            <th>Time Stamp</th>
+            <th>Character</th>
+            <th>Roll Type</th>
+            <th>Final Value</th>
+            <th>Natural Value</th>
+            <th>Notes</th>
+            <th>Damage</th>
+            <th>Kills</th>
+        </tr>
     {% for roll in rolls %}
-        <li>
-            <a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a>
-            by: {{roll.character.name}} type: {{roll.roll_type.name}} final: {{roll.final_value}}
-        </li>
+        <tr>
+            <td><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></td>
+            <td>{{roll.character.name}}</td>
+            <td>{{roll.roll_type.name}}</td>
+            <td>{{roll.final_value}}</td>
+            <td>{{roll.natural_value}}</td>
+            <td>{{roll.notes}}</td>
+            <td>{{roll.damage}}</td>
+            <td>{{roll.kill_count}}</td>
+        </tr>
     {% endfor %}
-    </ol>
+    </table>
 {%endblock%}

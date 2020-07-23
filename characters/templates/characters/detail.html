@@ -6,6 +6,7 @@
     Race: <a href="{%url 'races:detail' character.race_id%}">{{character.race.name}}</a>
   </p>
   <p>Character Type: <a href="{%url 'characters:typeDetail' character.char_type_id%}">{{character.char_type.name}}</a></p>
+  <h3>Damage Dealt: {{damage_dealt}} Avg{{avg_damage_dealt}}</h3>
 
   <h3>Stat Sheets: </h3>
   <ul>

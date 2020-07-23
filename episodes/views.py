@@ -21,7 +21,7 @@ class DetailView(generic.DetailView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    context['apperances'] = context['object'].apperances.order_by('episode__num')
+    context['apperances'] = context['object'].apperances.order_by('character__name')
     context['rolls'] = context['object'].rolls.order_by('time_stamp')
     context['level_progs'] = context['object'].level_ups.order_by('sheet__character__full_name')
     return context
