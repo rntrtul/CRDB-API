@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {%load episodes_extra%}
 {% block content %} 
+    <title>{{episode.title}}</title>
     <h1>Title: {{episode.title }}</h1>
     <h2>Number: {{episode.num}}</h2>
     <p>Campaign: {{episode.campaign.num}}/
@@ -29,10 +30,19 @@
         <h3>Level Progressions: </h3>
         <ul>
         {%for lp in level_progs%}
-					<li>{{lp.sheet.character.full_name}} leveled up to level {{lp.level}}</li>
+            <li>{{lp.sheet.character.full_name}} leveled up to level {{lp.level}}</li>
         {%endfor%}
         </ul>
         
+    {%endif%}
+
+    {%if encounters%}
+        <h3>Combat Encounters: </h3>
+        <ul>
+        {%for en in encounters%}
+            <li>'{{en.name}}' start: {%format_time en.start%} end: {%format_time en.end%} rounds: {{en.rounds}}</li>
+        {%endfor%}
+        </ul>
     {%endif%}
     <h3>All Rolls  ({{rolls.count}}):</h3>
     
@@ -48,12 +58,14 @@
             <th>Kills</th>
         </tr>
     {% for roll in rolls %}
-        <tr>
-            <td><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></td>
-            <td>{{roll.character.name}}</td>
-            <td>{{roll.roll_type.name}}</td>
-            <td>{{roll.final_value}}</td>
-            <td>{{roll.natural_value}}</td>
+        <tr>    
+            {%with time=roll.time_stamp|stringformat:"i"%}
+            <td><a href ={{yt_link|add:time}} >{%format_time roll.time_stamp%}</a></td>
+            {%endwith%}
+            <td><a href = "{%url 'characters:detail' roll.character_id%}">{{roll.character.name}}</a></td>
+            <td><a href = "{%url 'rolls:typeDetail' roll.roll_type_id%}">{{roll.roll_type.name}}</a></td>
+            <td>{{roll.final_value|default_if_none:"&nbsp;"}}</td>
+            <td>{{roll.natural_value|default_if_none:"&nbsp;"}}</td>
             <td>{{roll.notes}}</td>
             <td>{{roll.damage}}</td>
             <td>{{roll.kill_count}}</td>

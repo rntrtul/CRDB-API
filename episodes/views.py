@@ -24,6 +24,8 @@ class DetailView(generic.DetailView):
     context['apperances'] = context['object'].apperances.order_by('character__name')
     context['rolls'] = context['object'].rolls.order_by('time_stamp')
     context['level_progs'] = context['object'].level_ups.order_by('sheet__character__full_name')
+    context['encounters'] = context['object'].combat_encounters.order_by('start')
+    context['yt_link'] = "https://youtu.be/" +  context['object'].vod_links.all()[0].link_key + "?t="
     return context
 
 class ApperanceIndexView(generic.ListView):

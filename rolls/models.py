@@ -27,7 +27,7 @@ class Rolls(models.Model):
   kill_count = models.IntegerField(default = 0) #might be a temp column until, all kills in kills table
 
   def time_formated (self):
-    return time.strftime("%-H:%M:%S", time.gmtime(self.time_stamp))
+    return time.strftime("%-H:%M:%S", time.gmtime(self.time_stamp))  
 
 class AdvantageType (models.Model):
   name = models.TextField()

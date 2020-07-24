@@ -54,3 +54,11 @@ class Attendance(models.Model):
 class Live(models.Model):
   episode= models.ForeignKey(Episode, related_name='live_episodes', on_delete=models.CASCADE)
   venue = models.TextField()
+
+class VodType(models.Model):
+  name = models.CharField(max_length=50)
+
+class VodLinks(models.Model):
+   episode = models.ForeignKey(Episode, related_name='vod_links', on_delete=models.CASCADE) 
+   vod_type = models.ForeignKey(VodType, related_name='links', on_delete=models.CASCADE)
+   link_key = models.TextField()
