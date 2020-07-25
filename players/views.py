@@ -18,5 +18,7 @@ class DetailView(generic.DetailView):
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     context['char_list'] = context['object'].characters.order_by('full_name')
+    context['attendance_list'] = context['object'].attendance.order_by('episode__campaign', 'episode__num')
+    context['attendance_count'] = context['attendance_list'].count()
     return context
   

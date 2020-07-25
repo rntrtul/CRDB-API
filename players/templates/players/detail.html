@@ -8,4 +8,11 @@
     <li><a href="{%url 'characters:detail' char.id%}">{{char.full_name}}</a></li>
   {%endfor%}
   </ul>
+
+  <h3>Appears In ({{attendance_count}}):</h3>
+  <ul>
+  {%for atten in attendance_list%}
+    <li>(C{{atten.episode.campaign.num}}E{{atten.episode.num}}) <a href="{%url 'episodes:detail' atten.episode_id}">{{atten.episode.title}}</a></li>
+  {%endfor%}
+  </ul>
 {%endblock%}

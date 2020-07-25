@@ -14,7 +14,11 @@ EPSDONE = 0
 
 #Success for pepperbox c1e33
 #Rolls.objects.all().delete()
-for dirpath,dirnames,files in os.walk(C1ROLLS):
+
+curr = C1ROLLS
+ukTotal = 0
+ukNat = 0
+for dirpath,dirnames,files in os.walk(curr):
   
   files.sort()
   filesLeft = files[EPSDONE:]  #speed up inserting rollss
@@ -23,8 +27,8 @@ for dirpath,dirnames,files in os.walk(C1ROLLS):
     if not file_name.endswith("-CR.csv"):
       continue
     
-    rollReader = csv.reader(open(C1ROLLS +  file_name))
-
+    rollReader = csv.reader(open(curr +  file_name))
+    print(file_name)
     next(rollReader)  
     camp = Campaign.objects.get(num=int(file_name[1]))
     for row in rollReader:
@@ -34,6 +38,7 @@ for dirpath,dirnames,files in os.walk(C1ROLLS):
       TOTALROW = 4
       NATROW = 5
       DAMAGEROW = 7
+      KILLROW = 8
       NOTEROW = 9
       notes = ''
       if camp.num == 1 :
@@ -55,6 +60,7 @@ for dirpath,dirnames,files in os.walk(C1ROLLS):
         TOTALROW = 5
         NATROW = 6
         DAMAGEROW = 8
+        KILLROW = 9
         NOTEROW = 10
 
       timeStamp = int(float(row[TIMEROW]))
@@ -66,10 +72,10 @@ for dirpath,dirnames,files in os.walk(C1ROLLS):
       if adjustedname == "Veth":
         adjustedname = "Nott"
       character = Character.objects.get(name=adjustedname)
-      type = RollType.objects.get_or_create(name=row[TYPEROW])
+      #type = RollType.objects.get(name=row[TYPEROW])
 
       totalVal = 0 #change it so that if value not there have null, help differentiate between actual 0 rolls and even negative values
-
+      valid_total = True
       if row[TOTALROW].strip().startswith('Natural'):
         totalVal = int(row[TOTALROW][8:])
       elif row[TOTALROW].startswith('Nat'):
@@ -90,22 +96,59 @@ for dirpath,dirnames,files in os.walk(C1ROLLS):
         totalVal = int(row[TOTALROW][:-1])
       elif row[TOTALROW] not in INVALID_VALS: 
         totalVal = int(row[TOTALROW])
+      else:
+        valid_total = False
 
       natVal = 0 #change it so that if value not there have null
-      
+      valid_nat = True
       if row[NATROW].startswith('>'):
-        totalVal = int(row[NATROW][1:]) + 1
+        natVal = int(row[NATROW][1:]) + 1
       elif row[NATROW].startswith("Nat"):
         natless = row[NATROW][3:]
       elif row[NATROW].startswith('<'):
         totalVal = int(row[NATROW][1:]) - 1
       elif row[NATROW] not in INVALID_VALS:
         natVal = int(row[NATROW])
+      else:
+        valid_nat = False
+        
       damage = ""
       damage +=  row[DAMAGEROW]
-      notes += row[NOTEROW]
 
-      roll, created = Rolls.objects.update_or_create(ep=ep, time_stamp=timeStamp,roll_type=type[0],final_value=totalVal,
-                                                    natural_value=natVal, notes=notes, character=character,damage =damage)
-      if created == False:
-        print("duplicate roll at time: " + str(timeStamp) + "in ep: " + str(ep.num)+ ", did not add to DB")
+      kill_count = 0
+      if row[KILLROW] != "" and row[KILLROW] != '?' and not row[KILLROW].startswith('0.'):
+        kill_count = int(row[KILLROW])
+      if row[KILLROW].startswith('0.'):
+        kill_count = 1 
+
+      notes += row[NOTEROW]
+      
+      #print(row)
+      #print(str(ep.num), str(timeStamp), character.name, str(totalVal),  str(natVal), notes)
+      try:
+        roll = Rolls.objects.get(ep=ep,time_stamp=timeStamp,character = character,notes=notes,natural_value=natVal, final_value=totalVal, damage=damage)
+      except: 
+        if not valid_nat:
+          natVal = None
+        if not valid_total:
+          totalVal = None
+        roll = Rolls.objects.get(ep=ep,time_stamp=timeStamp,character = character,notes=notes,natural_value=natVal, final_value=totalVal, damage=damage)
+
+      if not valid_nat:
+        ukNat+=1   
+        roll.natural_value = None 
+        roll.save()
+      if not valid_total:
+        ukTotal+=1
+        roll.final_value = None
+        roll.save()
+      #if kill_count != 0:
+      #  roll.kill_count = kill_count
+      #  roll.save()
+      #  print(kill_count)
+      #roll, created = Rolls.objects.update_or_create(ep=ep, time_stamp=timeStamp,final_value=totalVal,natural_value=natVal, notes=notes, character=character,damage =damage)
+      #if created :
+      #  print("Created roll at time: " + str(timeStamp) + "in ep: " + str(ep.num))
+
+print("Unknown nats:", str(ukNat))
+print("Unknown totals:", str(ukTotal))

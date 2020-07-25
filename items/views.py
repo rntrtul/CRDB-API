@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404,  render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
+from django.db.models import Sum
 
 from .models import Potion, PotionUsage, Weapon, WeaponDamage
 
@@ -41,4 +42,5 @@ class WeaponDetailView(generic.DetailView):
     context['damages'] = context['object'].damages.all()
     context['owners'] = context['object'].owners.distinct('sheet__character__name')
     context['uses'] = context['object'].uses.all()
+    context['total_dealt'] = context['uses'].aggregate(Sum('roll__final_value'))
     return context

@@ -13,6 +13,9 @@ class CombatEncounter(models.Model):
   rounds = models.IntegerField(default=0)
   notes = models.TextField(blank = True)
 
+  def isIn(self, time):
+    return time >= self.start and time <= self.end
+
 class CombatApperance(models.Model):
   encounter = models.ForeignKey(CombatEncounter, related_name='apperances', on_delete=models.CASCADE)
   character = models.ForeignKey(Character, related_name='combat_encounters', on_delete=models.CASCADE)

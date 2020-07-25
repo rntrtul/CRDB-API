@@ -26,7 +26,6 @@ class TypeListView(generic.ListView):
 
   def get_queryset(self):
     return RollType.objects.annotate(num_rolls=Count('rolls')).order_by('-num_rolls')
-    #return RollType.objects.order_by('name')
 
 class TypeDetailView(generic.DetailView):
   model = RollType
