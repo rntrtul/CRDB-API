@@ -41,3 +41,4 @@ class Advantage(models.Model):
 class Kill(models.Model):
   roll = models.ForeignKey(Rolls, related_name='kills', on_delete=models.CASCADE)
   killed = models.ForeignKey(Character, related_name='deaths', on_delete=models.CASCADE)
+  count = models.IntegerField(default=1)
