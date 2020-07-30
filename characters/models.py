@@ -74,6 +74,14 @@ class StatSheet(models.Model):
     for cls in self.classes.all():
       lvl += cls.level
     return lvl
+  
+  def get_level_verbose(self):
+    verb = ""
+    splitter = ""
+    for cls in self.classes.all():
+      verb += splitter + cls.class_id.name + ", " + str(cls.level)
+      splitter = " / "
+    return verb
 
 class SkillList(models.Model):
   stat_sheet = models.ForeignKey(StatSheet, related_name='skills', on_delete=models.CASCADE)

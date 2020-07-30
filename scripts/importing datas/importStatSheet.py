@@ -2,6 +2,7 @@ from characters.models import ClassTaken, Ability, AbilityScore, Skill, SkillLis
 from spells.models import Spell, SpellCast, LearnedSpell
 from classes.models import Class
 from episodes.models import LevelProg, Episode
+from campaigns.models import Campaign
 import os
 import re
 
@@ -57,31 +58,30 @@ def initLanguages(langs):
     if l[1]:
       print (lang + " was created")
 
-def findLevelUpEp(name, lvl):
+def findLevelUpEp(name, lvl,camp):
   import csv
-  
 
-  C1PROG  = "/home/lightbulb/CritRoleDB/zdata/C1/TD Level Prog.csv"
-  charColumn = {
-    "Vex'ahlia": 1,
-    "Vax'ildan": 2,
-    "Grog": 3,
-    "Keyleth": 4,
-    "Percy": 5,
-    "Scanlan": 6,
-    "Pike": 7,
-    "Taryon": 8,
-    "Tiberius": 9,
-  }
-  if not name in charColumn:
+  C1PROG = "/home/lightbulb/CritRoleDB/zdata/C1/TD Level Prog.csv"
+  C2PROG = "/home/lightbulb/CritRoleDB/zdata/C2/WM Level Prog.csv"
+  C1charColumn = {"Vex'ahlia": 1,"Vax'ildan": 2,"Grog": 3,"Keyleth": 4,"Percy": 5,"Scanlan": 6,"Pike": 7,"Taryon": 8,"Tiberius": 9,}
+  C2charColumn = {"Caleb": 1,"Nott": 2,"Jester": 3,"Beau": 4,"Fjord": 5,"Molly": 6,"Yasha": 7,"Caduceus": 8}
+
+  if camp == 1:
+    CURRPROG = C1PROG
+    CURRCHARCOL = C1charColumn
+  else:
+    CURRPROG = C2PROG
+    CURRCHARCOL = C2charColumn
+
+  if not name in CURRCHARCOL:
     return 0
   
-  with open(C1PROG, newline='') as myFile:
+  with open(CURRPROG, newline='') as myFile:
     reader = csv.reader(myFile)
     next(reader)
     for row in reader:
       if row[0] == lvl:
-        ep = row[charColumn[name]][2:]
+        ep = row[CURRCHARCOL[name]][2:]
         ep = ep.strip()
         if ep.endswith('?'):
           ep = ep[:-1]
@@ -106,13 +106,19 @@ def getAbilName(field):
   elif field == "CHA":
     return  abilities[5]
 
+working_campaign = 2
+CAMP = Campaign.objects.get(num=working_campaign)
 
 C1SHEETS = "/home/lightbulb/CritRoleDB/zdata/sheets"
-#StatSheet.objects.all().delete()
-#LevelProg.objects.all().delete()
-for dirpath,dirnames,files in os.walk(C1SHEETS):
+C2SHEETS= "/home/lightbulb/CritRoleDB/zdata/C2/C2 char sheets/Sheets"
+if working_campaign == 1:
+  CURR = C1SHEETS
+else:
+  CURR = C2SHEETS
+
+for dirpath,dirnames,files in os.walk(CURR):
   files.sort()
-  #files = files[101:]
+  #files = files[35:]
   for file in files:
     fileName = file[:-4]
     index = fileName.find("_")
@@ -121,11 +127,11 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
 
     name = fileName[:index]
     lvl = fileName[index+2:]
-    ep_num = findLevelUpEp(name, lvl)
-  
-    sheet = StatSheet()
-    sheet.character = Character.objects.get(name=name)
-    sheet.save()
+    ep_num = findLevelUpEp(name, lvl,CAMP.num)
+    ch = Character.objects.get(name=name)
+    sheet, created = StatSheet.objects.get_or_create(character=ch, level=lvl)
+    if created:
+      print("CREATED stat sheet for", ch.name, "at level", lvl)
     print(file)
 
     path = os.path.join(dirpath,file)
@@ -138,7 +144,7 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
         value = value[1:]
       if value.endswith("\""):
         value = value[:-1]
-      if value == "None" and field != "Alignment":
+      if value == "None" or value == "" and field != "Alignment":
           value = "0"
 
       if field == "ClassLevel" :
@@ -163,9 +169,9 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
         sheet.character = Character.objects.get(name=name)
       elif field == "Race":
         print("add racde values")
-      elif field == "Alignment":
+      elif field == "Alignment" and (value != "" and value != "???"):
         sheet.alignment = Alignment.objects.get(name=value)
-      elif field == "Inspiration":
+      elif field == "Inspiration" and value != "":
         sides = value
         if value.startswith('d'):
           sides = value[1:]
@@ -196,8 +202,8 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
         st = SavingThrow.objects.get_or_create(stat_sheet=sheet,ability=abill)
         st[0].modifier=value
         st[0].save()
-      elif field in skills or field == "SleightofHand":
-        if field == "SleightofHand":
+      elif field in skills or field == "SleightofHand" or field == "Sleight of Hand":
+        if field == "SleightofHand" or field == "Sleight of Hand":
           sk_name = "Sleight of Hand"
         else:
           sk_name = field
@@ -208,11 +214,11 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
       elif field == "AttacksSpellcasting":
         sheet.attacks = value
       elif field == "ProficienciesLang":
-        sheet.proficiencies = value
+        sheet.proficiencies = value.replace('\\n', ' \\n ')
       elif field == "Features and Traits":
-        sheet.features_traits = value
+        sheet.features_traits = value.replace('\\n', ' \\n ')
       elif field == "Equipment":
-        sheet.equipment = value
+        sheet.equipment = value.replace('\\n', ' \\n ')
       elif field.startswith("Wpn"):
         sheet.weapons += " " + value
         if field.endswith("Damage"):
@@ -257,16 +263,17 @@ for dirpath,dirnames,files in os.walk(C1SHEETS):
           st = SavingThrow.objects.update_or_create(ability=abil,stat_sheet=sheet, defaults={'proficient': True})
         else:
           #handle proffcient in skill
-          if value == "SleightofHand":
+          if value == "SleightofHand" or "Sleight of Hand":
             sk_name = "Sleight of Hand"
           else:
             sk_name = value
+          
           sk = Skill.objects.get(name=sk_name)
           skl = SkillList.objects.update_or_create(skill=sk, stat_sheet=sheet,defaults={'proficient': True} )
 
     sheet.save()
     if ep_num !=0:
-      ep = Episode.objects.get(num=ep_num)
+      ep = Episode.objects.get(num=ep_num, campaign=CAMP)
       lp = LevelProg.objects.get_or_create(sheet=sheet, episode = ep, level=sheet.get_level())
       if lp[1]:
         print(name + " leveled to " + str(lvl) + " on episode " + str(ep_num))
