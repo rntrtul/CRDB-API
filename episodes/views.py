@@ -3,8 +3,9 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
+from itertools import chain
 
-from .models import Episode, Apperance, LevelProg
+from .models import Episode, Apperance, LevelProg, VodType
 from rolls.models import Rolls
 # Create your views here.
 class IndexView(generic.ListView):
@@ -22,11 +23,17 @@ class DetailView(generic.DetailView):
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     context['apperances'] = context['object'].apperances.order_by('character__name')
-    context['rolls'] = context['object'].rolls.order_by('time_stamp')
     context['level_progs'] = context['object'].level_ups.order_by('sheet__character__full_name')
     context['encounters'] = context['object'].combat_encounters.order_by('start')
-    links = context['object'].vod_links
-    context['yt_link'] = "https://youtu.be/" + links.all()[0].link_key + "?t="
+    yt_links = context['object'].vod_links.filter(vod_type=VodType.objects.get(name="YouTube")).all()
+    
+    if context['object'].campaign.num == 1 and (context['object'].num == 31 or context['object'].num == 33 or context['object'].num == 35):
+      context['yt_link'] = "https://youtu.be/" + yt_links[0].link_key + "?t="
+      context['yt_link_p2'] = "https://youtu.be/" + yt_links[1].link_key + "?t="
+      context['rolls'] = chain(context['object'].rolls.filter(notes__startswith='p1').order_by('time_stamp'),context['object'].rolls.filter(notes__startswith='p2').order_by('time_stamp'))
+    else:
+      context['rolls'] = context['object'].rolls.order_by('time_stamp')
+      context['yt_link'] = "https://youtu.be/" + yt_links[0].link_key + "?t="
     return context
 
 class ApperanceIndexView(generic.ListView):
