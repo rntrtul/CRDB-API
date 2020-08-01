@@ -50,21 +50,23 @@
   {%for lang in langs%}
     <p>{{lang.language.name}}</p>
   {%endfor%}
-  <h3>Spell Casting:</h3>
-
-  <p>Casting Class: {{statsheet.casting_class}}</p>
-  <p>Spell attack Bonus: {{statsheet.spell_attack_bonus}}</p>
-  <p>Spell Save: {{statsheet.spell_save}}</p>
-  <p>Casting Ability: {{statsheet.casting_ability.name}}</p>
-  <p>Slots Level 1: {{statsheet.slots_one}}</p>
-  <p>Slots Level 2: {{statsheet.slots_two}}</p>
-  <p>Slots Level 3: {{statsheet.slots_three}}</p>
-  <p>Slots Level 4: {{statsheet.slots_four}}</p>
-  <p>Slots Level 5: {{statsheet.slots_five}}</p>
-  <p>Slots Level 6: {{statsheet.slots_six}}</p>
-  <p>Slots Level 7: {{statsheet.slots_seven}}</p>
-  <p>Slots Level 8: {{statsheet.slots_eight}}</p>
-  <p>Slots Level 9: {{statsheet.slots_nine}}</p>
+  
+  {%if statsheet.casting_class%}
+    <h3>Spell Casting:</h3>
+    <p>Casting Class: {{statsheet.casting_class}}</p>
+    <p>Spell attack Bonus: {{statsheet.spell_attack_bonus}}</p>
+    <p>Spell Save: {{statsheet.spell_save}}</p>
+    <p>Casting Ability: {{statsheet.casting_ability.name}}</p>
+    <p>Slots Level 1: {{statsheet.slots_one}}</p>
+    <p>Slots Level 2: {{statsheet.slots_two}}</p>
+    <p>Slots Level 3: {{statsheet.slots_three}}</p>
+    <p>Slots Level 4: {{statsheet.slots_four}}</p>
+    <p>Slots Level 5: {{statsheet.slots_five}}</p>
+    <p>Slots Level 6: {{statsheet.slots_six}}</p>
+    <p>Slots Level 7: {{statsheet.slots_seven}}</p>
+    <p>Slots Level 8: {{statsheet.slots_eight}}</p>
+    <p>Slots Level 9: {{statsheet.slots_nine}}</p>
+  {%endif%}
   
   {%if spells.count != 0%}
     <h3>Known Spells:</h3>

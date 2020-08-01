@@ -30,10 +30,9 @@
         <h3>Level Progressions: </h3>
         <ul>
         {%for lp in level_progs%}
-            <li>{{lp.sheet.character.full_name}} leveled up to level {{lp.level}}</li>
+            <li>{{lp.sheet.character.name}} leveled up to: {{lp.sheet.get_level_verbose}} </li>
         {%endfor%}
         </ul>
-        
     {%endif%}
 
     {%if encounters%}
@@ -60,7 +59,11 @@
     {% for roll in rolls %}
         <tr>    
             {%with time=roll.time_stamp|stringformat:"i"%}
-            <td><a href ={{yt_link|add:time}} >{%format_time roll.time_stamp%}</a></td>
+            {%if roll.notes|startswith:'p2'%}
+                <td><a href ={{yt_link_p2|add:time}} >{%format_time roll.time_stamp%}</a> p2</td>
+            {%else%}
+                <td><a href ={{yt_link|add:time}} >{%format_time roll.time_stamp%}</a> p1</td>
+            {%endif%}
             {%endwith%}
             <td><a href = "{%url 'characters:detail' roll.character_id%}">{{roll.character.name}}</a></td>
             <td><a href = "{%url 'rolls:typeDetail' roll.roll_type_id%}">{{roll.roll_type.name}}</a></td>

@@ -18,11 +18,11 @@ for weapon in wpns:
   if weapon.name == 'Dagger':
     continue
   wpn_notes = Rolls.objects.filter(notes__contains=weapon.name)
-  #for roll in wpn_notes:
+  for roll in wpn_notes:
     #print(str(roll.time_stamp))
-    #usage = WeaponUsage.objects.get_or_create(weapon=weapon, roll=roll)
-    #if usage[1]:
-    #  print("created")
+    usage = WeaponUsage.objects.get_or_create(weapon=weapon, roll=roll)
+    if usage[1]:
+      print("created usage for", weapon.name)
   
   length = len(wpn_notes)
   total += length
