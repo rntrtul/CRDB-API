@@ -1,158 +1,282 @@
 from rolls.models import Rolls, RollType
-from episodes.models import Episode
-from campaigns.models import Campaign
-from characters.models import Character, CharacterType
-from races.models import Race
-
-import csv
+from collections import Set
 import re
-import os
-from collections import deque
 
-def getCharDamage(reader):
-  import csv
-  from characters.models import Character
-  from collections import deque
-  char_list = {}
-  char_dmg = {}
+def get_misses(all, matched):
+  from collections import Set
+  diff = set(all) - set(matched)
+  
+  ep_misses = {}
+  for roll in diff:
+    if roll.ep.title in ep_misses:
+      ep_misses[roll.ep.title] += 1
+    else:
+      ep_misses[roll.ep.title] = 1
 
-  header = next(reader)
+  misses = 0
+  for ep in ep_misses:
+    misses += ep_misses[ep]
+    print(ep, ep_misses[ep])
+  
+  print("Total misses", misses)
+  return misses
 
-  for col, name in enumerate(header):
-    if name == "Player" or name == "":
-      continue
 
-    name = name.strip()
-
+# returns list of tuples for all matched damage types and count of regex matches (not same as len of list)
+# tuple: (dmg, matched type, start in og string, end in og string)
+def get_damages(damage_str):
+  import re
+  dmgType = {
+    'acid': "Acid",
+    'bludgeoning': "Bludgeoning",
+    'bludge': "Bludgeoning",
+    'bludgeon': "Bludgeoning",
+    'bludg':"Bludgeoning",
+    'fall': "Bludgeoning",
+    'crushing': "Bludgeoning",
+    'impact': "Bludgeoning",
+    'cold': "Cold",
+    'ice': "Cold",
+    'fire': "Fire",
+    'bb': "Fire",
+    'force': "Force",
+    'lightning': "Lightning",
+    'ltng': "Lightning",
+    'lighting': "Lightning",
+    'necrotic': "Necrotic",
+    'necro': "Necrotic",
+    'hex': "Necrotic",
+    'piercing': "Piercing",
+    'pierce': "Piercing",
+    'bramble': "Piercing",
+    'poison': "Poison",
+    'psychic': "Psychic",
+    'radiant': "Radiant",
+    'radian': "Radiant",
+    'holy': "Radiant",
+    'slashing': "Slashing",
+    'slashing': "Slashing",
+    'slash': "Slashing",
+    'slashin':"Slashing",
+    'thunder': "Thunder",
+    'sa': "Sneak Attack",
+    'sneak': "Sneak Attack",
+    'hm': "Hunter's Mark", 
+    'gwm': "Great Weapons Master",
+    'ss': "Sharp Shooter",
+    'brutal': "Brutal Critical",
+    'enlarge': "Enlarge", #is 1d4 extra weapon damage
+    'dragon': "Dragon", #is probalby just the weapon damage
+    'slashing/necrotic': 'Slashing + Necrotic',
+    'piercing/necrotic': 'Piercing + Necrotic',
+    'slashing/radiant': "Slashing + Radiant",
+    'lightning/radiant': "Lightning + Radiant",
+    'piercing/lightning': "Piercing + Lightning",
+    'lightning/piercing': "Piercing + Lightning",
+    'slashing/psychic': "Slashing + Psychic",
+    'sa/hm': "Sneak Attack + Hunter's Mark",
+    'hm/sa': "Sneak Attack + Hunter's Mark",
+    "slashing/psychic/radiant": "Slashing + Psychic + Radiant",
+    "slashing/radiant/dragon": "Slashing + Radiant + Dragon ",
+    "piercing/fire" : "Piercing + Fire",
+    "piercing/psychic" : "Piercing + Psychic",
+  }
+  damage_value = -1000 #for helping with debug
+  damageType = re.compile(r"\d+(?! \([\/\w]+ )(?: [x\d\/\(\)]+)? (?!to)[\w\/]+|\d\d? (?:\([\dx+\/]+\) )?to|\d+ ?\+")
+  type_matches = damageType.findall(damage_str)
+  
+  damages = []
+  for match in type_matches:
+    splited = match.split(' ')
+    start = damage_str.find(match)
+    end = start + len(match)
     try:
-      char = Character.objects.get(name=name)
-      char_list[col] = char
-      char_dmg[char.name] = deque()
+      damage_value = int(splited[0])
     except:
-      try:
-        char = Character.objects.get(full_name__contains=name)
-        char_list[col] = char
-        char_dmg[char.name] = deque()
-      except:
-        print(name , "was not found")
- 
-  next(reader)
-  next(reader)
-  sheet_count = 0
-  for row in reader:
-    for col_num, damage in enumerate(row):
-      if col_num not in char_list or damage.strip() == "":
-        continue
-      sheet_count += 1
-      char_dmg[char_list[col_num].name].append(int(damage.strip()))
+      damage_value = -9999 #should be immediately obvious if this exists in db
 
-  return char_dmg, sheet_count
+    damage_type = "NOTHING FOUND" #help to see if everything is working
 
-#some duplicates in this list due to misspellings
-#put nott/veth and veth into nott
-# Vax and keyleth
-def makeNPC(list):
-  from characters.models import Character, CharacterType
-  from races.models import Race
+    if len(splited) > 1 and splited[1].lower() in dmgType:
+      damage_type = dmgType[splited[1].lower()]
+      #damages.append((damage_value ,dmgType[splited[1].lower()],start, end))
+    elif len(splited) > 2 and splited[2].lower() in dmgType:
+      damage_type = dmgType[splited[2].lower()]
+      #damages.append((damage_value ,dmgType[splited[2].lower()],start, end))
+    elif len(splited) == 2 and splited[1].lower() == "to":
+      damage_type = "Currently Unknown"
+      #damages.append((damage_value ,"Currently Unknown",start, end))
+    elif len(splited) == 3 and splited[1].startswith('('):
+      damage_type = "Currently Unknown"
+      #damages.append((damage_value ,"Currently Unknown",start, end))
+    elif len(splited) == 1 and splited[0].endswith('+'):
+      damage_type = "Currently Unknown"
+      damage_value = int(splited[0][:-1])
+      #damages.append((int(splited[0][:-1]) ,"Currently Unknown",start, end))
+    elif len(splited) == 2 and splited[1] == '+':
+      damage_type = "Currently Unknown"
+      #damages.append((damage_value ,"Currently Unknown",start, end))
+
+    if damage_value == -1000 or damage_value == -9999 or damage_type == "NOTHING FOUND":
+      #print('ERROR no type found for:',match, 'in:', damage_str)
+      poo =True
+    else:
+      damages.append((damage_value ,damage_type,start, end))
+
+  return damages, len(type_matches)
+
+# returns list of tuples with characters found in damage string and a count of how many
+# tuple: (character name matched, count, position in original string)
+def get_characters(dmg): 
+  from characters.models import Character
+  import re
+  import inflect
+  charCount = re.compile(r"(?:to|,|and) (?:\d{1,2}(?![a-zA-Z\(\d/\) ]* to))?(?:(?! and)[a-zA-Z' ])+(?:\(\d\))?")
+  matches = charCount.findall(dmg)
+  inflect = inflect.engine()
+
+  characters = []
+  count = 0
+  for match in matches:
+    split = match.split(' ')
+    name = match.strip()
+    if name.startswith('to'):
+      name = name[2:].strip()
+    if name.startswith(','):
+      name = name[1:].strip()
+    if name.startswith('and'):
+      name = name[3:].strip()
   
-  NPC = CharacterType.objects.get(name="NPC")
-  UnK = Race.objects.get(name='unknown')
-  
-  for person in damage_to:
-    try: 
-      ch = Character.objects.get(name = person)
-    except:
-      if person.strip() != "Nott/Veth" or person.strip() != "Veth" or person.strip() == "Vax and keyleth":
-        ch = Character.objects.get_or_create(name=person, full_name = person,race=UnK, char_type=NPC)
-        if ch[1]:
-          print("CREATED: ",person)
+    name_split = name.split(' ')
 
-C1DD = "/home/lightbulb/CritRoleDB/zdata/C1/C1 Damage Dealt/"
-C2DD = "/home/lightbulb/CritRoleDB/zdata/C2/C2 Damage Dealt/"
-EPSDONE = 0
+    if len(name_split) > 1 and name_split[0].isdigit():
+      name = " ".join(name_split[1:]).strip()
+    if name.endswith(')'):
+      name_split = name.split(' ')
+      name = " ".join(name_split[:-1])
 
-currDD =  C1DD
-currCamp = 1
-
-camp = Campaign.objects.get(num=currCamp)
-
-damageRolls = Rolls.objects.filter(roll_type = RollType.objects.get(name="Damage"),ep__campaign =camp )
-
-damage_to = []
-matches = 0
-sheet_count = 0
-errors = 0
-misses = 0
-for dirpath,dirnames,files in os.walk(currDD):
-  files.sort()
-  filesLeft = files[EPSDONE:]  #speed up inserting when restarting due to error
-
-  for file_name in filesLeft:
-    if not file_name.endswith("-DD.csv"):
+    if name.isdigit():
       continue
-    
-    damageReader = csv.reader(open(currDD +  file_name))
-    print(file_name)
-    ep_num = int(file_name[4:7])
-    ep = Episode.objects.get(num=ep_num, campaign=camp)
-
-    pair = getCharDamage(damageReader)
-    ep_damage = damageRolls.filter(ep=ep).order_by('time_stamp')
-    
-    char_damage_roll = {}
-
-    char_damage_dealt = pair[0]
-    sheet_count += pair[1]
-    # add (roll, person_to, damage type) here for all rolls
-    # then in other looop only have to deal with adding some damage to see if it matches and percy bleeding
-    for roll in ep_damage:
-      try: 
-        char_damage_roll[roll.character.name].append(roll)
+      
+    #print(match, 'with name', name)
+    pos = dmg.find(match)
+    count += 1
+    if len(split) > 1 and split[1].isdigit():
+      try:
+        ch = Character.objects.get(name=name)
+        characters.append((name, int(split[1]),pos))
       except:
-        char_damage_roll[roll.character.name] = deque()
-        char_damage_roll[roll.character.name].append(roll)
-
-    #if ep.num == 113:
-    #  for roll in char_damage_roll.items():
-    #    print(roll[0], ":", roll[1])
-        
-
-    de = deque(ep_damage.all())
-    
-    #don't iterate over all rolls again do it for char queue. 
-
-    for char in char_damage_roll:
-      prev = 0
-      if char not in char_damage_dealt:
-        continue
-
-      for roll in char_damage_roll[char]:
-        if not roll.final_value:
-          continue
         try:
-          if char_damage_dealt[char]:
-            if roll.final_value == char_damage_dealt[char][0]:
-              char_damage_dealt[char].pop()
-              prev = roll.final_value
-              matches +=1
-            elif prev == char_damage_dealt[char][0]:
-              #while char_damage_dealt[char] and prev == char_damage_dealt[char][0]:
-              #  char_damage_dealt[char].pop()
-                
-                matches+=1
-            else:
-              misses += 1
-            #print( roll.final_value, char_damage_dealt[char][-1])
-            #print('ROLL:', roll.character.name, roll.time_stamp, roll.final_value, roll.notes, roll.damage)
-          else:
-            print("DEQUE EMPTY:",char_damage_dealt[char])
-            print('ROLL:', roll.character.name, roll.time_stamp, roll.final_value, roll.notes, roll.damage)
-        except Exception as e:
-          errors += 1
-          print('ERROR:', e)
-          print('LENS(dealt, roll):', len(char_damage_dealt), len(char_damage_roll))
-          print('ROLL:', roll.character.name, roll.time_stamp, roll.final_value, roll.notes, roll.damage)
+          if inflect.singular_noun(name) != False:
+            new_name = inflect.singular_noun(name).capitalize()
+            ch = Character.objects.get(name=new_name)
+            characters.append((new_name, int(split[1]),pos))
+          else: 
+            junk = 0
+            #print("ERROR could not find char with name", name)
+        except :
+          junk = 0
+          #print("ERROR couldn't find char with name", name)
 
-print('Matches:', matches, 'Target:', sheet_count)
-print('Missed:', misses, "Errors:", errors)
-    
+      count += int(split[1]) - 1
+    elif len(split) > 2 and split[2].startswith('('):
+      char_count = int(split[2][1:-1])
+      try:
+        ch = Character.objects.get(name=name)
+        characters.append((name, char_count,pos))
+      except:
+        try:
+          if inflect.singular_noun(name) != False:
+            new_name = inflect.singular_noun(name).capitalize()
+            ch = Character.objects.get(name=new_name)
+            characters.append((new_name, char_count,pos))
+          else: 
+            junk = 0
+            #print("ERROR could not find char with name", name)
+        except :
+          junk = 0
+          #print("ERROR couldn't find char with name", name)
+
+      count += char_count - 1
+    else:
+      try:
+        ch = Character.objects.get(name=name.capitalize())
+        characters.append((name,1,pos))
+      except :
+        try:
+          ch = Character.objects.get(name=name)
+          characters.append((name,1,pos))
+        except:
+          print("ERROR didn't find char with name", name)
+
+  return characters, count
+
+
+all_rolls = Rolls.objects.filter(roll_type = RollType.objects.get(name="Damage")).order_by('ep__num','time_stamp').all()
+
+count = 0
+type_count = 0
+type_groups = 0
+damage_idd = 0
+damage_dealt = []
+for roll in all_rolls:
+  dmg = roll.damage
+  
+  damages, type_matches = get_damages(dmg)
+  characters, char_matches = get_characters(dmg)
+
+  damage_group = []
+  if len(damages) > 1:
+    curr_group = []
+    for idx, dmg_type in enumerate(damages):
+      if len(damages) -1 == idx:
+        if len(curr_group) != 0:
+          curr_group.append(dmg_type)
+          damage_group.append(curr_group)
+        else:
+          damage_group.append([dmg_type])
+        break 
+      
+      one_group = True
+      for char in characters:
+        if dmg_type[2] <= char[2] and damages[idx+1][2] >= char[2]:
+          one_group = False
+      
+      if one_group:
+        curr_group.append(dmg_type)
+      elif len(curr_group) != 0:
+        curr_group.append(dmg_type)
+        damage_group.append(curr_group)
+        curr_group = []
+      else:
+        damage_group.append([dmg_type])
+  elif damages:
+    damage_group.append([damages[0]])
+  
+  for char in characters:
+    for dmg in reversed(damage_group):
+      if dmg[0][2] <= char[2]:
+        group = dmg
+        break
+
+    for dummy in range(0,char[1]):
+      for type in group:
+        damage_dealt.append((roll,char,type)) 
+  
+
+  damage_idd += len(damages)
+  count += char_matches
+  type_count += type_matches
+  type_groups += len(damage_group)
+
+#iterate through damage_dealt and save into db
+
+
+
+print("Regex char matches:", count)
+print("Regex type matches:", type_count)
+print("Damage types ID'd:", damage_idd)
+print("Damage Groups:", type_groups)
+print("Damage roll count:", len(all_rolls))
+print("Target damage instances: 4368")
+print("Our damage instances:", len(damage_dealt))

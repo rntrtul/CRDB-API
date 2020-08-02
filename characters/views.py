@@ -26,8 +26,9 @@ class DetailView(generic.DetailView):
     context['total_rolls'] = context['object'].rolls.count()
     context['statsheets'] = context['object'].stat_sheets.order_by('max_health')
     damage_rolls = context['object'].rolls.filter(roll_type=RollType.objects.get(name="Damage"))
-    context['damage_dealt'] = damage_rolls.aggregate(Sum('final_value'))
-    context['avg_damage_dealt'] = round(context['damage_dealt']['final_value__sum'] / damage_rolls.count(), 2)
+    if damage_rolls.count() != 0:
+      context['damage_dealt'] = damage_rolls.aggregate(Sum('final_value'))
+      context['avg_damage_dealt'] = round(context['damage_dealt']['final_value__sum'] / damage_rolls.count(), 2)
     return context
 
 
