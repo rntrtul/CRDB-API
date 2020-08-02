@@ -1,5 +1,7 @@
 from rolls.models import Rolls, RollType
+from characters.models import Character
 from collections import Set
+from damages.models import DamageType, Damage
 import re
 
 def get_misses(all, matched):
@@ -201,7 +203,7 @@ def get_characters(dmg):
     else:
       try:
         ch = Character.objects.get(name=name.capitalize())
-        characters.append((name,1,pos))
+        characters.append((name.capitalize(),1,pos))
       except :
         try:
           ch = Character.objects.get(name=name)
@@ -219,6 +221,7 @@ type_count = 0
 type_groups = 0
 damage_idd = 0
 damage_dealt = []
+
 for roll in all_rolls:
   dmg = roll.damage
   
@@ -261,7 +264,7 @@ for roll in all_rolls:
 
     for dummy in range(0,char[1]):
       for type in group:
-        damage_dealt.append((roll,char,type)) 
+        damage_dealt.append((roll,char[0],type[0],type[1])) 
   
 
   damage_idd += len(damages)
@@ -270,9 +273,23 @@ for roll in all_rolls:
   type_groups += len(damage_group)
 
 #iterate through damage_dealt and save into db
+dmg_total = 0
+created = 0
+for dd in damage_dealt:
+  try:
+    dmg_total += dd[2]
+    dt = DamageType.objects.get(name=dd[3])
+    ch = Character.objects.get(name=dd[1])
+    r = dd[0]
+    dealt = Damage.objects.get_or_create(roll=r, by=r.character, to=ch, damage_type=dt, points=dmg_total)
+    if dealt[1]:
+      created+= 1
+      print("CREATED:", dd[0].character.name, 'dealt', dd[2], dd[3] , 'to', dd[1], 'in', dd[0].ep.num)
+  except:
+    print(dd)
 
 
-
+print("TOTAL DAMAGE DEALT:", dmg_total)
 print("Regex char matches:", count)
 print("Regex type matches:", type_count)
 print("Damage types ID'd:", damage_idd)
@@ -280,3 +297,4 @@ print("Damage Groups:", type_groups)
 print("Damage roll count:", len(all_rolls))
 print("Target damage instances: 4368")
 print("Our damage instances:", len(damage_dealt))
+print("Created:", created)

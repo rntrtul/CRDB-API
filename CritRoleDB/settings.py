@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'damages.apps.DamagesConfig',
     'encounters.apps.EncountersConfig',
     'languages.apps.LanguagesConfig',
     'spells.apps.SpellsConfig',
