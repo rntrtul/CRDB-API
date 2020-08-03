@@ -31,24 +31,25 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'damages.apps.DamagesConfig',
-    'encounters.apps.EncountersConfig',
-    'languages.apps.LanguagesConfig',
-    'spells.apps.SpellsConfig',
-    'items.apps.ItemsConfig',
-    'players.apps.PlayersConfig',
-    'campaigns.apps.CampaignsConfig',
-    'classes.apps.ClassesConfig',
-    'races.apps.RacesConfig',
-    'characters.apps.CharactersConfig',
-    'episodes.apps.EpisodesConfig',
-    'rolls.apps.RollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rolls.apps.RollsConfig',
+    'episodes.apps.EpisodesConfig',
+    'characters.apps.CharactersConfig',
+    'races.apps.RacesConfig',
+    'classes.apps.ClassesConfig',
+    'campaigns.apps.CampaignsConfig',
+    'players.apps.PlayersConfig',
+    'items.apps.ItemsConfig',
+    'spells.apps.SpellsConfig',
+    'languages.apps.LanguagesConfig',
+    'encounters.apps.EncountersConfig',
+    'damages.apps.DamagesConfig',
 ]
 
 MIDDLEWARE = [

@@ -4,16 +4,85 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
 from itertools import chain
-
-from .models import Episode, Apperance, LevelProg, VodType
+from rest_framework import generics
+from .serializers import (EpisodeSerializer, ApperanceSerializer, AttendanceSerializer, ApperanceTypeSerializer,
+                          AttendanceTypeSerializer, LiveSerializer, VodLinksSerializer, VodTypeSerializer)
+from .models import Episode, Apperance, LevelProg, VodType, Attendance, ApperanceType, AttendanceType, Live, VodLinks
 from rolls.models import Rolls
 # Create your views here.
+
+#REST API views
+class EpisodeList(generics.ListAPIView):
+  queryset = Episode.objects.order_by('campaign','num')
+  serializer_class = EpisodeSerializer
+
+class EpisodeDetail(generics.RetrieveAPIView):
+  queryset = Episode.objects.all()
+  serializer_class = EpisodeSerializer
+
+class ApperanceList(generics.ListAPIView):
+  queryset = Apperance.objects.all()
+  serializer_class = ApperanceSerializer
+
+class ApperanceDetail(generics.RetrieveAPIView):
+  queryset = Apperance.objects.all()
+  serializer_class = ApperanceSerializer
+
+class ApperanceTypeList(generics.ListAPIView):
+  queryset = ApperanceType.objects.order_by('name')
+  serializer_class = ApperanceTypeSerializer
+
+class ApperanceTypeDetail(generics.RetrieveAPIView):
+  queryset = ApperanceType.objects.all()
+  serializer_class = ApperanceTypeSerializer
+
+class AttendanceList(generics.ListAPIView):
+  queryset = Attendance.objects.all()
+  serializer_class = AttendanceSerializer
+
+class AttendanceDetail(generics.RetrieveAPIView):
+  queryset = Attendance.objects.all()
+  serializer_class = AttendanceSerializer
+
+class AttendanceTypeList(generics.ListAPIView):
+  queryset = AttendanceType.objects.order_by('name')
+  serializer_class = AttendanceTypeSerializer
+
+class AttendanceTypeDetail(generics.RetrieveAPIView):
+  queryset = AttendanceType.objects.all()
+  serializer_class = AttendanceTypeSerializer
+
+class LiveList(generics.ListAPIView):
+  queryset = Live.objects.order_by('episode')
+  serializer_class = LiveSerializer
+
+class LiveDetail(generics.RetrieveAPIView):
+  queryset = Live.objects.all()
+  serializer_class = LiveSerializer
+
+class VodTypeList(generics.ListAPIView):
+  queryset = VodType.objects.order_by('name')
+  serializer_class = VodTypeSerializer
+
+class VodTypeDetail(generics.RetrieveAPIView):
+  queryset = VodType.objects.order_by('name')
+  serializer_class = VodTypeSerializer
+
+class VodLinksList(generics.ListAPIView):
+  queryset = VodLinks.objects.all()
+  serializer_class = VodLinksSerializer
+
+class VodLinksDetail(generics.RetrieveAPIView):
+  queryset = VodLinks.objects.all()
+  serializer_class = VodLinksSerializer
+
+
+# django template views 
 class IndexView(generic.ListView):
   template_name = 'episodes/index.html'
   context_object_name = 'ep_list'
 
   def get_queryset(self):
-    #return Episode.objects.annotate(num_rolls=Count('rolls')).order_by('-num_rolls')
     return Episode.objects.order_by('campaign','num')
 
 class DetailView(generic.DetailView):

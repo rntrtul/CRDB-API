@@ -10,7 +10,7 @@ class Episode(models.Model):
   campaign = models.ForeignKey(Campaign, related_name='episodes', on_delete=models.CASCADE)
   num = models.IntegerField()
   title = models.TextField()
-  air_date = models.DateField(auto_now_add=True, blank=True)
+  air_date = models.DateField()
   description = models.TextField()
   length = models.IntegerField(default=0)
   first_half_start = models.IntegerField(default=0)
