@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from .models import Ability, AbilityScore, Alignment, Character, CharacterType, ClassTaken, SavingThrow, Skill, SkillList, StatSheet
+from spells.serializers import SpellSerializer
+from episodes.serializers import LevelProgSerializer
+from languages.serializers import LearnedLanguageSerializer
+from items.serializers import WeaponOwnedSerializer
 
 class AbilitySerializer (serializers.ModelSerializer):
   class Meta:
@@ -47,14 +51,25 @@ class SkillListSerializer (serializers.ModelSerializer):
     fields = ('id', 'stat_sheet', 'skill', 'modifier', 'proficient')
 
 class StatSheetSerializer (serializers.ModelSerializer):
-  sheet_ability_scores = AbilityScoreSerializer(source ='ability_scores', many =True)
-  sheet_saving_throws = SavingThrowSerializer(source='saving_throws', many=True)
   class Meta:
     model = StatSheet
-    fields = ['sheet_saving_throws','sheet_ability_scores', 'id', 'character', 'alignment', 'max_health', 'level', 'armour_class', 'speed', 'initiative_bonus',
+    fields = ['id', 'character', 'level']
+
+class StatSheetDetailSerializer (serializers.ModelSerializer):
+  scores = AbilityScoreSerializer(source ='ability_scores', many =True)
+  saves = SavingThrowSerializer(source='saving_throws', many=True)
+  spells = SpellSerializer(source='learned_spells', many=True)
+  level_up = LevelProgSerializer(source='level_ups', many=True)
+  langs = LearnedLanguageSerializer(source='languages', many=True)
+  weapons= WeaponOwnedSerializer(source='weapons_owned', many=True)
+
+  class Meta:
+    model = StatSheet
+    fields = ['scores', 'saves', 'spells', 'level_up', 'langs', 'weapons_owned',
+             'id', 'character', 'alignment', 'max_health', 'level', 'armour_class', 'speed', 'initiative_bonus',
               'proficiency_bonus', 'hit_die', 'inspiration_die', 'equipment', 'features_traits', 'attacks',
               'weapons', 'proficiencies', 'casting_ability', 'casting_class', 'spell_attack_bonus',
               'spell_save', 'cantrips', 'slots_one', 'slots_two', 'slots_three', 'slots_four', 'slots_five',
               'slots_six', 'slots_seven', 'slots_eight', 'slots_nine']
-    depth = 2
+    depth = 1
 

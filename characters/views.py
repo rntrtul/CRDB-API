@@ -8,7 +8,7 @@ from .models import Ability, AbilityScore, Alignment, Character, CharacterType, 
 from rolls.models import RollType
 from rest_framework import generics, viewsets
 from .serializers import (AbilitySerializer, AbilityScoreSerializer, AlignmentSerializer, CharacterSerializer, CharacterTypeSerializer, ClassTakenSerializer,
-                          SavingThrowSerializer, SkillSerializer, SkillListSerializer, StatSheetSerializer)
+                          SavingThrowSerializer, SkillSerializer, SkillListSerializer, StatSheetSerializer, StatSheetDetailSerializer)
 
 # REST views
 class AbilityViewSet(viewsets.ModelViewSet):
@@ -48,9 +48,13 @@ class SkillListViewSet(viewsets.ModelViewSet):
   serializer_class = SkillListSerializer
 
 class StatSheetViewSet (viewsets.ModelViewSet):
-  queryset = StatSheet.objects.all()
-  serializer_class = StatSheetSerializer
+  def get_serializer_class(self):
+    if self.action == 'list':
+      return StatSheetSerializer
+    elif self.action == 'retrieve':
+      return StatSheetDetailSerializer
 
+  queryset = StatSheet.objects.all()
 
 # Django template views
 class IndexView(generic.ListView):
