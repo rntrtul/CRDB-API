@@ -18,3 +18,4 @@ tests/report/
 zdata
 dump
 IME/
+.coverage

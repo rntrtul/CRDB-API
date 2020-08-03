@@ -273,6 +273,7 @@ for roll in all_rolls:
   type_groups += len(damage_group)
 
 #iterate through damage_dealt and save into db
+# Add a count column maybe
 dmg_total = 0
 created = 0
 for dd in damage_dealt:
@@ -281,8 +282,8 @@ for dd in damage_dealt:
     dt = DamageType.objects.get(name=dd[3])
     ch = Character.objects.get(name=dd[1])
     r = dd[0]
-    dealt = Damage.objects.get_or_create(roll=r, by=r.character, to=ch, damage_type=dt, points=dmg_total)
-    if dealt[1]:
+    dealt = Damage.objects.get_or_create(roll=r, by=r.character, to=ch, damage_type=dt,points = dd[2])
+    if not dealt:
       created+= 1
       print("CREATED:", dd[0].character.name, 'dealt', dd[2], dd[3] , 'to', dd[1], 'in', dd[0].ep.num)
   except:
@@ -297,4 +298,4 @@ print("Damage Groups:", type_groups)
 print("Damage roll count:", len(all_rolls))
 print("Target damage instances: 4368")
 print("Our damage instances:", len(damage_dealt))
-print("Created:", created)
+print("Created/Updated:", created)

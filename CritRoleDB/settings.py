@@ -31,24 +31,26 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'damages.apps.DamagesConfig',
-    'encounters.apps.EncountersConfig',
-    'languages.apps.LanguagesConfig',
-    'spells.apps.SpellsConfig',
-    'items.apps.ItemsConfig',
-    'players.apps.PlayersConfig',
-    'campaigns.apps.CampaignsConfig',
-    'classes.apps.ClassesConfig',
-    'races.apps.RacesConfig',
-    'characters.apps.CharactersConfig',
-    'episodes.apps.EpisodesConfig',
-    'rolls.apps.RollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rolls.apps.RollsConfig',
+    'episodes.apps.EpisodesConfig',
+    'characters.apps.CharactersConfig',
+    'races.apps.RacesConfig',
+    'classes.apps.ClassesConfig',
+    'campaigns.apps.CampaignsConfig',
+    'players.apps.PlayersConfig',
+    'items.apps.ItemsConfig',
+    'spells.apps.SpellsConfig',
+    'languages.apps.LanguagesConfig',
+    'encounters.apps.EncountersConfig',
+    'damages.apps.DamagesConfig',
+    'silk',
 ]
 
 MIDDLEWARE = [
@@ -59,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 ROOT_URLCONF = 'CritRoleDB.urls'
@@ -136,7 +139,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}

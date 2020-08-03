@@ -3,9 +3,36 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.db.models import Sum
+from .models import Potion, PotionUsage, Weapon, WeaponDamage, WeaponUsage, WeaponOwned
+from rest_framework import generics,  viewsets
+from .serializers import PotionSerializer, PotionUsageSerializer, WeaponSerializer, WeaponDamageSerializer, WeaponOwnedSerializer, WeaponUsageSerializer
 
-from .models import Potion, PotionUsage, Weapon, WeaponDamage
+# REST views
+class PotionViewSet(viewsets.ModelViewSet):
+  queryset = Potion.objects.all()
+  serializer_class = PotionSerializer
 
+class PotionUsageViewSet(viewsets.ModelViewSet):
+  queryset = PotionUsage.objects.all()
+  serializer_class = PotionUsageSerializer
+
+class WeaponViewSet(viewsets.ModelViewSet):
+  queryset = Weapon.objects.all()
+  serializer_class = WeaponSerializer
+
+class WeaponDamageViewSet(viewsets.ModelViewSet):
+  queryset = WeaponDamage.objects.all()
+  serializer_class = WeaponDamageSerializer
+
+class WeaponUsageViewSet(viewsets.ModelViewSet):
+  queryset = WeaponUsage.objects.all()
+  serializer_class = WeaponUsageSerializer
+
+class WeaponOwnedViewSet(viewsets.ModelViewSet):
+  queryset = WeaponOwned.objects.all()
+  serializer_class = WeaponOwnedSerializer
+
+#django tempalte views
 class IndexView(generic.ListView):
   template_name = 'items/index.html'
   context_object_name = 'item_list'

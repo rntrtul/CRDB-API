@@ -3,11 +3,57 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
+from .models import Rolls, RollType, Advantage, AdvantageType, Kill, Die
+from .serializers import RollsSerializer, RollTypeSerializer, AdvantageSerializer, AdvantageTypeSerializer, KillSerializer, DieSerializer
+from rest_framework import generics, viewsets
 
-
-from .models import Rolls, RollType
 # Create your views here.
+#REST views
+class RollsViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  Rolls.objects.order_by('ep','time_stamp')[:500]
+    return Rolls.objects.all()
 
+  serializer_class = RollsSerializer
+
+class RollTypeViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  RollType.objects.annotate(num_rolls=Count('rolls')).order_by('-num_rolls')
+    return RollType.objects.all()
+    
+  serializer_class = RollTypeSerializer
+
+class AdvantageTypeViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  AdvantageType.objects.order_by('name')
+    return AdvantageType.objects.all()
+
+  serializer_class = AdvantageTypeSerializer
+
+class AdvantageViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  Advantage.objects.order_by('used__ep')
+    return Advantage.objects.all()
+
+  serializer_class = AdvantageSerializer
+
+class KillViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  Kill.objects.order_by('-count', 'roll')
+    return Kill.objects.all()
+
+  serializer_class = KillSerializer
+
+class DieViewSet(viewsets.ModelViewSet):
+  queryset = Die.objects.order_by('sides')
+  serializer_class = DieSerializer
+
+#django template views
 class IndexView(generic.ListView):
   template_name = 'rolls/index.html'
   context_object_name = 'rolls_list'

@@ -4,10 +4,64 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Count, Sum
 import logging
-from .models import Character, CharacterType, StatSheet
+from .models import Ability, AbilityScore, Alignment, Character, CharacterType, ClassTaken, SavingThrow, Skill, SkillList, StatSheet
 from rolls.models import RollType
+from rest_framework import generics, viewsets
+from .serializers import (AbilitySerializer, AbilityScoreSerializer, AlignmentSerializer, CharacterSerializer, CharacterDetailSerializer,CharacterTypeSerializer,
+                          ClassTakenSerializer,SavingThrowSerializer, SkillSerializer, SkillListSerializer, StatSheetSerializer, StatSheetDetailSerializer)
 
-logger = logging.getLogger(__name__)
+# REST views
+class AbilityViewSet(viewsets.ModelViewSet):
+  queryset = Ability.objects.all()
+  serializer_class = AbilitySerializer
+
+class AbilityScoreViewSet(viewsets.ModelViewSet):
+  queryset = AbilityScore.objects.all()
+  serializer_class = AbilityScoreSerializer
+
+class AlignmentViewSet(viewsets.ModelViewSet):
+  queryset = Alignment.objects.all()
+  serializer_class = AlignmentSerializer
+
+class CharacterViewSet(viewsets.ModelViewSet):
+  def get_serializer_class(self):
+    if self.action == 'list':
+      return CharacterSerializer
+    elif self.action == 'retrieve':
+      return CharacterDetailSerializer
+
+  queryset = Character.objects.all()
+
+class CharacterTypeViewSet(viewsets.ModelViewSet):
+  queryset = CharacterType.objects.all()
+  serializer_class = CharacterTypeSerializer
+
+class ClassTakenViewSet(viewsets.ModelViewSet):
+  queryset = ClassTaken.objects.all()
+  serializer_class = ClassTakenSerializer
+
+class SavingThrowViewSet(viewsets.ModelViewSet):
+  queryset = SavingThrow.objects.all()
+  serializer_class = SavingThrowSerializer
+
+class SkillViewSet(viewsets.ModelViewSet):
+  queryset = Skill.objects.all()
+  serializer_class = SkillSerializer
+
+class SkillListViewSet(viewsets.ModelViewSet):
+  queryset = SkillList.objects.all()
+  serializer_class = SkillListSerializer
+
+class StatSheetViewSet (viewsets.ModelViewSet):
+  def get_serializer_class(self):
+    if self.action == 'list':
+      return StatSheetSerializer
+    elif self.action == 'retrieve':
+      return StatSheetDetailSerializer
+
+  queryset = StatSheet.objects.all()
+
+# Django template views
 class IndexView(generic.ListView):
   template_name = 'characters/index.html'
   context_object_name = 'character_list'
