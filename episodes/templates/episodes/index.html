@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %} 
+    {% if ep_list %}
+        <h1>Episode List:</h1>
+        <ul>
+        {% for ep in ep_list %}
+            {%if ep.num == 1%}
+                <h3>Campaign {{ep.campaign.num}}: {{ep.campaign.name}}</h3>
+            {%endif%}
+            <li>EP {{ ep.num }}:<a href="{%url 'episodes:detail' ep.id%}">{{ ep.title}}</a> ({{ep.rolls.count}})</li>
+            
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No episodes are available.</p>
+{% endif %}
+{%endblock%}

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>{{ potionusage.potion.name }}</h1>
+  <p>EP: <a href="{%url 'episodes:detail' potionusage.episode_id%}">{{potionusage.episode.title}} ({{potionusage.episode.num}})</a></p>
+  <p>From: <a href="{%url 'characters:detail' potionusage.by_id%}">{{potionusage.by.name}}</a></p>
+  <p>To: <a href="{%url 'characters:detail' potionusage.to_id%}">{{potionusage.to.name}}</a></p>
+  <p>Notes: {{potionusage.notes}}</p>
+{% endblock%}

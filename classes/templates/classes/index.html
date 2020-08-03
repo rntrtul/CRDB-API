@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %} 
+    {% if class_list %}
+        <h1>All Classes:</h1>
+        <ul>
+        {% for class in class_list %}
+            <li><a href="{%url 'classes:detail' class.id%}">{{ class.name}}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sorry, no classes are currently available.</p>
+    {% endif %}
+{%endblock%}

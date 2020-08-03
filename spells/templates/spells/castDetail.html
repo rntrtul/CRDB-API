@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>BY {{spellcast.character.name}}</h1>
+  <h2>Spell: {{spellcast.spell.name}}</h2>
+  <p>AT LEVEL: {%if spellcast.cast_level != 0%} {{spellcast.cast_level}} {%else%} Unknown {%endif%}</p>
+  <p> IN EP: {{spellcast.episode.title}} ({{spellcast.episode.num}})</p>
+  <p>Notes: {{spellcast.notes}}</p>
+
+{% endblock%}

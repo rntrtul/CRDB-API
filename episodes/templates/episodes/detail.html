@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{%load episodes_extra%}
+{% block content %} 
+    <title>{{episode.title}}</title>
+    <h1>Title: {{episode.title }}</h1>
+    <h2>Number: {{episode.num}}</h2>
+    <p>Campaign: {{episode.campaign.num}}/
+        <a href="{%url 'campaigns:detail' episode.campaign_id%}">{{episode.campaign.name}}</a>
+    </p>
+    <p>Description: {{episode.description}}</p>
+    <p>Length: {%format_time episode.length%}</p>
+    <p>Gameplay Time: {%format_time episode.gameplay_length%}</p>
+    <p>First Half length: {%format_time episode.first_half_length%}</p>
+    <p>Second Half length: {%format_time episode.second_half_length%}</p>
+    <p>Break length:
+        <abbr title= "{%format_duration episode.first_half_end episode.second_half_start%}" >{%format_time episode.break_length%}</abbr>
+    </p>
+
+    {%if apperances%}
+        <h3>Characters: </h3>
+
+        <ul>
+        {%for app in apperances%}
+            <li><a href="{%url 'characters:detail' app.character_id%}">{{app.character.full_name}}</a></li>
+        {%endfor%}
+        </ul>
+		{%endif%}
+		
+    {%if level_progs%}
+        <h3>Level Progressions: </h3>
+        <ul>
+        {%for lp in level_progs%}
+            <li>{{lp.sheet.character.name}} leveled up to: {{lp.sheet.get_level_verbose}} </li>
+        {%endfor%}
+        </ul>
+    {%endif%}
+
+    {%if encounters%}
+        <h3>Combat Encounters: </h3>
+        <ul>
+        {%for en in encounters%}
+            <li>'{{en.name}}' start: {%format_time en.start%} end: {%format_time en.end%} rounds: {{en.rounds}}</li>
+        {%endfor%}
+        </ul>
+    {%endif%}
+    <h3>All Rolls  ({{rolls.count}}):</h3>
+    
+    <table>
+        <tr>
+            <th>Time Stamp</th>
+            <th>Character</th>
+            <th>Roll Type</th>
+            <th>Final Value</th>
+            <th>Natural Value</th>
+            <th>Notes</th>
+            <th>Damage</th>
+            <th>Kills</th>
+        </tr>
+    {% for roll in rolls %}
+        <tr>    
+            {%with time=roll.time_stamp|stringformat:"i"%}
+            {%if roll.notes|startswith:'p2'%}
+                <td><a href ={{yt_link_p2|add:time}} >{%format_time roll.time_stamp%}</a> p2</td>
+            {%else%}
+                <td><a href ={{yt_link|add:time}} >{%format_time roll.time_stamp%}</a> {%if roll.notes|startswith:'p1'%}p1{%endif%}</td>
+            {%endif%}
+            {%endwith%}
+            <td><a href = "{%url 'characters:detail' roll.character_id%}">{{roll.character.name}}</a></td>
+            <td><a href = "{%url 'rolls:typeDetail' roll.roll_type_id%}">{{roll.roll_type.name}}</a></td>
+            <td>{{roll.final_value|default_if_none:"&nbsp;"}}</td>
+            <td>{{roll.natural_value|default_if_none:"&nbsp;"}}</td>
+            <td>{{roll.notes}}</td>
+            <td>{{roll.damage}}</td>
+            <td>{{roll.kill_count}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{%endblock%}

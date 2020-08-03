@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>{{character.full_name}}</h1>
+  <h3>
+    {%if character.player%}
+    Player:<a href="{%url 'players:detail' character.player_id%}">{{character.player.full_name}}</a>
+    {%endif%}
+  </h3>
+  <p>
+    Race: <a href="{%url 'races:detail' character.race_id%}">{{character.race.name}}</a>
+  </p>
+  <p>Character Type: <a href="{%url 'characters:typeDetail' character.char_type_id%}">{{character.char_type.name}}</a></p>
+  <h3>Damage Dealt: {{damage_dealt}} Avg{{avg_damage_dealt}}</h3>
+
+  <h3>Stat Sheets: </h3>
+  <ul>
+  {%for sheet in statsheets%}
+    <li><a href="{%url 'characters:statDetail' sheet.id%}"> level: {{sheet.level}}</a></li>
+  {%endfor%}
+  </ul>
+  
+  {%if character.apperances%}
+    <h3>Appears in {{character.apperances.count}} episodes: </h3>
+      
+    <ul>
+    {%for apperance in character.apperances.all%}
+        <li><a href="{%url 'episodes:detail' apperance.episode_id%}">{{apperance.episode.title}}</a></li>
+    {%endfor%}
+    </ul>
+  {%endif%}
+
+  <h3>Total Rolls ({{total_rolls}}):</h3>
+  <ul>
+    {% for roll in display_rolls %}
+        <li><a href="{%url 'rolls:detail' roll.id%}">{{ roll.time_formated}}</a></li>
+    {% endfor %}
+  </ul>
+
+{%endblock%}

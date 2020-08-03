@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %} 
+    {% if type_list %}
+        <h1>All Roll Types:</h1>
+        <ul>
+        {% for type in type_list %}
+            <li><a href="{%url 'rolls:typeDetail' type.id%}">{{ type.name}}</a> ({{type.rolls.count}})</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sorry, no roll types are currently available.</p>
+    {% endif %}
+{%endblock%}

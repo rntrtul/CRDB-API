@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %} 
+    {% if type_list %}
+        <h1>All character Types:</h1>
+        <ul>
+        {% for type in type_list %}
+            <li><a href="{%url 'characters:typeDetail' type.id%}">{{ type.name}}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sorry, no character types are currently available.</p>
+    {% endif %}
+{%endblock%}

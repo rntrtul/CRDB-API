@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %} 
+  <h1>{{ potion.name }}</h1>
+
+  <h2>Uses:</h2>
+  <ul>
+  {%for use in usage_list%}
+    <li><a href="{%url 'items:potionUsageDetail' use.id%}">{{use.by.name}} to: {{use.to.name}}</a></li>
+  {%endfor%}
+  </ul>
+{% endblock%}

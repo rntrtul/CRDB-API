@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %} 
+    {% if race_list %}
+        <h1>All Races:</h1>
+        <ul>
+        {% for race in race_list %}
+            <li><a href="{%url 'races:detail' race.id%}">{{race.name}}</a> ({{race.characters.count}})</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Sorry, no races are currently available.</p>
+    {% endif %}
+{%endblock%}
