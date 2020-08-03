@@ -12,7 +12,7 @@ from rest_framework import generics, viewsets
 class RollsViewSet(viewsets.ModelViewSet):
   def get_queryset(self):
     if self.action == 'list':
-        return  Rolls.objects.order_by('ep','time_stamp')[:100]
+        return  Rolls.objects.order_by('ep','time_stamp')[:500]
     return Rolls.objects.all()
 
   serializer_class = RollsSerializer

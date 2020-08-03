@@ -272,8 +272,8 @@ for dirpath,dirnames,files in os.walk(CURR):
           skl = SkillList.objects.update_or_create(skill=sk, stat_sheet=sheet,defaults={'proficient': True} )
 
     sheet.save()
-    if ep_num !=0:
-      ep = Episode.objects.get(num=ep_num, campaign=CAMP)
-      lp = LevelProg.objects.get_or_create(sheet=sheet, episode = ep, level=sheet.get_level())
-      if lp[1]:
-        print(name + " leveled to " + str(lvl) + " on episode " + str(ep_num))
+    #if ep_num !=0:
+    #  ep = Episode.objects.get(num=ep_num, campaign=CAMP)
+    #  lp = LevelProg.objects.get_or_create(sheet=sheet, episode = ep, level=sheet.get_level())
+    #  if lp[1]:
+    #    print(name + " leveled to " + str(lvl) + " on episode " + str(ep_num))

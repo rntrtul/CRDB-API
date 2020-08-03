@@ -16,7 +16,6 @@ class WeaponSerializer (serializers.ModelSerializer):
     model = Weapon
     fields = ('id', 'name', 'attack_bonus')
 
-
 class WeaponDamageSerializer (serializers.ModelSerializer):
   class Meta:
     model = WeaponDamage
@@ -25,8 +24,8 @@ class WeaponDamageSerializer (serializers.ModelSerializer):
 class WeaponOwnedSerializer (serializers.ModelSerializer):
   class Meta:
     model = WeaponOwned
-    fields = ('id', 'sheet', 'weapon')
-
+    fields = ('id', 'weapon')
+    depth = 1
 
 class WeaponUsageSerializer (serializers.ModelSerializer):
   class Meta:

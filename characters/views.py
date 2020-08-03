@@ -7,8 +7,8 @@ import logging
 from .models import Ability, AbilityScore, Alignment, Character, CharacterType, ClassTaken, SavingThrow, Skill, SkillList, StatSheet
 from rolls.models import RollType
 from rest_framework import generics, viewsets
-from .serializers import (AbilitySerializer, AbilityScoreSerializer, AlignmentSerializer, CharacterSerializer, CharacterTypeSerializer, ClassTakenSerializer,
-                          SavingThrowSerializer, SkillSerializer, SkillListSerializer, StatSheetSerializer, StatSheetDetailSerializer)
+from .serializers import (AbilitySerializer, AbilityScoreSerializer, AlignmentSerializer, CharacterSerializer, CharacterDetailSerializer,CharacterTypeSerializer,
+                          ClassTakenSerializer,SavingThrowSerializer, SkillSerializer, SkillListSerializer, StatSheetSerializer, StatSheetDetailSerializer)
 
 # REST views
 class AbilityViewSet(viewsets.ModelViewSet):
@@ -24,8 +24,13 @@ class AlignmentViewSet(viewsets.ModelViewSet):
   serializer_class = AlignmentSerializer
 
 class CharacterViewSet(viewsets.ModelViewSet):
+  def get_serializer_class(self):
+    if self.action == 'list':
+      return CharacterSerializer
+    elif self.action == 'retrieve':
+      return CharacterDetailSerializer
+
   queryset = Character.objects.all()
-  serializer_class = CharacterSerializer
 
 class CharacterTypeViewSet(viewsets.ModelViewSet):
   queryset = CharacterType.objects.all()

@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include,  path
+from django.conf.urls import url
 
 urlpatterns = [
     path('languages/', include('languages.urls')),
@@ -31,3 +32,5 @@ urlpatterns = [
     path('episodes/', include('episodes.urls')),
     path('admin/', admin.site.urls),
 ]
+
+urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]

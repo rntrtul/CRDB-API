@@ -16,7 +16,7 @@ urlpatterns = [
   path ('api/alignment'             , views.AlignmentViewSet.as_view({'get':'list'})),
   path ('api/alignment/<int:pk>'    , views.AlignmentViewSet.as_view({'get':'retrieve'})),
   path ('api/character'             , views.CharacterViewSet.as_view({'get':'list'})),
-  path ('api/character/<int:pk>'    , views.CharacterViewSet.as_view({'get':'retrieve'})),
+  path ('api/character/<int:pk>'    , views.CharacterViewSet.as_view({'get':'retrieve'}), name='character-detail'),
   path ('api/charactertype'         , views.CharacterTypeViewSet.as_view({'get':'list'})),
   path ('api/charactertype/<int:pk>', views.CharacterTypeViewSet.as_view({'get':'retrieve'})),
   path ('api/classtaken'            , views.ClassTakenViewSet.as_view({'get':'list'})),

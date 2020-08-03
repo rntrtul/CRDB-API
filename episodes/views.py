@@ -5,7 +5,7 @@ from django.views import generic
 from django.db.models import Count
 from itertools import chain
 from rest_framework import generics, viewsets
-from .serializers import (EpisodeSerializer, ApperanceSerializer, AttendanceSerializer, ApperanceTypeSerializer,
+from .serializers import (EpisodeSerializer,EpisodeDetailSerializer, ApperanceSerializer, AttendanceSerializer, ApperanceTypeSerializer,
                           AttendanceTypeSerializer, LiveSerializer, VodLinksSerializer, VodTypeSerializer)
 from .models import Episode, Apperance, LevelProg, VodType, Attendance, ApperanceType, AttendanceType, Live, VodLinks
 from rolls.models import Rolls
@@ -13,8 +13,13 @@ from rolls.models import Rolls
 
 #REST API views
 class EpisodeViewSet(viewsets.ModelViewSet):
+  def get_serializer_class(self):
+    if self.action == 'list':
+      return EpisodeSerializer
+    elif self.action == 'retrieve':
+      return EpisodeDetailSerializer
+
   queryset = Episode.objects.order_by('campaign','num')
-  serializer_class = EpisodeSerializer
 
 class ApperanceViewSet(viewsets.ModelViewSet):
   queryset = Apperance.objects.all()
