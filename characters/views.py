@@ -6,88 +6,48 @@ from django.db.models import Count, Sum
 import logging
 from .models import Ability, AbilityScore, Alignment, Character, CharacterType, ClassTaken, SavingThrow, Skill, SkillList, StatSheet
 from rolls.models import RollType
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from .serializers import (AbilitySerializer, AbilityScoreSerializer, AlignmentSerializer, CharacterSerializer, CharacterTypeSerializer, ClassTakenSerializer,
                           SavingThrowSerializer, SkillSerializer, SkillListSerializer, StatSheetSerializer)
 
 # REST views
-class AbilityList(generics.ListAPIView):
+class AbilityViewSet(viewsets.ModelViewSet):
   queryset = Ability.objects.all()
   serializer_class = AbilitySerializer
 
-class AbilityDetail(generics.RetrieveAPIView):
-  queryset = Ability.objects.all()
-  serializer_class = AbilitySerializer
-
-class AbilityScoreList(generics.ListAPIView):
+class AbilityScoreViewSet(viewsets.ModelViewSet):
   queryset = AbilityScore.objects.all()
   serializer_class = AbilityScoreSerializer
 
-class AbilityScoreDetail(generics.RetrieveAPIView):
-  queryset = AbilityScore.objects.all()
-  serializer_class = AbilityScoreSerializer
-
-class AlignmentList(generics.ListAPIView):
+class AlignmentViewSet(viewsets.ModelViewSet):
   queryset = Alignment.objects.all()
   serializer_class = AlignmentSerializer
 
-class AlignmentDetail(generics.RetrieveAPIView):
-  queryset = Alignment.objects.all()
-  serializer_class = AlignmentSerializer
-
-class CharacterList(generics.ListAPIView):
+class CharacterViewSet(viewsets.ModelViewSet):
   queryset = Character.objects.all()
   serializer_class = CharacterSerializer
 
-class CharacterDetail(generics.RetrieveAPIView):
-  queryset = Character.objects.all()
-  serializer_class = CharacterSerializer
-
-class CharacterTypeList(generics.ListAPIView):
+class CharacterTypeViewSet(viewsets.ModelViewSet):
   queryset = CharacterType.objects.all()
   serializer_class = CharacterTypeSerializer
 
-class CharacterTypeDetail(generics.RetrieveAPIView):
-  queryset = CharacterType.objects.all()
-  serializer_class = CharacterTypeSerializer
-
-class ClassTakenList(generics.ListAPIView):
+class ClassTakenViewSet(viewsets.ModelViewSet):
   queryset = ClassTaken.objects.all()
   serializer_class = ClassTakenSerializer
 
-class ClassTakenDetail(generics.RetrieveAPIView):
-  queryset = ClassTaken.objects.all()
-  serializer_class = ClassTakenSerializer
-
-class SavingThrowList(generics.ListAPIView):
+class SavingThrowViewSet(viewsets.ModelViewSet):
   queryset = SavingThrow.objects.all()
   serializer_class = SavingThrowSerializer
 
-class SavingThrowDetail(generics.RetrieveAPIView):
-  queryset = SavingThrow.objects.all()
-  serializer_class = SavingThrowSerializer
-
-class SkillsList(generics.ListAPIView):
+class SkillViewSet(viewsets.ModelViewSet):
   queryset = Skill.objects.all()
   serializer_class = SkillSerializer
 
-class SkillsDetail(generics.RetrieveAPIView):
-  queryset = Skill.objects.all()
-  serializer_class = SkillSerializer
-
-class SkillListList(generics.ListAPIView):
+class SkillListViewSet(viewsets.ModelViewSet):
   queryset = SkillList.objects.all()
   serializer_class = SkillListSerializer
 
-class SkillListDetail(generics.RetrieveAPIView):
-  queryset = SkillList.objects.all()
-  serializer_class = SkillListSerializer
-
-class StatSheetList(generics.ListAPIView):
-  queryset = StatSheet.objects.all()
-  serializer_class = StatSheetSerializer
-
-class StatSheetDetail(generics.RetrieveAPIView):
+class StatSheetViewSet (viewsets.ModelViewSet):
   queryset = StatSheet.objects.all()
   serializer_class = StatSheetSerializer
 

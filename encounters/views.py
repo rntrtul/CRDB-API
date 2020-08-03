@@ -6,31 +6,19 @@ from django.db.models import Count
 from .models import CombatEncounter, CombatApperance, InitiativeOrder
 from rolls.models import Rolls
 from .serializers import CombatEncounterSerializer, CombatApperanceSerializer, InitiativeOrderSerializer
-from rest_framework import generics
+from rest_framework import generics, viewsets
 # Create your views here.
 
 # REST views
-class CombatEncounterList(generics.ListAPIView):
+class CombatEncounterViewSet(viewsets.ModelViewSet):
   queryset = CombatEncounter.objects.all()
   serializer_class = CombatEncounterSerializer
 
-class CombatEncounterDetail(generics.RetrieveAPIView):
-  queryset = CombatEncounter.objects.all()
-  serializer_class = CombatEncounterSerializer
-
-class CombatApperanceList(generics.ListAPIView):
+class CombatApperanceViewSet(viewsets.ModelViewSet):
   queryset = CombatApperance.objects.all()
   serializer_class = CombatApperanceSerializer
 
-class CombatApperanceDetail(generics.RetrieveAPIView):
-  queryset = CombatApperance.objects.all()
-  serializer_class = CombatApperanceSerializer
-
-class InitiativeOrderList(generics.ListAPIView):
-  queryset = InitiativeOrder.objects.all()
-  serializer_class = InitiativeOrderSerializer
-
-class InitiativeOrderDetail(generics.RetrieveAPIView):
+class InitiativeOrderViewSet(viewsets.ModelViewSet):
   queryset = InitiativeOrder.objects.all()
   serializer_class = InitiativeOrderSerializer
 

@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
 from itertools import chain
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from .serializers import (EpisodeSerializer, ApperanceSerializer, AttendanceSerializer, ApperanceTypeSerializer,
                           AttendanceTypeSerializer, LiveSerializer, VodLinksSerializer, VodTypeSerializer)
 from .models import Episode, Apperance, LevelProg, VodType, Attendance, ApperanceType, AttendanceType, Live, VodLinks
@@ -12,67 +12,35 @@ from rolls.models import Rolls
 # Create your views here.
 
 #REST API views
-class EpisodeList(generics.ListAPIView):
+class EpisodeViewSet(viewsets.ModelViewSet):
   queryset = Episode.objects.order_by('campaign','num')
   serializer_class = EpisodeSerializer
 
-class EpisodeDetail(generics.RetrieveAPIView):
-  queryset = Episode.objects.all()
-  serializer_class = EpisodeSerializer
-
-class ApperanceList(generics.ListAPIView):
+class ApperanceViewSet(viewsets.ModelViewSet):
   queryset = Apperance.objects.all()
   serializer_class = ApperanceSerializer
 
-class ApperanceDetail(generics.RetrieveAPIView):
-  queryset = Apperance.objects.all()
-  serializer_class = ApperanceSerializer
-
-class ApperanceTypeList(generics.ListAPIView):
+class ApperanceTypeViewSet(viewsets.ModelViewSet):
   queryset = ApperanceType.objects.order_by('name')
   serializer_class = ApperanceTypeSerializer
 
-class ApperanceTypeDetail(generics.RetrieveAPIView):
-  queryset = ApperanceType.objects.all()
-  serializer_class = ApperanceTypeSerializer
-
-class AttendanceList(generics.ListAPIView):
+class AttendanceViewSet(viewsets.ModelViewSet):
   queryset = Attendance.objects.all()
   serializer_class = AttendanceSerializer
 
-class AttendanceDetail(generics.RetrieveAPIView):
-  queryset = Attendance.objects.all()
-  serializer_class = AttendanceSerializer
-
-class AttendanceTypeList(generics.ListAPIView):
+class AttendanceTypeViewSet(viewsets.ModelViewSet):
   queryset = AttendanceType.objects.order_by('name')
   serializer_class = AttendanceTypeSerializer
 
-class AttendanceTypeDetail(generics.RetrieveAPIView):
-  queryset = AttendanceType.objects.all()
-  serializer_class = AttendanceTypeSerializer
-
-class LiveList(generics.ListAPIView):
+class LiveViewSet(viewsets.ModelViewSet):
   queryset = Live.objects.order_by('episode')
   serializer_class = LiveSerializer
 
-class LiveDetail(generics.RetrieveAPIView):
-  queryset = Live.objects.all()
-  serializer_class = LiveSerializer
-
-class VodTypeList(generics.ListAPIView):
+class VodTypeViewSet(viewsets.ModelViewSet):
   queryset = VodType.objects.order_by('name')
   serializer_class = VodTypeSerializer
 
-class VodTypeDetail(generics.RetrieveAPIView):
-  queryset = VodType.objects.order_by('name')
-  serializer_class = VodTypeSerializer
-
-class VodLinksList(generics.ListAPIView):
-  queryset = VodLinks.objects.all()
-  serializer_class = VodLinksSerializer
-
-class VodLinksDetail(generics.RetrieveAPIView):
+class VodLinksViewSet(viewsets.ModelViewSet):
   queryset = VodLinks.objects.all()
   serializer_class = VodLinksSerializer
 

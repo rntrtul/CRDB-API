@@ -6,6 +6,6 @@ urlpatterns = [
   path ('', views.IndexView.as_view(), name='index'),
   path('<int:pk>/', views.DetailView.as_view(), name='detail'),
   #REST API URLs
-  path ('api/class', views.ClassList.as_view()),
-  path ('api/class/<int:pk>', views.ClassDetail.as_view()),
+  path ('api/class'           , views.ClassViewSet.as_view({'get':'list'})),
+  path ('api/class/<int:pk>'  , views.ClassViewSet.as_view({'get':'retrieve'})),
 ]

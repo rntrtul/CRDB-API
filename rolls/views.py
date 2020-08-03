@@ -5,56 +5,52 @@ from django.views import generic
 from django.db.models import Count
 from .models import Rolls, RollType, Advantage, AdvantageType, Kill, Die
 from .serializers import RollsSerializer, RollTypeSerializer, AdvantageSerializer, AdvantageTypeSerializer, KillSerializer, DieSerializer
-from rest_framework import generics
+from rest_framework import generics, viewsets
 
 # Create your views here.
 #REST views
-class RollsList(generics.ListAPIView):
-  queryset = Rolls.objects.order_by('ep','time_stamp')[:100]
+class RollsViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  Rolls.objects.order_by('ep','time_stamp')[:100]
+    return Rolls.objects.all()
+
   serializer_class = RollsSerializer
 
-class RollsDetail(generics.RetrieveAPIView):
-  queryset = Rolls.objects.all()
-  serializer_class = RollsSerializer
-
-class RollTypeList(generics.ListAPIView):
-  queryset = RollType.objects.annotate(num_rolls=Count('rolls')).order_by('-num_rolls')
+class RollTypeViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  RollType.objects.annotate(num_rolls=Count('rolls')).order_by('-num_rolls')
+    return RollType.objects.all()
+    
   serializer_class = RollTypeSerializer
 
-class RollTypeDetail(generics.RetrieveAPIView):
-  queryset = RollType.objects.all()
-  serializer_class = RollTypeSerializer
+class AdvantageTypeViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  AdvantageType.objects.order_by('name')
+    return AdvantageType.objects.all()
 
-class AdvantageTypeList(generics.ListAPIView):
-  queryset = AdvantageType.objects.order_by('name')
   serializer_class = AdvantageTypeSerializer
 
-class AdvantageTypeDetail(generics.RetrieveAPIView):
-  queryset = AdvantageType.objects.all()
-  serializer_class = AdvantageTypeSerializer
+class AdvantageViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  Advantage.objects.order_by('used__ep')
+    return Advantage.objects.all()
 
-class AdvantageList(generics.ListAPIView):
-  queryset = Advantage.objects.order_by('used__ep')
   serializer_class = AdvantageSerializer
 
-class AdvantageDetail(generics.RetrieveAPIView):
-  queryset = Advantage.objects.all()
-  serializer_class = AdvantageSerializer
+class KillViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  Kill.objects.order_by('-count', 'roll')
+    return Kill.objects.all()
 
-class KillList(generics.ListAPIView):
-  queryset = Kill.objects.order_by('-count', 'roll')
   serializer_class = KillSerializer
 
-class KillDetail(generics.RetrieveAPIView):
-  queryset = Kill.objects.all()
-  serializer_class = KillSerializer
-
-class DieList(generics.ListAPIView):
+class DieViewSet(viewsets.ModelViewSet):
   queryset = Die.objects.order_by('sides')
-  serializer_class = DieSerializer
-
-class DieDetail(generics.RetrieveAPIView):
-  queryset = Die.objects.all()
   serializer_class = DieSerializer
 
 #django template views

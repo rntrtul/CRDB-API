@@ -47,11 +47,14 @@ class SkillListSerializer (serializers.ModelSerializer):
     fields = ('id', 'stat_sheet', 'skill', 'modifier', 'proficient')
 
 class StatSheetSerializer (serializers.ModelSerializer):
+  sheet_ability_scores = AbilityScoreSerializer(source ='ability_scores', many =True)
+  sheet_saving_throws = SavingThrowSerializer(source='saving_throws', many=True)
   class Meta:
     model = StatSheet
-    fields = ('id', 'character', 'alignment', 'max_health', 'level', 'armour_class', 'speed', 'initiative_bonus',
+    fields = ['sheet_saving_throws','sheet_ability_scores', 'id', 'character', 'alignment', 'max_health', 'level', 'armour_class', 'speed', 'initiative_bonus',
               'proficiency_bonus', 'hit_die', 'inspiration_die', 'equipment', 'features_traits', 'attacks',
               'weapons', 'proficiencies', 'casting_ability', 'casting_class', 'spell_attack_bonus',
               'spell_save', 'cantrips', 'slots_one', 'slots_two', 'slots_three', 'slots_four', 'slots_five',
-              'slots_six', 'slots_seven', 'slots_eight', 'slots_nine')
+              'slots_six', 'slots_seven', 'slots_eight', 'slots_nine']
+    depth = 2
 

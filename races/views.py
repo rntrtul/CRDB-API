@@ -2,16 +2,12 @@ from django.shortcuts import get_object_or_404,  render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from .serializers import RaceSerializer
 from .models import Race
 
 # REST views
-class RaceList(generics.ListAPIView):
-  queryset = Race.objects.all()
-  serializer_class = RaceSerializer
-
-class RaceDetail(generics.RetrieveAPIView):
+class RaceViewSet(viewsets.ModelViewSet):
   queryset = Race.objects.all()
   serializer_class = RaceSerializer
 

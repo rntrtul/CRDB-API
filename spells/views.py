@@ -2,32 +2,20 @@ from django.shortcuts import get_object_or_404,  render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from .serializers import SpellSerializer, SpellCastSerializer, LearnedSpellSerializer
 from .models import Spell, SpellCast, LearnedSpell
 
 # REST views
-class SpellList(generics.ListAPIView):
+class SpellViewSet(viewsets.ModelViewSet):
   queryset = Spell.objects.all()
   serializer_class = SpellSerializer
 
-class SpellDetail(generics.RetrieveAPIView):
-  queryset = Spell.objects.all()
-  serializer_class = SpellSerializer
-
-class SpellCastList(generics.ListAPIView):
+class SpellCastViewSet(viewsets.ModelViewSet):
   queryset = SpellCast.objects.all()
   serializer_class = SpellCastSerializer
 
-class SpellCastDetail(generics.RetrieveAPIView):
-  queryset = SpellCast.objects.all()
-  serializer_class = SpellCastSerializer
-
-class LearnedSpellList(generics.ListAPIView):
-  queryset = LearnedSpell.objects.all()
-  serializer_class = LearnedSpellSerializer
-
-class LearnedSpellDetail(generics.RetrieveAPIView):
+class LearnedSpellViewSet(viewsets.ModelViewSet):
   queryset = LearnedSpell.objects.all()
   serializer_class = LearnedSpellSerializer
 

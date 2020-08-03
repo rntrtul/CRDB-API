@@ -1,22 +1,19 @@
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from .serializers import DamageSerializer, DamageTypeSerializer
 from .models import Damage, DamageType
 
 # Create your views here.
-class DamageList(generics.ListAPIView):
-  queryset = Damage.objects.order_by('-points').all()[:500]
+class DamageViewSet(viewsets.ModelViewSet):
+  def get_queryset(self):
+    if self.action == 'list':
+        return  Damage.objects.order_by('-points').all()[:500]
+    return Damage.objects.all()
+
   serializer_class = DamageSerializer
 
-class DamageDetail(generics.RetrieveAPIView):
-  queryset = Damage.objects.all()
-  serializer_class = DamageSerializer
   
-class DamageTypeList(generics.ListAPIView):
-  queryset = DamageType.objects.order_by('name')
-  serializer_class = DamageTypeSerializer
-
-class DamageTypeDetail(generics.RetrieveAPIView):
+class DamageTypeViewSet(viewsets.ModelViewSet):
   queryset = DamageType.objects.order_by('name')
   serializer_class = DamageTypeSerializer
 
