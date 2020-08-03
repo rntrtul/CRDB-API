@@ -3,7 +3,20 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
+from rest_framework import generics
+from .serializers import PlayerSerializer
 from .models import Player
+
+# REST views
+class PlayerList(generics.ListAPIView):
+  queryset = Player.objects.all()
+  serializer_class = PlayerSerializer
+
+class PlayerDetail(generics.RetrieveAPIView):
+  queryset = Player.objects.all()
+  serializer_class = PlayerSerializer
+
+# django template views
 class IndexView(generic.ListView):
   template_name = 'players/index.html'
   context_object_name = 'player_list'
