@@ -19,7 +19,7 @@ class WeaponDamage(models.Model):
   weapon =  models.ForeignKey(Weapon, related_name="damages", on_delete=models.CASCADE)
   die =  models.ForeignKey(Die, on_delete=models.CASCADE, blank=True, null=True)
 
-class WeaponeOwned(models.Model):
+class WeaponOwned(models.Model):
   sheet = models.ForeignKey(StatSheet, related_name="weapons_owned", on_delete=models.CASCADE)
   weapon = models.ForeignKey(Weapon, related_name="owners", on_delete=models.CASCADE)
 

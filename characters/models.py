@@ -35,7 +35,6 @@ class Skill(models.Model):
   ability = models.ForeignKey(Ability, related_name='skills', on_delete=models.CASCADE)
 
 class StatSheet(models.Model):
-  #add field for what episode they levelled up on default = 0, use level prog sheet
   # probably get rid of some null foreign key settings after data ingest
   character = models.ForeignKey(Character,related_name='stat_sheets', on_delete=models.CASCADE)
   alignment = models.ForeignKey(Alignment,related_name='stat_sheets', on_delete=models.CASCADE, null=True)
@@ -44,9 +43,9 @@ class StatSheet(models.Model):
   armour_class = models.IntegerField(default=0)
   speed = models.IntegerField(default=30)
   initiative_bonus = models.IntegerField(default=0)
-  proficiency_bonus = models.IntegerField(default=0)
-  hit_die = models.CharField(max_length=50)
-  inspiration_die = models.IntegerField(default=0)
+  proficiency_bonus = models.IntegerField(default=0) # remove since always based on total level
+  hit_die = models.CharField(max_length=50) #remove since can be calculated from level + class
+  inspiration_die = models.IntegerField(default=0) # remove can be calcualted from calss
   equipment = models.TextField(blank=True)
   features_traits = models.TextField(blank=True)
   attacks = models.TextField(blank=True)
@@ -104,7 +103,6 @@ class SavingThrow(models.Model):
   proficient = models.BooleanField(default=False)
 
 class ClassTaken(models.Model):
-  #need to change so its foreign_id to a stat sheet and character points to sheet
   stat_sheet = models.ForeignKey(StatSheet, related_name="classes", on_delete=models.CASCADE, null=True)
   class_id = models.ForeignKey(Class, related_name = 'sheets', on_delete=models.CASCADE)
   level = models.IntegerField(default=0)

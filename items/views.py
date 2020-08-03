@@ -3,9 +3,60 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.db.models import Sum
+from .models import Potion, PotionUsage, Weapon, WeaponDamage, WeaponUsage, WeaponOwned
+from rest_framework import generics
+from .serializers import PotionSerializer, PotionUsageSerializer, WeaponSerializer, WeaponDamageSerializer, WeaponOwnedSerializer, WeaponUsageSerializer
 
-from .models import Potion, PotionUsage, Weapon, WeaponDamage
+# REST views
+class PotionList(generics.ListAPIView):
+  queryset = Potion.objects.all()
+  serializer_class = PotionSerializer
 
+class PotionDetail(generics.RetrieveAPIView):
+  queryset = Potion.objects.all()
+  serializer_class = PotionSerializer
+
+class PotionUsageList(generics.ListAPIView):
+  queryset = PotionUsage.objects.all()
+  serializer_class = PotionUsageSerializer
+
+class PotionUsageDetail(generics.RetrieveAPIView):
+  queryset = PotionUsage.objects.all()
+  serializer_class = PotionUsageSerializer
+
+class WeaponList(generics.ListAPIView):
+  queryset = Weapon.objects.all()
+  serializer_class = WeaponSerializer
+
+class WeaponDetail(generics.RetrieveAPIView):
+  queryset = Weapon.objects.all()
+  serializer_class = WeaponSerializer
+
+class WeaponDamageList(generics.ListAPIView):
+  queryset = WeaponDamage.objects.all()
+  serializer_class = WeaponDamageSerializer
+
+class WeaponDamageDetail(generics.RetrieveAPIView):
+  queryset = WeaponDamage.objects.all()
+  serializer_class = WeaponDamageSerializer
+
+class WeaponUsageList(generics.ListAPIView):
+  queryset = WeaponUsage.objects.all()
+  serializer_class = WeaponUsageSerializer
+
+class WeaponUsageDetail(generics.RetrieveAPIView):
+  queryset = WeaponUsage.objects.all()
+  serializer_class = WeaponUsageSerializer
+
+class WeaponOwnedList(generics.ListAPIView):
+  queryset = WeaponOwned.objects.all()
+  serializer_class = WeaponOwnedSerializer
+
+class WeaponOwnedDetail(generics.RetrieveAPIView):
+  queryset = WeaponOwned.objects.all()
+  serializer_class = WeaponOwnedSerializer
+
+#django tempalte views
 class IndexView(generic.ListView):
   template_name = 'items/index.html'
   context_object_name = 'item_list'
