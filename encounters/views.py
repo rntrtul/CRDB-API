@@ -3,12 +3,26 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
-
-
-from .models import CombatEncounter, CombatApperance
+from .models import CombatEncounter, CombatApperance, InitiativeOrder
 from rolls.models import Rolls
+from .serializers import CombatEncounterSerializer, CombatApperanceSerializer, InitiativeOrderSerializer
+from rest_framework import generics, viewsets
 # Create your views here.
 
+# REST views
+class CombatEncounterViewSet(viewsets.ModelViewSet):
+  queryset = CombatEncounter.objects.all()
+  serializer_class = CombatEncounterSerializer
+
+class CombatApperanceViewSet(viewsets.ModelViewSet):
+  queryset = CombatApperance.objects.all()
+  serializer_class = CombatApperanceSerializer
+
+class InitiativeOrderViewSet(viewsets.ModelViewSet):
+  queryset = InitiativeOrder.objects.all()
+  serializer_class = InitiativeOrderSerializer
+
+# Django template views
 class IndexView(generic.ListView):
   template_name = 'encounters/index.html'
   context_object_name = 'encounters_list'

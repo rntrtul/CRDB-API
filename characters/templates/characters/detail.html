@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% block content %} 
   <h1>{{character.full_name}}</h1>
-  <h3>Player:<a href="{%url 'players:detail' character.player_id%}">{{character.player.full_name}}</a></h3>
+  <h3>
+    {%if character.player%}
+    Player:<a href="{%url 'players:detail' character.player_id%}">{{character.player.full_name}}</a>
+    {%endif%}
+  </h3>
   <p>
     Race: <a href="{%url 'races:detail' character.race_id%}">{{character.race.name}}</a>
   </p>

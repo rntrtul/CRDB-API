@@ -62,7 +62,7 @@
             {%if roll.notes|startswith:'p2'%}
                 <td><a href ={{yt_link_p2|add:time}} >{%format_time roll.time_stamp%}</a> p2</td>
             {%else%}
-                <td><a href ={{yt_link|add:time}} >{%format_time roll.time_stamp%}</a> p1</td>
+                <td><a href ={{yt_link|add:time}} >{%format_time roll.time_stamp%}</a> {%if roll.notes|startswith:'p1'%}p1{%endif%}</td>
             {%endif%}
             {%endwith%}
             <td><a href = "{%url 'characters:detail' roll.character_id%}">{{roll.character.name}}</a></td>

@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include,  path
+from django.conf.urls import url
 
 urlpatterns = [
+    path('languages/', include('languages.urls')),
+    path('damages/', include('damages.urls')),
     path('encounters/', include('encounters.urls')),
     path('spells/', include('spells.urls')),
     path('items/', include('items.urls')),
@@ -29,3 +32,5 @@ urlpatterns = [
     path('episodes/', include('episodes.urls')),
     path('admin/', admin.site.urls),
 ]
+
+urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]

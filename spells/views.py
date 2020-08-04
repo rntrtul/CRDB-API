@@ -2,9 +2,24 @@ from django.shortcuts import get_object_or_404,  render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
+from rest_framework import generics, viewsets
+from .serializers import SpellSerializer, SpellCastSerializer, LearnedSpellSerializer
+from .models import Spell, SpellCast, LearnedSpell
 
-from .models import Spell, SpellCast
+# REST views
+class SpellViewSet(viewsets.ModelViewSet):
+  queryset = Spell.objects.all()
+  serializer_class = SpellSerializer
 
+class SpellCastViewSet(viewsets.ModelViewSet):
+  queryset = SpellCast.objects.all()
+  serializer_class = SpellCastSerializer
+
+class LearnedSpellViewSet(viewsets.ModelViewSet):
+  queryset = LearnedSpell.objects.all()
+  serializer_class = LearnedSpellSerializer
+
+# django template views
 class IndexView(generic.ListView):
   template_name = 'spells/index.html'
   context_object_name = 'spell_list'

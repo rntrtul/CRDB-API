@@ -4,16 +4,58 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
 from itertools import chain
-
-from .models import Episode, Apperance, LevelProg, VodType
+from rest_framework import generics, viewsets
+from .serializers import (EpisodeSerializer,EpisodeDetailSerializer, ApperanceSerializer, AttendanceSerializer, ApperanceTypeSerializer,
+                          AttendanceTypeSerializer, LiveSerializer, VodLinksSerializer, VodTypeSerializer)
+from .models import Episode, Apperance, LevelProg, VodType, Attendance, ApperanceType, AttendanceType, Live, VodLinks
 from rolls.models import Rolls
 # Create your views here.
+
+#REST API views
+class EpisodeViewSet(viewsets.ModelViewSet):
+  def get_serializer_class(self):
+    if self.action == 'list':
+      return EpisodeSerializer
+    elif self.action == 'retrieve':
+      return EpisodeDetailSerializer
+
+  queryset = Episode.objects.order_by('campaign','num')
+
+class ApperanceViewSet(viewsets.ModelViewSet):
+  queryset = Apperance.objects.all()
+  serializer_class = ApperanceSerializer
+
+class ApperanceTypeViewSet(viewsets.ModelViewSet):
+  queryset = ApperanceType.objects.order_by('name')
+  serializer_class = ApperanceTypeSerializer
+
+class AttendanceViewSet(viewsets.ModelViewSet):
+  queryset = Attendance.objects.all()
+  serializer_class = AttendanceSerializer
+
+class AttendanceTypeViewSet(viewsets.ModelViewSet):
+  queryset = AttendanceType.objects.order_by('name')
+  serializer_class = AttendanceTypeSerializer
+
+class LiveViewSet(viewsets.ModelViewSet):
+  queryset = Live.objects.order_by('episode')
+  serializer_class = LiveSerializer
+
+class VodTypeViewSet(viewsets.ModelViewSet):
+  queryset = VodType.objects.order_by('name')
+  serializer_class = VodTypeSerializer
+
+class VodLinksViewSet(viewsets.ModelViewSet):
+  queryset = VodLinks.objects.all()
+  serializer_class = VodLinksSerializer
+
+
+# django template views 
 class IndexView(generic.ListView):
   template_name = 'episodes/index.html'
   context_object_name = 'ep_list'
 
   def get_queryset(self):
-    #return Episode.objects.annotate(num_rolls=Count('rolls')).order_by('-num_rolls')
     return Episode.objects.order_by('campaign','num')
 
 class DetailView(generic.DetailView):

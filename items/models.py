@@ -2,13 +2,11 @@ from django.db import models
 from characters.models import Character, StatSheet
 from episodes.models import Episode
 from rolls.models import Die, Rolls
+from damages.models import DamageType
 # Create your models here.
 class Potion(models.Model):
   name = models.TextField()
   description = models.TextField(blank=True)
-
-class DamageType(models.Model):
-  name = models.TextField()
 
 class Weapon(models.Model):
   name = models.TextField()
@@ -21,7 +19,7 @@ class WeaponDamage(models.Model):
   weapon =  models.ForeignKey(Weapon, related_name="damages", on_delete=models.CASCADE)
   die =  models.ForeignKey(Die, on_delete=models.CASCADE, blank=True, null=True)
 
-class WeaponeOwned(models.Model):
+class WeaponOwned(models.Model):
   sheet = models.ForeignKey(StatSheet, related_name="weapons_owned", on_delete=models.CASCADE)
   weapon = models.ForeignKey(Weapon, related_name="owners", on_delete=models.CASCADE)
 
@@ -36,4 +34,3 @@ class PotionUsage(models.Model):
 class WeaponUsage(models.Model):
   roll = models.ForeignKey(Rolls, on_delete = models.CASCADE)
   weapon = models.ForeignKey(Weapon, related_name='uses', on_delete=models.CASCADE)
-  #eventually add damage foreign key here
