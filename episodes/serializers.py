@@ -4,6 +4,7 @@ from rolls.serializers import RollsSerializer
 from encounters.serializers import CombatEncounterSerializer
 
 class EpisodeSerializer(serializers.ModelSerializer):
+	#campaign_name = serializers.CharField(source='campaign.name', read_only=True)
 	class Meta:
 		model = Episode
 		fields = ('id', 'campaign', 'num', 'title', 'length')
