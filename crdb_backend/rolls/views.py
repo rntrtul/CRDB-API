@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
 from .models import Rolls, RollType, Advantage, AdvantageType, Kill, Die
-from .serializers import RollsSerializer, RollTypeSerializer, AdvantageSerializer, AdvantageTypeSerializer, KillSerializer, DieSerializer
+from .serializers import RollsSerializer, RollTypeSerializer,RollTypeDetailSerializer, AdvantageSerializer, AdvantageTypeSerializer, KillSerializer, DieSerializer
 from rest_framework import generics, viewsets
 
 # Create your views here.
@@ -12,18 +12,23 @@ from rest_framework import generics, viewsets
 class RollsViewSet(viewsets.ModelViewSet):
   def get_queryset(self):
     if self.action == 'list':
-        return  Rolls.objects.order_by('ep','time_stamp')[:500]
+        return  Rolls.objects.all()[:500]
     return Rolls.objects.all()
 
   serializer_class = RollsSerializer
 
 class RollTypeViewSet(viewsets.ModelViewSet):
-  def get_queryset(self):
-    if self.action == 'list':
-        return  RollType.objects.annotate(num_rolls=Count('rolls')).order_by('-num_rolls')
-    return RollType.objects.all()
-    
-  serializer_class = RollTypeSerializer
+  #def get_queryset(self):
+  #  if self.action == 'list':
+  #      #annotate(num_rolls=Count('rolls')).order_by('-num_rolls')
+  #      return  RollType.objects.all()
+  #  return RollType.objects.all()
+  def get_serializer_class (self):
+    if self.action =='list':
+      return RollTypeSerializer
+    else: return RollTypeDetailSerializer
+
+  queryset = RollType.objects.all()
 
 class AdvantageTypeViewSet(viewsets.ModelViewSet):
   def get_queryset(self):
