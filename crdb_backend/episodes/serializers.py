@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from .models import Episode, ApperanceType, Apperance, Attendance, AttendanceType, Live, LevelProg, VodLinks, VodType
-from rolls.serializers import RollsSerializer
+from rolls.serializers import RollsSerializer, RollTypeSerializer
 from encounters.serializers import CombatEncounterSerializer
 
 class EpisodeSerializer(serializers.ModelSerializer):
+	#campaign_name = serializers.CharField(source='campaign.name', read_only=True)
 	class Meta:
 		model = Episode
 		fields = ('id', 'campaign', 'num', 'title', 'length')
@@ -14,10 +15,21 @@ class ApperanceTypeSerializer(serializers.ModelSerializer):
 		fields = ('id', 'name')
 
 class ApperanceSerializer(serializers.ModelSerializer):
-
 	class Meta:
 		model = Apperance
 		fields = ('id', 'episode', 'apperance_type', 'character')
+		depth = 1
+
+	def __init__(self, *args, **kwargs):
+		fields = kwargs.pop('fields', None)
+
+		super(ApperanceSerializer, self).__init__(*args, **kwargs)
+
+		if fields is not None:
+			allowed = set(fields)
+			existing = set(self.fields)
+			for field_name in existing - allowed:
+					self.fields.pop(field_name)
 
 class AttendanceSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -50,6 +62,7 @@ class LevelProgSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = LevelProg
 		fields = ('id', 'episode', 'sheet', 'level')
+		
 
 class VodTypeSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -63,6 +76,8 @@ class VodLinksSerializer(serializers.ModelSerializer):
 
 class EpisodeDetailSerializer(serializers.ModelSerializer):
 	attendance = AttendanceSerializer('attendance', many=True, fields=('player', 'attendance_type'))
+	apperances = ApperanceSerializer('apperances', many=True, fields=('character',))
+	rolls = RollsSerializer('rolls', many=True, fields=('time_stamp', 'character', 'roll_type', 'natural_value', 'final_value', 'notes', 'damage', 'kill_count'))
 	class Meta:
 		model = Episode
 		fields = ('id', 'campaign', 'num', 'title', 'air_date','description', 'length',
