@@ -22,29 +22,33 @@ const RollTable = ({rolls, error}) => {
       <Head>
         <title>CRDB | Rolls</title>
       </Head>
-      <table>
-        <tr>
-          <th>Time Stamp</th>
-          <th>Character</th>
-          <th>Roll Type</th>
-          <th>Final Value</th>
-          <th>Natural Value</th>
-          <th>Notes</th>
-          <th>Damage</th>
-          <th>Kills</th>
-        </tr>
-        {rolls.results.map((roll,key) => (
+      <table className = "table is-bordered is-striped">
+        <thead>
           <tr>
-            <td>{timeFormat(roll.time_stamp)}</td>
-            <td>{roll.character}</td>
-            <td>{roll.roll_type}</td>
-            <td>{roll.final_value}</td>
-            <td>{roll.natural_value}</td>
-            <td>{roll.notes}</td>
-            <td>{roll.damage}</td>
-            <td>{roll.kill_count}</td>
+            <th>Time Stamp</th>
+            <th>Character</th>
+            <th>Roll Type</th>
+            <th>Final Value</th>
+            <th>Natural Value</th>
+            <th>Notes</th>
+            <th>Damage</th>
+            <th>Kills</th>
           </tr>
-        ))}
+        </thead>
+        <tbody>     
+          {rolls.results.map((roll,key) => (
+            <tr>
+              <td>{timeFormat(roll.time_stamp)}</td>
+              <td>{roll.character}</td>
+              <td>{roll.roll_type}</td>
+              <td>{roll.final_value}</td>
+              <td>{roll.natural_value}</td>
+              <td>{roll.notes}</td>
+              <td>{roll.damage}</td>
+              <td>{roll.kill_count}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </>
   )

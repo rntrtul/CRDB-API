@@ -25,6 +25,8 @@ const Episodes = ({episodes, error}) => {
               <Link href="/episodes/[id]" as={`/episodes/${ep.id}`}>
                 <a> {ep.title}</a>
               </Link>
+              
+              {ep.is_live === true && <span class="tag is-light">Live</span>}
             </li>
           ))}
         </ul>

@@ -8,17 +8,12 @@ function timeFormat(secs) {
   return new Date(secs * 1000).toISOString().substr(12, 7)
 }
 
-const sortNum = (a,b,key) => {
-  const diff = a[key] - b[key]
-  return diff >= 1 ? 1 : diff <= -1 ? -1 : 0 
-}
-
 function EpisodeDetail({episode, roll_type}) { 
   const columns = [
     { content: 'Time Stamp'   , key: 'time_stamp', primary: true},
     { content: 'Character'    , key: 'character'},
     { content: 'Roll Type'    , key: 'roll_type'},
-    { content: 'Natural Value', key: 'natural_value', sortComparator: sortNum},
+    { content: 'Natural Value', key: 'natural_value'},
     { content: 'Final Value'  , key: 'final_value'},
     { content: 'Notes'        , key: 'notes'},
     { content: 'Damage'       , key: 'damage'},
@@ -36,7 +31,6 @@ function EpisodeDetail({episode, roll_type}) {
   const character_display = episode.apperances.sort((a,b) => a.character.full_name > b.character.full_name).map((elemn) => {
     return elemn.character.full_name
   });
-
   
   const getCharName = (char_id) => {
     for (let idx in episode.apperances){
@@ -61,7 +55,7 @@ function EpisodeDetail({episode, roll_type}) {
     let type_name = getRollType(roll.roll_type)
     return {
       "time_stamp": <a href={"https://youtu.be/" + episode.vod_links[0].link_key + '?t=' + roll.time_stamp}>{timeFormat(roll.time_stamp)}</a>,
-      "character": <Link href = "/characters/[id]" as={`/characters/${char_name}`}><a>{char_name}</a></Link>,
+      "character": <Link href = "/characters/[id]" as={`/characters/${roll.character}`}><a>{char_name}</a></Link>,
       "roll_type": <Link href="/rolls/types/[id]" as={`/rolls/types/${roll.roll_type}`}><a>{type_name}</a></Link>,
       "natural_value": roll.natural_value,
       "final_value": roll.final_value,
@@ -104,7 +98,7 @@ function EpisodeDetail({episode, roll_type}) {
             <h4>Level ups this episode:</h4>
             <ul>
               {episode.level_ups.map((level_up) => 
-                <li> {level_up.sheet} leveled up to {level_up.level} </li> )}
+                <li> {level_up.char_name} leveled up to {level_up.level} </li> )}
             </ul>
           </>
         }
@@ -124,7 +118,6 @@ function EpisodeDetail({episode, roll_type}) {
         <h3>All Rolls ({Object.keys(episode.rolls).length})</h3>
       </div>
      
-
       <ThemeProvider id = "table">
         <Table
           striped

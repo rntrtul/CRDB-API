@@ -8,6 +8,7 @@
     "start": "next -a 0.0.0.0 -p 3000"
   },
   "dependencies": {
+    "@bumaga/tabs": "^0.2.0",
     "@emotion/core": "^10.0.28",
     "@emotion/is-prop-valid": "^0.8.8",
     "@emotion/styled": "^10.0.27",
@@ -16,6 +17,7 @@
     "emotion-theming": "^10.0.27",
     "mineral-ui": "^0.58.0",
     "next": "9.5.1",
+    "nprogress": "^0.2.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "sass": "^1.26.10"

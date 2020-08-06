@@ -3,17 +3,19 @@ import Nav from './nav'
 
 export default function Layout({ children, settings = {} }) {
   return (
-    <div>
+    <>
       <Nav settings={settings}/>
-      <div class="container is-widescreen">
+      
+      <div className ="section">
         {children}
       </div>
-      <footer class="footer">
-        <div class="content has-text-centered">
+
+      <footer className="footer">
+        <div className="content has-text-centered">
           <p>All data is from <a href="https://www.critrolestats.com/">Crit Role Stats</a></p>
         </div>
       </footer>
-    </div>
+    </>
   )
 }
 

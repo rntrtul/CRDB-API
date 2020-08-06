@@ -2,11 +2,12 @@ import Link from 'next/link'
 
 const Nav = ({settings}) => {
   return (
-    <nav class = "navbar is-black">
-      <div class = "navbar-start">
-        <Link href = "/" ><a class = "navbar-item">Home</a></Link>
-        <Link href = "/episodes"><a class = "navbar-item">Episodes</a></Link>
-        <Link href = "/rolls"><a class = "navbar-item">Rolls</a></Link>
+    <nav className = "navbar is-black">
+      <div className = "navbar-start">
+        <Link href = "/" ><a className = "navbar-item">Home</a></Link>
+        <Link href = "/episodes"><a className = "navbar-item">Episodes</a></Link>
+        <Link href = "/rolls"><a className = "navbar-item">Rolls</a></Link>
+        <Link href= "/characters"><a className = "navbar-item">Characters</a></Link>
       </div>
     </nav>
   )

@@ -1,7 +1,19 @@
 import '../styles/globals.css'
 import 'bulma/css/bulma.css'
+import "nprogress/nprogress.css"
 import Layout from '../components/layout'
+import Head from 'next/head'
+import Router from 'next/router'
+import Link from 'next/link'
+import NProgress from 'nprogress'
 
+//NProgress.configure({ showSpinner: false });
+Router.events.on('routeChangeStart', (url) => {
+  console.log(`Loading: ${url}`)
+  NProgress.start()
+})
+Router.events.on('routeChangeComplete', () => NProgress.done())
+Router.events.on('routeChangeError', () => NProgress.done())
 
 export function reportWebVitals(metric) {
   console.log(metric)
@@ -10,7 +22,7 @@ export function reportWebVitals(metric) {
 function MyApp({ Component, pageProps }) {
   return (
     <Layout>
-      <div class = "section">
+      <div className = "container is-widescreen">
         <Component {...pageProps} />
       </div>
     </Layout>
