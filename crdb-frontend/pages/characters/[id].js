@@ -2,11 +2,12 @@ import axios from 'axios'
 import Link from 'next/link'
 import Head from 'next/head'
 import { Tabs, Tab, Panel } from '@bumaga/tabs' 
+import StatSheet from '../../components/statsheet'
 
 function CharacterDetail({character}) { 
   return (
 
-    <div class = "content">
+    <div className = "content">
       <Head><title>{character.name}</title></Head>
       <h1>{character.full_name}</h1>
       <p>Player: {character.player.full_name}</p>
@@ -14,36 +15,37 @@ function CharacterDetail({character}) {
       <p>Character Type: {character.char_type.name}</p>
 
       <Tabs>
-        <div class = "tabs is-centered">
+        <div className = "tabs is-centered">
           <ul>          
-            <li><Tab><a>Stats</a></Tab></li>
+            <li><Tab><a>Stat Sheet</a></Tab></li>
             <li><Tab><a>Rolls</a></Tab></li>
             <li><Tab><a>Apperances</a></Tab></li>
             <li><Tab><a>Charts</a></Tab></li>
-            <li><Tab><a>Stat Sheet</a></Tab></li>
+            <li><Tab><a>Stats</a></Tab></li>
           </ul>
         </div>
 
-        <Panel><p>Show some stats</p></Panel>
+        <Panel>
+          
+          <StatSheet data ={character.sheets[0]}></StatSheet>
+        </Panel>
         <Panel><p>Show cahracter rolls</p></Panel>
         <Panel>
           <h4>Appears in ({character.apperances.length}):</h4>
           <ul>
-            {character.apperances.sort((a,b) => a.episode.num - b.episode.num).map((apperance) => 
-            <li><Link href={`/episodes/${apperance.episode.id}`}><a>{apperance.episode.title}</a></Link></li>
+            {character.apperances.map((apperance) => 
+            <li key = {apperance.episode}><Link href={`/episodes/${apperance.episode}`}><a>{apperance.episode_title}</a></Link></li>
             )}
           </ul>
         </Panel>
         <Panel><p>Show charts about character</p></Panel>
         <Panel>
-          <div class ="select">
-            <select>
-              <option>Level 8</option>
-              <option>Level 7</option>
-              <option>Level 6</option>
-            </select>
-            
-          </div>
+          <p>Total Rolls: {character.roll_count}</p>
+          <p>Total Damage Dealt: {character.damage_total.final_value__sum}</p>
+          <p>Top 10 Roll types:</p>
+          <ol>
+            {character.top_roll_types.map((roll_type) => <li key={roll_type[0]}>{roll_type[0]} ({roll_type[1]})</li>)}
+          </ol>
         </Panel>
       </Tabs>
       
@@ -62,7 +64,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({params}){
   const character = (await axios.get(`http://127.0.0.1:8000/characters/api/character/${params.id}`)).data
-  //const roll_type = (await axios.get("http://127.0.0.1:8000/rolls/api/rolltype")).data
   return { props: { character},revalidate: 3 }
 } 
 

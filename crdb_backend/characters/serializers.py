@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db.models import Sum, Count
 from .models import Ability, AbilityScore, Alignment, Character, CharacterType, ClassTaken, SavingThrow, Skill, SkillList, StatSheet
 from spells.serializers import SpellSerializer
 from episodes.serializers import LevelProgSerializer, ApperanceSerializer
@@ -22,14 +23,29 @@ class AlignmentSerializer (serializers.ModelSerializer):
     fields = ('id', 'name')
 
 class CharacterSerializer (serializers.ModelSerializer):
+  roll_count = serializers.SerializerMethodField()
   class Meta:
     model = Character
-    fields = ('id', 'full_name', 'name')
+    fields = ('id', 'full_name', 'name', 'roll_count')
+  
+  def get_roll_count(self,instance):
+    return instance.rolls.count()
+  
+  @staticmethod
+  def setup_eager_loading(queryset):
+    queryset = queryset.prefetch_related('rolls')
+    return queryset
 
 class CharacterTypeSerializer (serializers.ModelSerializer):
   class Meta:
     model = CharacterType
     fields = ('id', 'name')
+
+class CharacterTypeDetailSerializer (serializers.ModelSerializer):
+  class Meta:
+    model = CharacterType
+    fields = ('id', 'name', 'characters')
+    depth = 1
 
 class ClassTakenSerializer (serializers.ModelSerializer):
   class Meta:
@@ -58,22 +74,80 @@ class StatSheetSerializer (serializers.ModelSerializer):
   class Meta:
     model = StatSheet
     fields = ['id', 'character', 'level']
+  
+  def __init__(self, *args, **kwargs):
+    fields = kwargs.pop('fields', None)
+
+    super(StatSheetSerializer, self).__init__(*args, **kwargs)
+
+    if fields is not None:
+      allowed = set(fields)
+      existing = set(self.fields)
+      for field_name in existing - allowed:
+          self.fields.pop(field_name)
 
 class StatSheetDetailSerializer (serializers.ModelSerializer):
   class Meta:
     model = StatSheet
-    fields = ['ability_scores', 'saving_throws', 'learned_spells', 'level_ups', 'languages', 'weapons_owned', 'classes',
+    fields = ['ability_scores', 'saving_throws', 'skills', 'learned_spells', 'level_ups', 'languages', 'weapons_owned', 'classes',
              'id', 'character', 'alignment', 'max_health', 'level', 'armour_class', 'speed', 'initiative_bonus',
               'proficiency_bonus', 'hit_die', 'inspiration_die', 'equipment', 'features_traits', 'attacks',
               'weapons', 'proficiencies', 'casting_ability', 'casting_class', 'spell_attack_bonus',
               'spell_save', 'cantrips', 'slots_one', 'slots_two', 'slots_three', 'slots_four', 'slots_five',
               'slots_six', 'slots_seven', 'slots_eight', 'slots_nine']
-    depth = 1
+    depth = 2
+
+  @staticmethod
+  def setup_eager_loading(queryset):
+    queryset = queryset.prefetch_related('ability_scores', 'saving_throws', 'learned_spells')
+    return queryset
 
 class CharacterDetailSerializer (serializers.ModelSerializer):
-  sheets = StatSheetSerializer(source='stat_sheets', many=True)
-  apperances = ApperanceSerializer('apperances', many=True)
+  sheets = serializers.SerializerMethodField()
+  apperances = serializers.SerializerMethodField()
+  roll_count = serializers.SerializerMethodField()
+  damage_total = serializers.SerializerMethodField()
+  top_roll_types = serializers.SerializerMethodField()
+
   class Meta:
     model = Character
     fields = ('id', 'full_name', 'name', 'race', 'player', 'char_type',
-              'sheets', 'apperances')
+              'sheets', 'apperances', 'roll_count', 'damage_total', 'top_roll_types')
+    depth = 1
+  
+  def get_apperances(self,instance):
+    ep_list = []
+    queryset = instance.apperances.prefetch_related('episode').order_by('episode__num')
+    for app in queryset.all():
+      ep_list.append({
+        'episode':app.episode.id, 
+        'episode_title':app.episode.title,
+        'episode_num': app.episode.num,
+      })
+    return ep_list
+
+  def get_sheets(self,instance):
+    sheet_list = []
+    queryset= instance.stat_sheets.order_by('-level')
+    for sheet in queryset.all():
+      sheet_list.append({
+        'sheet': sheet.id,
+        'sheet_level': sheet.level,
+      })
+    return sheet_list
+
+  def get_roll_count(self,instance):
+    return instance.rolls.count()
+
+  def get_damage_total(self, instance):
+    return instance.rolls.filter(roll_type__name='Damage').aggregate(Sum('final_value'))
+
+  def get_top_roll_types(self, instance):
+    return instance.rolls.values_list('roll_type__name').annotate(roll_type_count=Count('roll_type')).order_by('-roll_type_count')[:10]
+
+  @staticmethod
+  def setup_eager_loading(queryset):
+    queryset = queryset.select_related('race', 'player', 'char_type')
+    queryset = queryset.prefetch_related('stat_sheets', 'apperances')
+    return queryset
+   

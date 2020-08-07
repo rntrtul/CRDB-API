@@ -11,18 +11,14 @@ from rest_framework import generics, viewsets
 #REST views
 class RollsViewSet(viewsets.ModelViewSet):
   def get_queryset(self):
-    if self.action == 'list':
-        return  Rolls.objects.all()[:500]
-    return Rolls.objects.all()
+    queryset = Rolls.objects.all()[:5000]
+    queryset = self.get_serializer_class().setup_eager_loading(queryset)
+    return queryset
 
   serializer_class = RollsSerializer
 
 class RollTypeViewSet(viewsets.ModelViewSet):
-  #def get_queryset(self):
-  #  if self.action == 'list':
-  #      #annotate(num_rolls=Count('rolls')).order_by('-num_rolls')
-  #      return  RollType.objects.all()
-  #  return RollType.objects.all()
+
   def get_serializer_class (self):
     if self.action =='list':
       return RollTypeSerializer

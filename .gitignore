@@ -19,10 +19,12 @@ zdata
 dump
 IME/
 .coverage
+/static_in_env
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
+/src
 
 # testing
 /coverage

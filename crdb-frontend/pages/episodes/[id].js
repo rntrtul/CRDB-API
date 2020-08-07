@@ -49,14 +49,19 @@ function EpisodeDetail({episode, roll_type}) {
     }
     return false
   }
-
-  const rolls_display = episode.rolls.sort((a,b) => a.time_stamp - b.time_stamp).map((roll) => {
-    let char_name = getCharName(roll.character)
-    let type_name = getRollType(roll.roll_type)
+  
+  const rolls_display = episode.rolls.map((roll) => {
+    let char_name = getCharName(roll.character_id)
+    let type_name = getRollType(roll.roll_type_id)
+    let yt_link = "https://youtu.be/" + episode.vod_links[0].link_key + '?t=' + roll.time_stamp
+    if(roll.notes.startsWith('p2')){
+      // for twitch links handle in here (since it could be 1 index too) or in the else for non p2
+      yt_link = "https://youtu.be/" + episode.vod_links[1].link_key + '?t=' + roll.time_stamp
+    }
     return {
-      "time_stamp": <a href={"https://youtu.be/" + episode.vod_links[0].link_key + '?t=' + roll.time_stamp}>{timeFormat(roll.time_stamp)}</a>,
-      "character": <Link href = "/characters/[id]" as={`/characters/${roll.character}`}><a>{char_name}</a></Link>,
-      "roll_type": <Link href="/rolls/types/[id]" as={`/rolls/types/${roll.roll_type}`}><a>{type_name}</a></Link>,
+      "time_stamp": <a href={yt_link}>{timeFormat(roll.time_stamp)}</a>,
+      "character": <Link href = "/characters/[id]" as={`/characters/${roll.character_id}`}><a>{char_name}</a></Link>,
+      "roll_type": <Link href="/rolls/types/[id]" as={`/rolls/types/${roll.roll_type_id}`}><a>{type_name}</a></Link>,
       "natural_value": roll.natural_value,
       "final_value": roll.final_value,
       "notes": roll.notes,
@@ -123,7 +128,6 @@ function EpisodeDetail({episode, roll_type}) {
           striped
           columns={columns}
           data={rolls_display}
-          defaultSort={{key: 'time_stamp'}}
           sortable
           rowKey='time_stamp'
           title="Episode Rolls"

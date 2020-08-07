@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'rolls.apps.RollsConfig',
     'episodes.apps.EpisodesConfig',
@@ -62,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'silk.middleware.SilkyMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'CritRoleDB.urls'
@@ -146,9 +150,17 @@ STATICFILES_DIRS = [
 ]
 
 REST_FRAMEWORK = {
+    
+    'DEFAULT_PARSER_CLASSES': (
+        'drf_ujson.parsers.UJSONParser',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 400
 }
 
-SILKY_META = True
 SILKY_PYTHON_PROFILER = True
+SILKY_META = True
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+]
