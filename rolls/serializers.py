@@ -1,10 +1,28 @@
 from rest_framework import serializers
 from .models import Rolls, RollType, Advantage, AdvantageType, Kill, Die
 
-class RollsSerializer(serializers.ModelSerializer):
+class RollsListSerializer (serializers.ListSerializer):
+
+  @staticmethod
+  def setup_eager_loading(queryset):
+    queryset = queryset.prefetch_related('character', 'roll_type', 'ep')
+    return queryset
+  
   class Meta:
       model = Rolls
+      fields = '__all__'
+      depth = 1
+
+class RollsSerializer(serializers.ModelSerializer):
+  class Meta:
+      list_serializer_class = RollsListSerializer
+      model = Rolls
       fields = ('id', 'ep', 'time_stamp','character', 'roll_type','natural_value', 'final_value', 'notes', 'damage', 'kill_count')
+  
+  @staticmethod
+  def setup_eager_loading(queryset):
+    queryset = queryset.prefetch_related('character', 'roll_type', 'ep')
+    return queryset
 
   def __init__(self, *args, **kwargs):
     fields = kwargs.pop('fields', None)

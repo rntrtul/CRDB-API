@@ -19,7 +19,14 @@ class EpisodeViewSet(viewsets.ModelViewSet):
     elif self.action == 'retrieve':
       return EpisodeDetailSerializer
 
-  queryset = Episode.objects.order_by('campaign','num')
+  def get_queryset(self):
+    queryset = Episode.objects.order_by('campaign','num')
+    if self.action == 'retrieve':
+      queryset = self.get_serializer_class().setup_eager_loading(queryset)
+    else:
+      queryset = self.get_serializer_class().setup_eager_loading(queryset)
+
+    return queryset
 
 class ApperanceViewSet(viewsets.ModelViewSet):
   queryset = Apperance.objects.all()
