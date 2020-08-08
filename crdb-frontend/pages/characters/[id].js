@@ -26,8 +26,8 @@ function CharacterDetail({character}) {
         </div>
 
         <Panel>
-          
-          <StatSheet data ={character.sheets[0]}></StatSheet>
+            <StatSheet data ={character.sheets}></StatSheet>
+         
         </Panel>
         <Panel><p>Show cahracter rolls</p></Panel>
         <Panel>
