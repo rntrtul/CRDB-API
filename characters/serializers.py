@@ -5,6 +5,7 @@ from spells.serializers import SpellSerializer
 from episodes.serializers import LevelProgSerializer, ApperanceSerializer
 from languages.serializers import LearnedLanguageSerializer
 from items.serializers import WeaponOwnedSerializer
+from spells.serializers import LearnedSpellSerializer
 
 class AbilitySerializer (serializers.ModelSerializer):
   class Meta:
@@ -87,19 +88,24 @@ class StatSheetSerializer (serializers.ModelSerializer):
           self.fields.pop(field_name)
 
 class StatSheetDetailSerializer (serializers.ModelSerializer):
+  skills = SkillListSerializer('skills', many=True)
+  saving_throws = SavingThrowSerializer('saving_throws', many=True)
+  ability_scores = AbilityScoreSerializer('ability_scores', many=True)
+  learned_spells = LearnedSpellSerializer('learned_spells', many=True)
+  classes = ClassTakenSerializer('classes', many=True)
+  
   class Meta:
     model = StatSheet
     fields = ['ability_scores', 'saving_throws', 'skills', 'learned_spells', 'level_ups', 'languages', 'weapons_owned', 'classes',
-             'id', 'character', 'alignment', 'max_health', 'level', 'armour_class', 'speed', 'initiative_bonus',
-              'proficiency_bonus', 'hit_die', 'inspiration_die', 'equipment', 'features_traits', 'attacks',
-              'weapons', 'proficiencies', 'casting_ability', 'casting_class', 'spell_attack_bonus',
-              'spell_save', 'cantrips', 'slots_one', 'slots_two', 'slots_three', 'slots_four', 'slots_five',
-              'slots_six', 'slots_seven', 'slots_eight', 'slots_nine']
-    depth = 2
+             'id', 'character', 'alignment', 'max_health', 'level', 'armour_class', 'speed', 'initiative_bonus','proficiency_bonus',
+              'hit_die', 'inspiration_die', 'equipment', 'features_traits', 'attacks','weapons', 'proficiencies', 'casting_ability',
+              'casting_class', 'spell_attack_bonus','spell_save', 'cantrips', 'slots_one', 'slots_two', 'slots_three','slots_four',
+              'slots_five', 'slots_six', 'slots_seven', 'slots_eight', 'slots_nine']
+    depth = 1
 
   @staticmethod
   def setup_eager_loading(queryset):
-    queryset = queryset.prefetch_related('ability_scores', 'saving_throws', 'learned_spells')
+    queryset = queryset.prefetch_related('ability_scores', 'saving_throws', 'learned_spells', 'skills')
     return queryset
 
 class CharacterDetailSerializer (serializers.ModelSerializer):
@@ -131,11 +137,12 @@ class CharacterDetailSerializer (serializers.ModelSerializer):
     queryset= instance.stat_sheets.order_by('-level')
     for sheet in queryset.all():
       sheet_list.append({
-        'sheet': sheet.id,
+        'id': sheet.id,
         'sheet_level': sheet.level,
       })
     return sheet_list
-
+  #make characterStatSerialier() so less initial data is loaded (maybe keep since it is gonna be default view for character)
+  # but if split then intial render will be faster and then stats will load(maybe?)
   def get_roll_count(self,instance):
     return instance.rolls.count()
 

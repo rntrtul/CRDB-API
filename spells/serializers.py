@@ -14,4 +14,5 @@ class SpellCastSerializer(serializers.ModelSerializer):
 class LearnedSpellSerializer(serializers.ModelSerializer):
   class Meta:
     model = LearnedSpell
-    fields = ('id', 'spell', 'sheet')
+    fields = ('id', 'spell')
+    depth = 1
