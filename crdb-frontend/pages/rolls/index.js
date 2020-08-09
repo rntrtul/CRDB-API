@@ -3,6 +3,7 @@ import Head from 'next/head'
 import React from 'react'
 import axios from 'axios'
 import Layout from '../../components/layout'
+import {timeFormat} from '../../components/helpers'
 
 const fetchData = async () => await axios.get('http://127.0.0.1:8000/rolls/api/roll').then(
   res => ({
@@ -12,9 +13,6 @@ const fetchData = async () => await axios.get('http://127.0.0.1:8000/rolls/api/r
     error: true,
     rolls: null,
   }))
-function timeFormat(secs) {
-    return new Date(secs * 1000).toISOString().substr(12, 7)
-  }
 
 const RollTable = ({rolls, error}) => {
   return (

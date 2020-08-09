@@ -8,6 +8,7 @@ const Nav = ({settings}) => {
         <Link href = "/episodes"><a className = "navbar-item">Episodes</a></Link>
         <Link href = "/rolls"><a className = "navbar-item">Rolls</a></Link>
         <Link href= "/characters"><a className = "navbar-item">Characters</a></Link>
+        <Link href= "/spells"><a className = "navbar-item">Spells</a></Link>
       </div>
     </nav>
   )

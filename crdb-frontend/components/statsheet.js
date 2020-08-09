@@ -1,4 +1,5 @@
 import { useFetch } from './fetcher'
+import Link from 'next/link'
 import React, { useState } from "react"
 
 function slot_count(lvl, sheet){
@@ -37,8 +38,8 @@ const StatSheet = (props) => {
     <div className = "container">
     {props.data.length > 0 &&
     <form onSubmit={handleSubmit} className = "field">
-      <div class="field is-grouped ">
-        <div class="control">
+      <div className="field is-grouped ">
+        <div className="control">
           <div className ="select is-fullwidth">
             <select name="select">
               {props.data.map((sheet) =>
@@ -63,9 +64,9 @@ const StatSheet = (props) => {
       <div className = "tile is-ancestor">
         <div className = "tile is-parent is-6">
           <div className = "tile is-child box">
-            <div className="level">
+            <div className="level is-mobile">
               {sheet.ability_scores.map((abil_score) => 
-                <div class="level-item has-text-centered">
+                <div className="level-item has-text-centered">
                   <div>
                     <p className="heading">{abil_score.ability.name}</p>
                     <p className="title">{abil_score.score}</p>
@@ -110,55 +111,59 @@ const StatSheet = (props) => {
       </div>
 
       <div className="tile is-ancestor">
-        <div className = "tile is-vertical">
-          <div className = "tile">
-            <div className = "tile is-parent is-vertical"> 
-              <div className="tile is-child box">
-                <p><b>Saving Throws:</b></p>
-                <table>
+        <div className = "tile is-parent is-vertical is-3"> 
+          <div className="tile is-child box">
+            <p><b>Saving Throws:</b></p>
+            <table>
+              <thead>
+                <tr>
+                  <th><abbr title="proficency">Prof</abbr></th>
+                  <th>Ability</th>
+                  <th>Mod</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sheet.saving_throws.map((st) => 
                   <tr>
-                    <th><abbr title="proficency">Prof</abbr></th>
-                    <th>Ability</th>
-                    <th>Mod</th>
-                  </tr>
-                  {sheet.saving_throws.map((st) => 
-                    <tr>
-                      <td className="is-unselectable">{st.proficient === true && <span>&#9899;</span>}{st.proficient === false && <span>&#9898;</span>}</td>
-                      <td>{st.ability.name}</td>
-                      <td>{st.modifier}</td>
-                    </tr>
-                  )}
-                </table>
-              </div> 
-              
-              <div className = "tile is-child box">
-                  <p><b>Profs and languages</b></p>
-                  <p>{sheet.proficiencies}</p>
-                </div>
-            </div>
-            <div className = "tile is-parent">
-              <article className = "tile is-child box">
-                <p><b>Skills:</b></p>
-                <table class = "table">
-                  <tr>
-                    <th><abbr title="proficency">Prof</abbr></th>
-                    <th>Skill</th>
-                    <th>Mod</th>
-                  </tr>
-                  {sheet.skills.map((skill) => 
-                  <tr>
-                    <td className="is-unselectable">{skill.proficient === true && <span>&#9899;</span>}{skill.proficient === false && <span>&#9898;</span>}</td>
-                    <td>{skill.skill.name}</td>
-                    <td>{skill.modifier}</td>
+                    <td className="is-unselectable">{st.proficient === true && <span>&#9899;</span>}{st.proficient === false && <span>&#9898;</span>}</td>
+                    <td>{st.ability.name}</td>
+                    <td>{st.modifier}</td>
                   </tr>
                 )}
-                </table>
-                </article>
+              </tbody>
+            </table>
+          </div> 
+          
+          <div className = "tile is-child box">
+              <p><b>Profs and languages</b></p>
+              <p>{sheet.proficiencies}</p>
             </div>
-          </div>
         </div>
-        
-        <div className = "tile is-parent is-vertical">
+        <div className = "tile is-parent is-3">
+          <article className = "tile is-child box">
+            <p><b>Skills:</b></p>
+            <table class = "table">
+              <thead>
+                <tr>
+                  <th><abbr title="proficency">Prof</abbr></th>
+                  <th>Skill</th>
+                  <th>Mod</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sheet.skills.map((skill) => 
+                <tr>
+                  <td className="is-unselectable">{skill.proficient === true && <span>&#9899;</span>}{skill.proficient === false && <span>&#9898;</span>}</td>
+                  <td>{skill.skill.name}</td>
+                  <td>{skill.modifier}</td>
+                </tr>
+              )}
+            </tbody>
+            </table>
+            </article>
+        </div>
+      
+        <div className = "tile is-vertical">
           <div className = "tile">
             <div className= "tile is-parent">
               <div className= "tile is-child box">
@@ -203,13 +208,16 @@ const StatSheet = (props) => {
               </article>
             </div>
           </div>
-          
-          <div className = "tile is-parent is-vertical">
+
+          <div className = "tile is-parent">
             <div className = "tile is-child box">
               <p><b>Feats & Traits:</b></p>
               <p>{sheet.features_traits}</p>
             </div>
 
+          </div>
+          
+          <div className="tile is-parent">
             <div className = "tile is-child box">
               <p><b>Equpiment</b></p>
               <p>Weapons:</p>
@@ -225,22 +233,48 @@ const StatSheet = (props) => {
        <div className = "tile is-ancestor">
         <div className = "tile is-parent">
           <div className = "tile is-child box">
-              <p><b>Spells</b></p>
-              <div className = "columns">
-              {levels.map((lvl) => 
-              <div className= "column has-text-centered">
               <div className = "level">
-                <div className = "level-item">
-                  <div>
-                    <p className= "title">{lvl}</p>
-                    <p className= "heading">{slot_count(lvl,sheet)} slot{slot_count(lvl,sheet) > 1 && <span>s</span>}</p>
+                <div className = "lefl-left">
+                  <p><b>Spells</b></p>
+                </div> 
+                <div className = "level-right">
+                  <div className = "level-item">
+                    <div>
+                      <p>Casting Class: {sheet.casting_class}</p>
+                    </div>
+                  </div>
+                  <div className = "level-item">
+                    <div>
+                      <p>Spell Save DC: {sheet.spell_save}</p>
+                    </div>
+                  </div>
+                  <div className = "level-item">
+                    <div>
+                      <p>Spell Attack Bonus: {sheet.spell_attack_bonus}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-              {sheet.learned_spells.map((ls) => 
-                  <p>{ls.spell.level === lvl && <span>{ls.spell.name}</span>}</p>
-              )}
-              </div>
+
+              <div className = "columns">
+              {levels.map((lvl) => 
+                <div className= "column has-text-centered">
+                  <div className = "level">
+                    <div className = "level-item">
+                      <div>
+                        <p className= "title">{lvl}</p>
+                        <p className= "heading">{slot_count(lvl,sheet)} slot{slot_count(lvl,sheet) > 1 && <span>s</span>}</p>
+                      </div>
+                    </div>
+                  </div>
+                  {sheet.learned_spells.map((ls) => 
+                  <p>
+                    {ls.spell.level === lvl && 
+                    <Link href = "/spells/[id]" as={`/spells/${ls.spell.id}`}>
+                      <a>{ls.spell.name}</a>
+                    </Link>}
+                  </p>)}
+                </div>
               )}
             </div>
           </div>

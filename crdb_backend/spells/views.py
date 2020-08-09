@@ -3,13 +3,25 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from rest_framework import generics, viewsets
-from .serializers import SpellSerializer, SpellCastSerializer, LearnedSpellSerializer
+from .serializers import SpellSerializer,SpellDetailSerializer, SpellCastSerializer, LearnedSpellSerializer
 from .models import Spell, SpellCast, LearnedSpell
 
 # REST views
 class SpellViewSet(viewsets.ModelViewSet):
-  queryset = Spell.objects.all()
-  serializer_class = SpellSerializer
+  def get_serializer_class(self):
+    if self.action == 'list':
+      return SpellSerializer
+    elif self.action == 'retrieve':
+      return SpellDetailSerializer
+
+  def get_queryset(self):
+    if self.action == 'list':
+      queryset = Spell.objects.all().order_by('name')
+      queryset = self.get_serializer_class().setup_eager_loading(queryset)
+    elif self.action == 'retrieve':
+      queryset = Spell.objects.all()
+    return queryset
+  
 
 class SpellCastViewSet(viewsets.ModelViewSet):
   queryset = SpellCast.objects.all()

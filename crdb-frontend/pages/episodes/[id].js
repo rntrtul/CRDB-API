@@ -2,11 +2,8 @@ import axios from 'axios'
 import Link from 'next/link'
 import Head from 'next/head'
 import Table, { defaultSortComparator } from 'mineral-ui/Table'
-import { ThemeProvider } from 'mineral-ui/themes';
-
-function timeFormat(secs) {
-  return new Date(secs * 1000).toISOString().substr(12, 7)
-}
+import { ThemeProvider } from 'mineral-ui/themes'
+import { get_yt_link, timeFormat} from '../../components/helpers'
 
 function EpisodeDetail({episode, roll_type}) { 
   const columns = [
@@ -53,11 +50,7 @@ function EpisodeDetail({episode, roll_type}) {
   const rolls_display = episode.rolls.map((roll) => {
     let char_name = getCharName(roll.character_id)
     let type_name = getRollType(roll.roll_type_id)
-    let yt_link = "https://youtu.be/" + episode.vod_links[0].link_key + '?t=' + roll.time_stamp
-    if(roll.notes.startsWith('p2')){
-      // for twitch links handle in here (since it could be 1 index too) or in the else for non p2
-      yt_link = "https://youtu.be/" + episode.vod_links[1].link_key + '?t=' + roll.time_stamp
-    }
+    let yt_link = get_yt_link(roll.time_stamp, roll.notes, episode.vod_links)
     return {
       "time_stamp": <a href={yt_link}>{timeFormat(roll.time_stamp)}</a>,
       "character": <Link href = "/characters/[id]" as={`/characters/${roll.character_id}`}><a>{char_name}</a></Link>,
@@ -90,12 +83,12 @@ function EpisodeDetail({episode, roll_type}) {
               
         <h4>Players in</h4>
         <ul>
-          {player_display.map((player_name) => <li> {player_name} </li> )}
+          {player_display.map((player_name) => <li key = {player_name}> {player_name} </li> )}
         </ul>
         
         <h4>Characters in</h4>
         <ul>
-          {character_display.map((char_name) => <li> {char_name} </li> )}
+          {character_display.map((char_name) => <li key={char_name}> {char_name} </li> )}
         </ul>
 
         {episode.level_ups.length > 0 &&
@@ -103,7 +96,7 @@ function EpisodeDetail({episode, roll_type}) {
             <h4>Level ups this episode:</h4>
             <ul>
               {episode.level_ups.map((level_up) => 
-                <li> {level_up.char_name} leveled up to {level_up.level} </li> )}
+                <li key={level_up.char_id}> {level_up.char_name} leveled up to {level_up.level} </li> )}
             </ul>
           </>
         }

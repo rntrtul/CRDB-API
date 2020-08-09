@@ -8,7 +8,7 @@ import Link from 'next/link'
 import NProgress from 'nprogress'
 
 //NProgress.configure({ showSpinner: false });
-NProgress.configure({ easing: 'ease', speed: 200, trickleSpeed: 100 });
+NProgress.configure({ easing: 'ease', speed: 200, trickleSpeed: 70 });
 Router.events.on('routeChangeStart', (url) => {
   console.log(`Loading: ${url}`)
   NProgress.start()

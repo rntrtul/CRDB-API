@@ -20,7 +20,7 @@ const Episodes = ({episodes, error}) => {
       <div class = "content">
         <ul>
           {episodes.results.map((ep,key) => (
-            <li key="ep.title">
+            <li key="ep.id">
               EP {ep.num} 
               <Link href="/episodes/[id]" as={`/episodes/${ep.id}`}>
                 <a> {ep.title}</a>
