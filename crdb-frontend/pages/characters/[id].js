@@ -40,12 +40,28 @@ function CharacterDetail({character}) {
         </Panel>
         <Panel><p>Show charts about character</p></Panel>
         <Panel>
+          <>
           <p>Total Rolls: {character.roll_count}</p>
           <p>Total Damage Dealt: {character.damage_total.final_value__sum}</p>
+          <p>Total Nat1's: {character.nat_ones}</p>
+          <p>Total Nat20's: {character.nat_twenty}</p>
+          <p>HDYWTDT: {character.hdywt_count}</p>
+          <p>Times had advantage:</p>
+          <p>Times had disadvantage:</p>
+          <p>Kills: {character.kill_count.kill_count__sum}</p>
+          {character.top_spells.length > 0 &&
+            <>
+              <p>Top 10 spells cast</p>
+              <ol>
+                {character.top_spells.map((spell) => <li key={spell[0]}>{spell[0]} ({spell[1]})</li>)}
+              </ol>
+            </>          
+          }
           <p>Top 10 Roll types:</p>
           <ol>
             {character.top_roll_types.map((roll_type) => <li key={roll_type[0]}>{roll_type[0]} ({roll_type[1]})</li>)}
           </ol>
+          </>
         </Panel>
       </Tabs>
       

@@ -124,11 +124,17 @@ class CharacterDetailSerializer (serializers.ModelSerializer):
   roll_count = serializers.SerializerMethodField()
   damage_total = serializers.SerializerMethodField()
   top_roll_types = serializers.SerializerMethodField()
+  kill_count = serializers.SerializerMethodField()
+  nat_ones = serializers.SerializerMethodField()
+  nat_twenty = serializers.SerializerMethodField()
+  top_spells = serializers.SerializerMethodField()
+  hdywt_count = serializers.SerializerMethodField()
 
   class Meta:
     model = Character
     fields = ('id', 'full_name', 'name', 'race', 'player', 'char_type',
-              'sheets', 'apperances', 'roll_count', 'damage_total', 'top_roll_types')
+              'sheets', 'apperances', 'roll_count', 'damage_total', 
+              'top_roll_types', 'kill_count', 'nat_ones', 'nat_twenty', 'top_spells', 'hdywt_count')
     depth = 1
   
   def get_apperances(self,instance):
@@ -152,7 +158,7 @@ class CharacterDetailSerializer (serializers.ModelSerializer):
       })
     return sheet_list
   #make characterStatSerialier() so less initial data is loaded (maybe keep since it is gonna be default view for character)
-  # but if split then intial render will be faster and then stats will load(maybe?)
+  # but if split then intial render will be faster and then stats will load(maybe?) even if stat is still default 
   def get_roll_count(self,instance):
     return instance.rolls.count()
 
@@ -162,6 +168,21 @@ class CharacterDetailSerializer (serializers.ModelSerializer):
   def get_top_roll_types(self, instance):
     return instance.rolls.values_list('roll_type__name').annotate(roll_type_count=Count('roll_type')).order_by('-roll_type_count')[:10]
 
+  def get_kill_count (self,instance):
+    return instance.rolls.aggregate(Sum('kill_count'))
+  
+  def get_nat_ones (self,instance):
+    return instance.rolls.exclude(roll_type__name="Damage").filter(natural_value=1).count()
+  
+  def get_nat_twenty (self, instance):
+    return instance.rolls.exclude(roll_type__name="Damage").filter(natural_value=20).count()
+
+  def get_top_spells (self,instance):
+    return instance.casts.values_list('spell__name').annotate(spell_count=Count('spell')).order_by('-spell_count')[:10]
+
+  def get_hdywt_count (self,instacne):
+    return instacne.rolls.filter(notes__contains="HDYWTDT").count()
+  
   @staticmethod
   def setup_eager_loading(queryset):
     queryset = queryset.select_related('race', 'player', 'char_type')
