@@ -65,6 +65,7 @@ class SkillSerializer (serializers.ModelSerializer):
     model = Skill
     fields = ('id', 'name', 'ability')
 
+
 class SkillListSerializer (serializers.ModelSerializer):
   class Meta:
     model = SkillList
@@ -88,11 +89,12 @@ class StatSheetSerializer (serializers.ModelSerializer):
           self.fields.pop(field_name)
 
 class StatSheetDetailSerializer (serializers.ModelSerializer):
-  skills = SkillListSerializer('skills', many=True)
-  saving_throws = SavingThrowSerializer('saving_throws', many=True)
-  ability_scores = AbilityScoreSerializer('ability_scores', many=True)
-  learned_spells = LearnedSpellSerializer('learned_spells', many=True)
-  classes = ClassTakenSerializer('classes', many=True)
+  #skills = SkillListSerializer('skills', many=True)
+  skills = serializers.SerializerMethodField()
+  saving_throws = SavingThrowSerializer('saving_throws', many=True, read_only=True)
+  ability_scores = AbilityScoreSerializer('ability_scores', many=True, read_only=True)
+  learned_spells = LearnedSpellSerializer('learned_spells', many=True, read_only=True)
+  classes = ClassTakenSerializer('classes', many=True, read_only=True)
   
   class Meta:
     model = StatSheet
@@ -102,6 +104,14 @@ class StatSheetDetailSerializer (serializers.ModelSerializer):
               'casting_class', 'spell_attack_bonus','spell_save', 'cantrips', 'slots_one', 'slots_two', 'slots_three','slots_four',
               'slots_five', 'slots_six', 'slots_seven', 'slots_eight', 'slots_nine']
     depth = 1
+
+  def get_skills(self, instance):
+    ordered = instance.skills.prefetch_related("skill").order_by("skill")
+    return SkillListSerializer(ordered, many = True, read_only=True).data
+
+  def get_learned_spells (self, instance):
+    queryset = instance.learned_spells.prefetch_related('spell')
+    return LearnedSpellSerializer(queryset, many=True, read_only=True).data
 
   @staticmethod
   def setup_eager_loading(queryset):
