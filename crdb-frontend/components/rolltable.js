@@ -2,7 +2,7 @@ import { useFetch } from './fetcher'
 import Link from 'next/link'
 import regeneratorRuntime from "regenerator-runtime"
 import React from 'react'
-import { timeFormat } from './helpers'
+import { timeFormat, get_yt_link} from './helpers'
 import { useTable, useSortBy,  useFilters, useGlobalFilter, useAsyncDebounce } from 'react-table'
 import matchSorter from 'match-sorter'
 
@@ -198,17 +198,17 @@ function BasicTable ({columns, data}){
 export function RollTable({data}){
   const columns = React.useMemo(() => [
     {Header: 'Episode',
-      accessor: row => 'C' + row.ep.campaign + 'E' + row.ep.num,
+      accessor: row => <Link href="/episodes/[id]" as={`/episodes/${row.ep.id}`}><a>C{row.ep.campaign_num}E{row.ep.num}</a></Link>,
       filter: 'fuzzyText',},
     {Header: 'Time Stamp',
-      accessor: row => timeFormat(row.time_stamp),
+      accessor: row => <a href={get_yt_link(row.time_stamp,row.notes, row.ep.vod_links)}>{timeFormat(row.time_stamp)}</a>,
       disableSortBy: true,},
     {Header: 'Character',
-      accessor: 'character.name',
+      accessor: row => <Link href="/characters/[id]" as={`/characters/${row.character.id}`}><a>{row.character.name}</a></Link>,
       Filter: SelectColumnFilter,
       filter: 'equals',},
     {Header: 'Roll Type',
-      accessor: 'roll_type.name',
+      accessor: row => <Link href="/rolls/types/[id]" as={`/rolls/types/${row.roll_type.id}`}><a>{row.roll_type.name}</a></Link>,
       Filter: SelectColumnFilter,
       filter: 'equals',},
     {Header: 'Total',
