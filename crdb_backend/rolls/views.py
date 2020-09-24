@@ -6,15 +6,36 @@ from django.db.models import Count
 from .models import Rolls, RollType, Advantage, AdvantageType, Kill, Die
 from .serializers import RollsSerializer, RollTypeSerializer,RollTypeDetailSerializer, AdvantageSerializer, AdvantageTypeSerializer, KillSerializer, DieSerializer
 from rest_framework import generics, viewsets
+from rest_framework import filters as rf_filters
+from django_filters import rest_framework as filters
 
 # Create your views here.
 #REST views
+class RollFilter(filters.FilterSet):
+  min_nat_value = filters.NumberFilter(field_name="natural_value", lookup_expr='gte')
+  max_nat_value = filters.NumberFilter(field_name="natural_value", lookup_expr='lte')
+  min_final_value = filters.NumberFilter(field_name="final_value", lookup_expr='gte')
+  max_final_value = filters.NumberFilter(field_name="final_value", lookup_expr='lte')
+  episode_start = filters.NumberFilter(field_name="ep__num", lookup_expr='gte')
+  episode_end = filters.NumberFilter(field_name="ep__num", lookup_expr='lte')
+  min_timestamp = filters.NumberFilter(field_name="time_stamp", lookup_expr='gte')
+  max_timestamp = filters.NumberFilter(field_name="time_stamp", lookup_expr='lte')
+  min_kills = filters.NumberFilter(field_name="kill_count", lookup_expr='gte')
+  max_kills = filters.NumberFilter(field_name="kill_count", lookup_expr='lte')
+
+  class Meta:
+    model = Rolls
+    fields = ['character', 'ep', 'roll_type', 'kill_count',
+              'min_nat_value', 'max_nat_value', 'min_final_value', 'max_final_value', 'episode_start', 'episode_end',
+              'min_timestamp', 'max_timestamp', 'min_kills', 'max_kills']
+
 class RollsViewSet(viewsets.ModelViewSet):
   def get_queryset(self):
-    queryset = Rolls.objects.all()[:5000]
+    queryset = Rolls.objects.all()
     queryset = self.get_serializer_class().setup_eager_loading(queryset)
     return queryset
-
+  
+  filterset_class = RollFilter
   serializer_class = RollsSerializer
 
 class RollTypeViewSet(viewsets.ModelViewSet):

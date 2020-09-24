@@ -33,7 +33,7 @@ const StatSheet = (props) => {
   };  
 
   let levels = [1,2,3,4,5,6,7,8,9]
-
+  // make the things into columns so one height doesn't affect other (look weird)
   return (
     <div className = "container">
     {props.data.length > 0 &&
@@ -109,6 +109,7 @@ const StatSheet = (props) => {
           </article>
         </div>
       </div>
+      
 
       <div className="tile is-ancestor">
         <div className = "tile is-parent is-vertical is-3"> 
@@ -136,7 +137,7 @@ const StatSheet = (props) => {
           
           <div className = "tile is-child box">
               <p><b>Profs and languages</b></p>
-              <p>{sheet.proficiencies}</p>
+              <div>{sheet.proficiencies.split('\n').map((i, key) => {return <p key={key}>{i}</p>})}</div>
             </div>
         </div>
         <div className = "tile is-parent is-3">
@@ -210,9 +211,9 @@ const StatSheet = (props) => {
           </div>
 
           <div className = "tile is-parent">
-            <div className = "tile is-child box">
+            <div className = "tile is-child box" >
               <p><b>Feats & Traits:</b></p>
-              <p>{sheet.features_traits}</p>
+              <div>{sheet.features_traits.split('\n').map((i, key) => {return <p key={key}>{i}</p>})}</div>
             </div>
 
           </div>

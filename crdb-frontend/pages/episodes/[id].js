@@ -4,6 +4,7 @@ import Head from 'next/head'
 import Table, { defaultSortComparator } from 'mineral-ui/Table'
 import { ThemeProvider } from 'mineral-ui/themes'
 import { get_yt_link, timeFormat} from '../../components/helpers'
+import ReactFrappeChart from "react-frappe-charts"
 
 function EpisodeDetail({episode, roll_type}) { 
   const columns = [
@@ -74,13 +75,36 @@ function EpisodeDetail({episode, roll_type}) {
       </div>
 
       <div class = "content">
+
         <h5>Times:</h5>
+        <ReactFrappeChart
+          type="percentage"
+          title="Time Breakdown"
+          colors={['dark-grey', 'blue', 'dark-grey', 'blue', 'dark-grey']}
+          barOptions={{depth:0}}
+          tooltipOptions={{
+            formatTooltipX: d => "et",
+            formatTooltipY: d => " ads"
+          }}
+          data={{
+            labels: ["Anouncments", "First Half", "Break", "Second Half", "End"],
+            datasets: [{ values:
+              [episode.first_half_start,
+               episode.first_half_end - episode.first_half_start,
+               episode.second_half_start - episode.first_half_end,
+               episode.second_half_end - episode.second_half_start,
+               episode.length - episode.second_half_end]
+            }], 
+          }}
+          
+        />
+        
         <p>Break length: {timeFormat(episode.second_half_start - episode.first_half_end)}</p>
         <p>First half start: {timeFormat(episode.first_half_start)}</p>
         <p>First half end: {timeFormat(episode.first_half_end)}</p>
         <p>Second half start: {timeFormat(episode.second_half_start)}</p>
         <p>Second half end: {timeFormat(episode.second_half_end)}</p>
-              
+
         <h4>Players in</h4>
         <ul>
           {player_display.map((player_name) => <li key = {player_name}> {player_name} </li> )}

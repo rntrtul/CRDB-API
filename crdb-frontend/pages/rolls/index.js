@@ -3,7 +3,7 @@ import React from 'react'
 import axios from 'axios'
 import {timeFormat} from '../../components/helpers'
 import { RollTable } from '../../components/rolltable'
-
+import FilterForm from '../../components/filter'
 const fetchData = async () => await axios.get('http://127.0.0.1:8000/rolls/api/roll').then(
   res => ({
     error: false,
@@ -19,6 +19,7 @@ const Table = ({rolls, error}) => {
       <Head>
         <title>CRDB | Rolls</title>
       </Head>
+      <FilterForm/>
       <RollTable data={rolls.results}/>
     </>
   )

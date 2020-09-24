@@ -3,8 +3,11 @@ import Link from 'next/link'
 import Head from 'next/head'
 import { Tabs, Tab, Panel } from '@bumaga/tabs' 
 import StatSheet from '../../components/statsheet'
+import { Chart } from "frappe-charts/dist/frappe-charts.min.esm"
+import ReactFrappeChart from "react-frappe-charts"
 
 function CharacterDetail({character}) { 
+
   return (
 
     <div className = "content">
@@ -20,7 +23,6 @@ function CharacterDetail({character}) {
             <li><Tab><a>Stat Sheet</a></Tab></li>
             <li><Tab><a>Rolls</a></Tab></li>
             <li><Tab><a>Apperances</a></Tab></li>
-            <li><Tab><a>Charts</a></Tab></li>
             <li><Tab><a>Stats</a></Tab></li>
           </ul>
         </div>
@@ -38,11 +40,11 @@ function CharacterDetail({character}) {
             )}
           </ul>
         </Panel>
-        <Panel><p>Show charts about character</p></Panel>
         <Panel>
           <>
-          <p>Total Rolls: {character.roll_count}</p>
+          <p>Total Rolls: {character.roll_count} might make stacked bar graph with adv + dis adv</p>
           <p>Total Damage Dealt: {character.damage_total.final_value__sum}</p>
+          <p>Damage deal be percent bar to show by type</p>
           <p>Total Nat1's: {character.nat_ones}</p>
           <p>Total Nat20's: {character.nat_twenty}</p>
           <p>HDYWTDT: {character.hdywt_count}</p>
@@ -51,16 +53,31 @@ function CharacterDetail({character}) {
           <p>Kills: {character.kill_count.kill_count__sum}</p>
           {character.top_spells.length > 0 &&
             <>
-              <p>Top 10 spells cast</p>
-              <ol>
-                {character.top_spells.map((spell) => <li key={spell[0]}>{spell[0]} ({spell[1]})</li>)}
-              </ol>
+              <ReactFrappeChart
+                type="bar"
+                title={"Top Spells Cast (" + "get spell total" + ")"}
+                colors={['light-blue']}
+                axisOptions={{ xAxisMode: "tick"}}
+                valuesOverPoints={true}
+                data={{
+                  labels: character.top_spells.map((spell) => spell[0]),
+                  datasets: [{ values: character.top_spells.map((spell) => spell[1])}], 
+                }}
+              />
             </>          
           }
-          <p>Top 10 Roll types:</p>
-          <ol>
-            {character.top_roll_types.map((roll_type) => <li key={roll_type[0]}>{roll_type[0]} ({roll_type[1]})</li>)}
-          </ol>
+          
+          <ReactFrappeChart
+            type="bar"
+            title="Top Roll Types"
+            colors={['blue']}
+            axisOptions={{ xAxisMode: "tick"}}
+            valuesOverPoints={true}
+            data={{
+              labels: character.top_roll_types.map((type) => type[0]),
+              datasets: [{ values: character.top_roll_types.map((type) => type[1])}], 
+            }}
+          />
           </>
         </Panel>
       </Tabs>

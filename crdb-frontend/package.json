@@ -9,19 +9,22 @@
   },
   "dependencies": {
     "@bumaga/tabs": "^0.2.0",
-    "@emotion/core": "^10.0.28",
+    "@emotion/core": "^10.0.35",
     "@emotion/is-prop-valid": "^0.8.8",
     "@emotion/styled": "^10.0.27",
     "axios": "^0.19.2",
     "bulma": "^0.9.0",
     "emotion-theming": "^10.0.27",
-    "match-sorter": "^4.2.0",
+    "frappe-charts": "^1.5.2",
+    "match-sorter": "^4.2.1",
     "mineral-ui": "^0.58.0",
     "next": "9.5.1",
+    "next-transpile-modules": "^4.1.0",
     "nprogress": "^0.2.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-table": "^7.5.0",
-    "sass": "^1.26.10"
+    "react-frappe-charts": "^4.0.0",
+    "react-table": "^7.5.1",
+    "sass": "^1.26.11"
   }
 }

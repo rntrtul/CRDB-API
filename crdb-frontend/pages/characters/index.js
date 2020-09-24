@@ -16,7 +16,7 @@ const Characters = ({characters, error}) => {
   return (
     <>
       <Head>
-        <title>CRDB | Episodes</title>
+        <title>CRDB | Characters</title>
       </Head>
       <div class = "tabs">
         <ul>
