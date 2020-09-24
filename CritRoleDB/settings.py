@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'encounters.apps.EncountersConfig',
     'damages.apps.DamagesConfig',
     'silk',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -155,7 +156,8 @@ REST_FRAMEWORK = {
         'drf_ujson.parsers.UJSONParser',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 400
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'PAGE_SIZE': 250
 }
 
 SILKY_PYTHON_PROFILER = True

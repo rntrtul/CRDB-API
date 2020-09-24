@@ -61,8 +61,8 @@ def initLanguages(langs):
 def findLevelUpEp(name, lvl,camp):
   import csv
 
-  C1PROG = "/home/lightbulb/CritRoleDB/zdata/C1/TD Level Prog.csv"
-  C2PROG = "/home/lightbulb/CritRoleDB/zdata/C2/WM Level Prog.csv"
+  C1PROG = "/home/lightbulb/CritRoleDB/crdb_backend/zdata/C1/TD Level Prog.csv"
+  C2PROG = "/home/lightbulb/CritRoleDB/crdb_backend/zdata/C2/WM Level Prog.csv"
   C1charColumn = {"Vex'ahlia": 1,"Vax'ildan": 2,"Grog": 3,"Keyleth": 4,"Percy": 5,"Scanlan": 6,"Pike": 7,"Taryon": 8,"Tiberius": 9,}
   C2charColumn = {"Caleb": 1,"Nott": 2,"Jester": 3,"Beau": 4,"Fjord": 5,"Molly": 6,"Yasha": 7,"Caduceus": 8}
 
@@ -106,11 +106,11 @@ def getAbilName(field):
   elif field == "CHA":
     return  abilities[5]
 
-working_campaign = 2
+working_campaign = 1
 CAMP = Campaign.objects.get(num=working_campaign)
 
-C1SHEETS = "/home/lightbulb/CritRoleDB/zdata/sheets"
-C2SHEETS= "/home/lightbulb/CritRoleDB/zdata/C2/C2 char sheets/Sheets"
+C1SHEETS = "/home/lightbulb/CritRoleDB/crdb_backend/zdata/sheets"
+C2SHEETS= "/home/lightbulb/CritRoleDB/crdb_backend/zdata/C2/C2 char sheets/Sheets"
 if working_campaign == 1:
   CURR = C1SHEETS
 else:
@@ -156,111 +156,139 @@ for dirpath,dirnames,files in os.walk(CURR):
           if one == '':
             continue
           if count % 2 == 1:
-            cls = Class.objects.get_or_create(name=one)
+            print("ignore")
+        #cls = Class.objects.get_or_create(name=one)
           else:
             if one == 'Hunter':
               continue
             lvl = int(one)
-            clt = ClassTaken.objects.get_or_create(stat_sheet=sheet,class_id=cls[0],level=lvl )
+            print("ignore")
+        #clt = ClassTaken.objects.get_or_create(stat_sheet=sheet,class_id=cls[0],level=lvl )
           count += 1
       elif field == "PlayerName":
         print("add player values")
       elif field == "CharacterName":
-        sheet.character = Character.objects.get(name=name)
+        print("ignore")
+        #sheet.character = Character.objects.get(name=name)
       elif field == "Race":
         print("add racde values")
       elif field == "Alignment" and (value != "" and value != "???"):
-        sheet.alignment = Alignment.objects.get(name=value)
+        print("ignore")
+        #sheet.alignment = Alignment.objects.get(name=value)
       elif field == "Inspiration" and value != "":
         sides = value
         if value.startswith('d'):
           sides = value[1:]
-        sheet.inspiration_die = int(sides)
+        print("ignore")
+        #sheet.inspiration_die = int(sides)
       elif field == "ProfBonus":
-        sheet.proficiency_bonus = int(value)
+        print("ignore")
+        #sheet.proficiency_bonus = int(value)
       elif field == "AC":
-        sheet.armour_class = int(value)
+        print("ignore")
+        #sheet.armour_class = int(value)
       elif field == "Initiative":
-        sheet.initiative_bonus = int(value)
+        print("ignore")
+        #sheet.initiative_bonus = int(value)
       elif field == "Speed":
-        sheet.speed = int(value)
+        print("ignore")
+        #sheet.speed = int(value)
       elif field == "HPMax":
         if lvl == 9 and len(value) > 2 and value[2] == '-':
           value = value[:-3]
         elif value == '':
           value = "0"
-        sheet.max_health = int(value)
+        print("ignore")
+        #sheet.max_health = int(value)
       elif field == "HDTotal":
-        sheet.hit_die = value
+        print("ignore")
+        #sheet.hit_die = value
       elif field in ["STR", "DEX", "CON", "INT", "WIS", "CHA"]:
-        abil_name = getAbilName(field)
-        abil = Ability.objects.get(name=abil_name)
-        ablisc = AbilityScore.objects.get_or_create(ability = abil, stat_sheet = sheet, score = value)
+        print("ignore")
+        #
+        #abil_name = getAbilName(field)
+        #abil = Ability.objects.get(name=abil_name)
+        #ablisc = AbilityScore.objects.get_or_create(ability = abil, stat_sheet = sheet, score = value)
       elif field.startswith("ST"):
-        abil_name = field[3:]
-        abill = Ability.objects.get(name=abil_name)
-        st = SavingThrow.objects.get_or_create(stat_sheet=sheet,ability=abill)
-        st[0].modifier=value
-        st[0].save()
+        print("ignore")
+        #
+        #abil_name = field[3:]
+        #abill = Ability.objects.get(name=abil_name)
+        #st = SavingThrow.objects.get_or_create(stat_sheet=sheet,ability=abill)
+        #st[0].modifier=value
+        #st[0].save()
       elif field in skills or field == "SleightofHand" or field == "Sleight of Hand":
         if field == "SleightofHand" or field == "Sleight of Hand":
           sk_name = "Sleight of Hand"
         else:
           sk_name = field
-        sk = Skill.objects.get(name=sk_name)
-        skl = SkillList.objects.get_or_create(stat_sheet=sheet, skill=sk)
-        skl[0].modifier=value
-        skl[0].save()
+        print("ignore")
+        #sk = Skill.objects.get(name=sk_name)
+        #skl = SkillList.objects.get_or_create(stat_sheet=sheet, skill=sk)
+        #skl[0].modifier=value
+        #skl[0].save()
       elif field == "AttacksSpellcasting":
-        sheet.attacks = value
+        print("ignore")
+        #sheet.attacks = value
       elif field == "ProficienciesLang":
-        sheet.proficiencies = value.replace('\\n', ' \\n ')
+        print("ignore")
+        #sheet.proficiencies = value.replace('\\n', ' \\n ')
       elif field == "Features and Traits":
-        sheet.features_traits = value.replace('\\n', ' \\n ')
+        sheet.features_traits = value.replace('\\n', ' \n ')
       elif field == "Equipment":
-        sheet.equipment = value.replace('\\n', ' \\n ')
+        print("ignore")
+        #sheet.equipment = value.replace('\\n', ' \\n ')
       elif field.startswith("Wpn"):
-        sheet.weapons += " " + value
+        print("ignore")
+        #sheet.weapons += " " + value
         if field.endswith("Damage"):
-          sheet.weapons += '\n'
+          print("ignore")
+        #sheet.weapons += '\n'
       elif field == "Spellcasting Class 2":
-        sheet.casting_class = value
+        print("ignore")
+        #sheet.casting_class = value
       elif field == "SpellSaveDC 2":
-        sheet.spell_save = value
+        print("ignore")
+        #sheet.spell_save = value
       elif field == "SpellAtkBonus 2":
         if value != '':
-          sheet.spell_attack_bonus = value
+          print("ignore")
+        #sheet.spell_attack_bonus = value
       elif field.startswith("Spell"):
-        spell = Spell.objects.get_or_create(name=value)
-        lp = LearnedSpell.objects.get_or_create(sheet = sheet, spell = spell[0])
+        print("ignore")
+        #spell = Spell.objects.get_or_create(name=value)
+        #lp = LearnedSpell.objects.get_or_create(sheet = sheet, spell = spell[0])
       elif field.startswith("Slots"):
-        spellLvl = int(field[13:])
-        if value == '':
-          spellLvl = 0
-        if spellLvl == 1:
-          sheet.slots_one = value
-        elif spellLvl == 2:
-          sheet.slots_two = value
-        elif spellLvl == 3:
-          sheet.slots_three = value
-        elif spellLvl == 4:
-          sheet.slots_four = value
-        elif spellLvl == 5:
-          sheet.slots_five = value
-        elif spellLvl == 6:
-          sheet.slots_six = value 
-        elif spellLvl == 7:
-          sheet.slots_seven = value
-        elif spellLvl == 8:
-          sheet.slots_eight = value
-        elif spellLvl == 9:
-          sheet.slots_nine = value
+        print("ignore")
+        #
+        #spellLvl = int(field[13:])
+        #if value == '':
+        #  spellLvl = 0
+        #if spellLvl == 1:
+        #  sheet.slots_one = value
+        #elif spellLvl == 2:
+        #  sheet.slots_two = value
+        #elif spellLvl == 3:
+        #  sheet.slots_three = value
+        #elif spellLvl == 4:
+        #  sheet.slots_four = value
+        #elif spellLvl == 5:
+        #  sheet.slots_five = value
+        #elif spellLvl == 6:
+        #  sheet.slots_six = value 
+        #elif spellLvl == 7:
+        #  sheet.slots_seven = value
+        #elif spellLvl == 8:
+        #  sheet.slots_eight = value
+        #elif spellLvl == 9:
+        #  sheet.slots_nine = value
       elif field.startswith("Proffcient in"):
         if value.endswith("Save"):
           #handle procient in saving throws
           abil_name = value[:-5]
           abil = Ability.objects.get(name=abil_name)
-          st = SavingThrow.objects.update_or_create(ability=abil,stat_sheet=sheet, defaults={'proficient': True})
+          print("ignore")
+        #st = SavingThrow.objects.update_or_create(ability=abil,stat_sheet=sheet, defaults={'proficient': True})
         else:
           #handle proffcient in skill
           if value == "SleightofHand" or "Sleight of Hand":
@@ -268,8 +296,9 @@ for dirpath,dirnames,files in os.walk(CURR):
           else:
             sk_name = value
           
-          sk = Skill.objects.get(name=sk_name)
-          skl = SkillList.objects.update_or_create(skill=sk, stat_sheet=sheet,defaults={'proficient': True} )
+          print("ignore")
+          # sk = Skill.objects.get(name=sk_name)
+          #skl = SkillList.objects.update_or_create(skill=sk, stat_sheet=sheet,defaults={'proficient': True} )
 
     sheet.save()
     #if ep_num !=0:
