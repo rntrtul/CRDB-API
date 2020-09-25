@@ -95,8 +95,7 @@ function EpisodeDetail({episode, roll_type}) {
                episode.second_half_end - episode.second_half_start,
                episode.length - episode.second_half_end]
             }], 
-          }}
-          
+          }}          
         />
         
         <p>Break length: {timeFormat(episode.second_half_start - episode.first_half_end)}</p>

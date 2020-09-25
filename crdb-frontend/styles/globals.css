@@ -1,28 +1,7 @@
-html,
-body {
-  padding: 10px;
-  margin: auto;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
-    Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  line-height: 1.6;
-  font-size: 18px;
+.no_x_axis .frappe-chart .x.axis text, .no_x_axis .frappe-chart .x.axis .line-vertical {
+  display: none;
 }
 
-* {
-  box-sizing: border-box;
+.graph-svg-tip.comparison .title{
+  color: #dfe2e5;
 }
-
-a {
-  color: #0070f3;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-

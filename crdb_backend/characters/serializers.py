@@ -6,6 +6,8 @@ from episodes.serializers import LevelProgSerializer, ApperanceSerializer
 from languages.serializers import LearnedLanguageSerializer
 from items.serializers import WeaponOwnedSerializer
 from spells.serializers import LearnedSpellSerializer
+from episodes.models import Episode
+from rolls.models import RollType
 
 class AbilitySerializer (serializers.ModelSerializer):
   class Meta:
@@ -65,7 +67,6 @@ class SkillSerializer (serializers.ModelSerializer):
     model = Skill
     fields = ('id', 'name', 'ability')
 
-
 class SkillListSerializer (serializers.ModelSerializer):
   class Meta:
     model = SkillList
@@ -121,7 +122,7 @@ class StatSheetDetailSerializer (serializers.ModelSerializer):
 class CharacterDetailSerializer (serializers.ModelSerializer):
   sheets = serializers.SerializerMethodField()
   apperances = serializers.SerializerMethodField()
-  roll_count = serializers.SerializerMethodField()
+  roll_counts = serializers.SerializerMethodField()
   damage_total = serializers.SerializerMethodField()
   top_roll_types = serializers.SerializerMethodField()
   kill_count = serializers.SerializerMethodField()
@@ -129,24 +130,65 @@ class CharacterDetailSerializer (serializers.ModelSerializer):
   nat_twenty = serializers.SerializerMethodField()
   top_spells = serializers.SerializerMethodField()
   hdywt_count = serializers.SerializerMethodField()
+  campaign = serializers.SerializerMethodField()
+  ep_totals = serializers.SerializerMethodField()
 
   class Meta:
     model = Character
     fields = ('id', 'full_name', 'name', 'race', 'player', 'char_type',
-              'sheets', 'apperances', 'roll_count', 'damage_total', 
-              'top_roll_types', 'kill_count', 'nat_ones', 'nat_twenty', 'top_spells', 'hdywt_count')
+              'sheets', 'apperances', 'roll_counts', 'damage_total', 
+              'top_roll_types', 'kill_count', 'nat_ones', 'nat_twenty', 'top_spells', 'hdywt_count', 'campaign',
+              'ep_totals')
     depth = 1
   
   def get_apperances(self,instance):
     ep_list = []
     queryset = instance.apperances.prefetch_related('episode').order_by('episode__num')
+
     for app in queryset.all():
       ep_list.append({
         'episode':app.episode.id, 
         'episode_title':app.episode.title,
         'episode_num': app.episode.num,
+        'air date': app.episode.air_date,
       })
     return ep_list
+
+  def get_campaign(self,instacne):
+    camp = instacne.apperances.first().episode.campaign
+    return {
+      'number': camp.num,
+      'length': camp.length,
+      'name': camp.name
+    }
+
+  def get_ep_totals(self, instance):
+    camp = instance.apperances.first().episode.campaign
+    dmg = RollType.objects.get(name="Damage")
+
+    eps = Episode.objects.filter(campaign = camp )
+    casts_ep = eps.filter(casts__character= instance).annotate(char_casts = Count('casts')).order_by("num")
+    rolls_ep = eps.filter(rolls__character=instance).annotate(char_rolls = Count('rolls')).order_by("num")
+    dmg_dealt_ep = eps.filter(rolls__character=instance , rolls__roll_type = dmg).annotate(char_dd = Sum('rolls__final_value')).order_by('num')
+
+    casts = [0] * camp.length
+    rolls = [0] * camp.length
+    dmg_dealt = [0] * camp.length
+
+    for ep in casts_ep.values():
+      casts[ep['num']-1] = ep['char_casts']
+
+    for ep in rolls_ep.values():
+      rolls[ep['num']-1] = ep['char_rolls']
+
+    for ep in dmg_dealt_ep.values():
+      dmg_dealt[ep['num']-1] = ep['char_dd']
+
+    return {
+      'rolls': rolls,
+      'casts': casts,
+      'dmg_dealt': dmg_dealt,
+    }
 
   def get_sheets(self,instance):
     sheet_list = []
@@ -159,8 +201,18 @@ class CharacterDetailSerializer (serializers.ModelSerializer):
     return sheet_list
   #make characterStatSerialier() so less initial data is loaded (maybe keep since it is gonna be default view for character)
   # but if split then intial render will be faster and then stats will load(maybe?) even if stat is still default 
-  def get_roll_count(self,instance):
-    return instance.rolls.count()
+  def get_roll_counts(self,instance):
+    rolls = instance.rolls.prefetch_related('advantages_used').prefetch_related('advantages_used__type')
+    adv_used = rolls.values_list('advantages_used')
+    adv_dis= rolls.values_list('advantages_disregarded')
+    return {
+      'total': rolls.count(),
+      'advantages': adv_used.filter(advantages_used__type__name = 'Advantage').count() + adv_dis.filter(advantages_used__type__name = 'Advantage').count(),
+      'disadvantages': adv_used.filter(advantages_used__type__name = 'Disadvantage').count() + adv_dis.filter(advantages_used__type__name = 'Disadvantage').count(),
+      'luck': adv_used.filter(advantages_used__type__name = 'Luck').count(),
+      'fate': adv_used.filter(advantages_used__type__name = 'Fate').count(),
+      'decahedron': adv_used.filter(advantages_used__type__name = 'Fragment of Possibility').count(),
+    }
 
   def get_damage_total(self, instance):
     return instance.rolls.filter(roll_type__name='Damage').aggregate(Sum('final_value'))
@@ -178,7 +230,10 @@ class CharacterDetailSerializer (serializers.ModelSerializer):
     return instance.rolls.exclude(roll_type__name="Damage").filter(natural_value=20).count()
 
   def get_top_spells (self,instance):
-    return instance.casts.values_list('spell__name').annotate(spell_count=Count('spell')).order_by('-spell_count')[:10]
+    return {
+      'total_count': instance.casts.count(),
+      'list':instance.casts.values_list('spell__name').annotate(spell_count=Count('spell')).order_by('-spell_count')[:10]    
+    }
 
   def get_hdywt_count (self,instacne):
     return instacne.rolls.filter(notes__contains="HDYWTDT").count()
