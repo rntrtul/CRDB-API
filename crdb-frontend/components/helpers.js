@@ -1,7 +1,8 @@
 export function get_yt_link(time, notes, vod_links){
+  // for twitch links handle in here (since it could be 1 index too) or in the else for non p2
+  // change to check first is actually yt
   let yt_link = "https://youtu.be/" + vod_links[0].link_key + '?t=' + time
   if(notes.startsWith('p2')){
-    // for twitch links handle in here (since it could be 1 index too) or in the else for non p2
     yt_link = "https://youtu.be/" + vod_links[1].link_key + '?t=' + time
   }
   return yt_link

@@ -7,7 +7,7 @@ import { get_yt_link, timeFormat} from '../../components/helpers'
 import ReactFrappeChart from "react-frappe-charts"
 
 function EpisodeDetail({episode, roll_type}) { 
-  const columns = [
+  const rolls_columns = [
     { content: 'Time Stamp'   , key: 'time_stamp', primary: true},
     { content: 'Character'    , key: 'character'},
     { content: 'Roll Type'    , key: 'roll_type'},
@@ -18,49 +18,36 @@ function EpisodeDetail({episode, roll_type}) {
     { content: 'Kills'        , key: 'kill_count'}
   ]
 
-  const player_display = episode.attendance.sort((a,b) => a.player.full_name > b.player.full_name).map((elemn) => {
-    let display = elemn.player.full_name
-    if (elemn.attendance_type.name != 'normal'){
-      display = display + " (" + elemn.attendance_type.name + ")"
-    } 
-    return display
-  });
-
-  const character_display = episode.apperances.sort((a,b) => a.character.full_name > b.character.full_name).map((elemn) => {
-    return elemn.character.full_name
-  });
-  
-  const getCharName = (char_id) => {
-    for (let idx in episode.apperances){
-      if (episode.apperances[idx].character.id === char_id){
-        return episode.apperances[idx].character.name
-      }
-    }
-    return false
-  }
-
-  const getRollType = (type_id) => {
-    for (let idx in roll_type.results){
-      if (roll_type.results[idx].id === type_id){
-        return roll_type.results[idx].name
-      }
-    }
-    return false
-  }
+  const casts_columns = [
+    {content: 'Time Stamp', key: 'time_stamp', primary: true},
+    {content: 'Spell', key: 'spell'},
+    {content: 'Character', key: 'character'},
+    {content: 'Cast Lvl', key: 'cast_level'},
+    {content: 'notes', key: 'notes'},
+  ]
   
   const rolls_display = episode.rolls.map((roll) => {
-    let char_name = getCharName(roll.character_id)
-    let type_name = getRollType(roll.roll_type_id)
     let yt_link = get_yt_link(roll.time_stamp, roll.notes, episode.vod_links)
     return {
       "time_stamp": <a href={yt_link}>{timeFormat(roll.time_stamp)}</a>,
-      "character": <Link href = "/characters/[id]" as={`/characters/${roll.character_id}`}><a>{char_name}</a></Link>,
-      "roll_type": <Link href="/rolls/types/[id]" as={`/rolls/types/${roll.roll_type_id}`}><a>{type_name}</a></Link>,
+      "character": <Link href = "/characters/[id]" as={`/characters/${roll.character.id}`}><a>{roll.character.name}</a></Link>,
+      "roll_type": <Link href="/rolls/types/[id]" as={`/rolls/types/${roll.roll_type.id}`}><a>{roll.roll_type.name}</a></Link>,
       "natural_value": roll.natural_value,
       "final_value": roll.final_value,
       "notes": roll.notes,
       "damage": roll.damage,
-      "kill_count": roll.kill_count
+      "kill_count": roll.kill_count,
+    }
+  })
+
+  const casts_display = episode.casts.map((cast) => {
+    let yt_link = get_yt_link(cast.timestamp, cast.notes, episode.vod_links)
+    return {
+      "time_stamp": <a href={yt_link}>{timeFormat(cast.timestamp)}</a>,
+      "spell": <Link href = "/spells/[id]" as = {`/spells/${cast.spell.id}`}><a>{cast.spell.name}</a></Link>,
+      "character": <Link href = "/characters/[id]" as={`/characters/${cast.character.id}`}><a>{cast.character.name}</a></Link>,
+      'cast_level': cast.cast_level, 
+      "notes": cast.notes,
     }
   })
 
@@ -106,12 +93,12 @@ function EpisodeDetail({episode, roll_type}) {
 
         <h4>Players in</h4>
         <ul>
-          {player_display.map((player_name) => <li key = {player_name}> {player_name} </li> )}
+          {episode.attendance.map((player) => <li key = {player.player.full_name}> {player.player.full_name} </li> )}
         </ul>
         
         <h4>Characters in</h4>
         <ul>
-          {character_display.map((char_name) => <li key={char_name}> {char_name} </li> )}
+          {episode.apperances.map((app) => <li key={app.character.name}> {app.character.name} </li> )}
         </ul>
 
         {episode.level_ups.length > 0 &&
@@ -136,19 +123,32 @@ function EpisodeDetail({episode, roll_type}) {
           </>
         }
 
-        <h3>All Rolls ({Object.keys(episode.rolls).length})</h3>
+        <h3>Spells Cast ({episode.casts.length})</h3>
+        <ThemeProvider id = "table">
+          <Table
+            striped
+            columns={casts_columns}
+            data={casts_display}
+            sortable
+            rowKey='time_stamp'
+            title="Episode Spell Casts"
+            hideTitle />
+        </ThemeProvider>
+
+        <h3>Rolls ({episode.rolls.length})</h3>
+
+        <ThemeProvider id = "table">
+          <Table
+            striped
+            columns={rolls_columns}
+            data={rolls_display}
+            sortable
+            rowKey='time_stamp'
+            title="Episode Rolls"
+            hideTitle />
+        </ThemeProvider>
+      
       </div>
-     
-      <ThemeProvider id = "table">
-        <Table
-          striped
-          columns={columns}
-          data={rolls_display}
-          sortable
-          rowKey='time_stamp'
-          title="Episode Rolls"
-          hideTitle />
-      </ThemeProvider>
     </>
   )
 }
@@ -164,8 +164,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({params}){
   const episode = (await axios.get(`http://127.0.0.1:8000/episodes/api/episode/${params.id}`)).data
-  const roll_type = (await axios.get("http://127.0.0.1:8000/rolls/api/rolltype")).data
-  return { props: { episode, roll_type } }
+  return { props: { episode } }
 } 
 
 export default EpisodeDetail

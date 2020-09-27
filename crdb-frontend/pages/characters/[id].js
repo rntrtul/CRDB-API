@@ -1,10 +1,9 @@
 import axios from 'axios'
 import Link from 'next/link'
 import Head from 'next/head'
-import { Tabs, Tab, Panel } from '@bumaga/tabs' 
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import StatSheet from '../../components/statsheet'
 import ReactFrappeChart from "react-frappe-charts"
-import { Chart } from "frappe-charts/dist/frappe-charts.min.esm"
 
 function CharacterDetail({character}) { 
   let normal_rolls = character.roll_counts.total - character.roll_counts.advantages - character.roll_counts.disadvantages
@@ -31,17 +30,19 @@ function CharacterDetail({character}) {
       <p>Race: {character.race.name}</p>
       <p>Character Type: {character.char_type.name}</p>
 
-      <Tabs>
-        <div className = "tabs is-centered">
-          <ul>          
-            <li><Tab><a>Stats</a></Tab></li>
-            <li><Tab><a>Stat Sheet</a></Tab></li>
-            <li><Tab><a>Rolls</a></Tab></li>
-            <li><Tab><a>Apperances</a></Tab></li>
+      <Tabs selectedTabClassName = "is-active">
+        <TabList className = "tabs is-centered">
+          <ul>
+            <Tab><li><a>Stats</a></li></Tab>
+            <Tab><li><a>Stat Sheet</a></li></Tab>
+            <Tab><li><a>Rolls</a></li></Tab>
+            <Tab><li><a>Apperances</a></li></Tab>
+            <Tab><li><a>Spells</a></li></Tab>
           </ul>
-        </div>
-        <Panel>
-          <>
+        </TabList>
+
+        <TabPanel>
+        <>
           <div className="tile is-ancestor">
             <div className = "tile is-parent">
               <div className = "tile is-child box">
@@ -127,7 +128,7 @@ function CharacterDetail({character}) {
                   axisOptions={{ xAxisMode: "tick"}}
                   valuesOverPoints={true}
                   tooltipOptions={{
-                    formatTooltipY: d=> d + " rolls"
+                    formatTooltipY: d=> d > 1 ? d + " rolls" : d + " roll"
                   }}
                   data={{
                     labels: character.top_roll_types.map((type) => type[0]),
@@ -145,7 +146,7 @@ function CharacterDetail({character}) {
                 axisOptions={{ xAxisMode: "tick"}}
                 tooltipOptions={{
                   formatTooltipX: d => "EP " + d,
-                  formatTooltipY: d=> d + " rolls"
+                  formatTooltipY: d=> d > 1 ? d + " rolls" : d + " roll"
                 }}
                 data={{
                   labels: [...Array(character.campaign.length).keys()].map(x => x + 1),
@@ -172,7 +173,7 @@ function CharacterDetail({character}) {
                     axisOptions={{ xAxisMode: "tick"}}
                     valuesOverPoints={true}
                     tooltipOptions={{
-                      formatTooltipY: d=> d + " casts"
+                      formatTooltipY: d=> d > 1 ? d + " casts" : d + " cast"
                     }}
                     data={{
                       labels: character.top_spells.list.map((spell) => spell[0]),
@@ -190,7 +191,7 @@ function CharacterDetail({character}) {
                     axisOptions={{ xAxisMode: "tick"}}
                     tooltipOptions={{
                       formatTooltipX: d=> "EP "  + d,
-                      formatTooltipY: d=> d + " casts"
+                      formatTooltipY: d=> d > 1 ? d + " casts" : d + " cast"
                     }}
                     data={{
                       labels: [...Array(character.campaign.length).keys()].map(x => x + 1),
@@ -227,29 +228,27 @@ function CharacterDetail({character}) {
                   }],
                 }}
               />
-            </div>
-          </>
-        </Panel>
-        <Panel>
+            </div>      
+        </>
+        </TabPanel>
+        <TabPanel>
             <StatSheet data ={character.sheets}></StatSheet>
-        </Panel>
-        <Panel><p>Show character roll table</p></Panel>
-        <Panel>
+        </TabPanel>
+        <TabPanel><p>Show character roll table</p></TabPanel>
+        <TabPanel>
           <h4>Appears in ({character.apperances.length}):</h4>
           <ul>
             {character.apperances.map((apperance) => 
             <li key = {apperance.episode}><Link href={`/episodes/${apperance.episode}`}><a>{apperance.episode_title}</a></Link></li>
             )}
           </ul>
-        </Panel>
-        
+        </TabPanel>
+        <TabPanel><p>Add table of all spells cast</p></TabPanel>
       </Tabs>
-      
     </div>
   )
 }
 
-// un depth apperance (backend)
 export async function getStaticPaths() {
   const data = (await axios.get('http://127.0.0.1:8000/characters/api/character')).data
   const paths = data.results.map((character) => ({
@@ -260,7 +259,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({params}){
   const character = (await axios.get(`http://127.0.0.1:8000/characters/api/character/${params.id}`)).data
-  return { props: { character},revalidate: 3 }
+  return { props: {character},revalidate: 120 }
 } 
 
 export default CharacterDetail

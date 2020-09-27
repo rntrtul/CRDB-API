@@ -9,6 +9,7 @@ const Nav = ({settings}) => {
         <Link href = "/rolls"><a className = "navbar-item">Rolls</a></Link>
         <Link href= "/characters"><a className = "navbar-item">Characters</a></Link>
         <Link href= "/spells"><a className = "navbar-item">Spells</a></Link>
+        <Link href= "/items"><a className = "navbar-item">Items</a></Link>
       </div>
     </nav>
   )

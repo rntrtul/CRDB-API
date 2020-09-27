@@ -26,17 +26,16 @@ class AlignmentSerializer (serializers.ModelSerializer):
     fields = ('id', 'name')
 
 class CharacterSerializer (serializers.ModelSerializer):
-  roll_count = serializers.SerializerMethodField()
+  #roll_count = serializers.SerializerMethodField()
   class Meta:
     model = Character
-    fields = ('id', 'full_name', 'name', 'roll_count')
+    fields = ('id', 'full_name', 'name')
   
   def get_roll_count(self,instance):
     return instance.rolls.count()
   
   @staticmethod
   def setup_eager_loading(queryset):
-    queryset = queryset.prefetch_related('rolls')
     return queryset
 
 class CharacterTypeSerializer (serializers.ModelSerializer):
