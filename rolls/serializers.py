@@ -1,26 +1,21 @@
 from rest_framework import serializers
 from .models import Rolls, RollType, Advantage, AdvantageType, Kill, Die
 
-class RollsListSerializer (serializers.ListSerializer):
-
-  @staticmethod
-  def setup_eager_loading(queryset):
-    queryset = queryset.prefetch_related('character', 'roll_type', 'ep')
-    return queryset
+class RollTypeSerializer(serializers.ModelSerializer):
   
   class Meta:
-      model = Rolls
-      fields = '__all__'
-      depth = 1
+    model = RollType
+    fields = ('id', 'name')
 
 class RollsSerializer(serializers.ModelSerializer):
   ep = serializers.SerializerMethodField()
   character = serializers.SerializerMethodField()
+  roll_type = RollTypeSerializer('roll_type')
+
   class Meta:
-    list_serializer_class = RollsListSerializer
     model = Rolls
     fields = ('id', 'ep', 'time_stamp','character', 'roll_type','natural_value', 'final_value', 'notes', 'damage', 'kill_count')
-    depth = 1
+    
   
   def get_ep(self, instance):
     ep = instance.ep
@@ -44,6 +39,8 @@ class RollsSerializer(serializers.ModelSerializer):
       'name': char.name,
     }
     return char_info
+
+
   @staticmethod
   def setup_eager_loading(queryset):
     queryset = queryset.prefetch_related('character', 'roll_type', 'ep', 'ep__campaign', 'ep__vod_links')
@@ -59,12 +56,6 @@ class RollsSerializer(serializers.ModelSerializer):
       existing = set(self.fields)
       for field_name in existing - allowed:
           self.fields.pop(field_name)
-
-class RollTypeSerializer(serializers.ModelSerializer):
-  
-  class Meta:
-    model = RollType
-    fields = ('id', 'name')
 
 class RollTypeDetailSerializer(serializers.ModelSerializer):
   count = serializers.SerializerMethodField()

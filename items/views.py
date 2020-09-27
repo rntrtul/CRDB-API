@@ -5,20 +5,30 @@ from django.views import generic
 from django.db.models import Sum
 from .models import Potion, PotionUsage, Weapon, WeaponDamage, WeaponUsage, WeaponOwned
 from rest_framework import generics,  viewsets
-from .serializers import PotionSerializer, PotionUsageSerializer, WeaponSerializer, WeaponDamageSerializer, WeaponOwnedSerializer, WeaponUsageSerializer
+from .serializers import PotionSerializer, PotionDetailSerializer, PotionUsageSerializer, WeaponSerializer, WeaponDetailSerializer, WeaponDamageSerializer, WeaponOwnedSerializer, WeaponUsageSerializer
 
 # REST views
 class PotionViewSet(viewsets.ModelViewSet):
+  def get_serializer_class(self):
+    if self.action == 'list':
+      return PotionSerializer
+    elif self.action == 'retrieve':
+      return PotionDetailSerializer
+
   queryset = Potion.objects.all()
-  serializer_class = PotionSerializer
 
 class PotionUsageViewSet(viewsets.ModelViewSet):
   queryset = PotionUsage.objects.all()
   serializer_class = PotionUsageSerializer
 
 class WeaponViewSet(viewsets.ModelViewSet):
+  def get_serializer_class(self):
+    if self.action == 'list':
+      return WeaponSerializer
+    elif self.action == 'retrieve':
+      return WeaponDetailSerializer
+      
   queryset = Weapon.objects.all()
-  serializer_class = WeaponSerializer
 
 class WeaponDamageViewSet(viewsets.ModelViewSet):
   queryset = WeaponDamage.objects.all()

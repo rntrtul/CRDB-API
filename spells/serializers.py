@@ -4,11 +4,24 @@ from django.db.models import Count
 
 class SpellSerializer(serializers.ModelSerializer):
   cast_count = serializers.SerializerMethodField()
+  
   class Meta:
     model = Spell
     fields = ('id', 'name', 'level', 'cantrip', 'cast_count')
+  
   def get_cast_count(self,instance):
     return instance.casts.count()
+
+  def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+
+        super(SpellSerializer, self).__init__(*args, **kwargs)
+
+        if fields is not None:
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
 
   @staticmethod
   def setup_eager_loading(queryset):
@@ -17,11 +30,18 @@ class SpellSerializer(serializers.ModelSerializer):
 
 class SpellCastSerializer(serializers.ModelSerializer):
   episode = serializers.SerializerMethodField()
+  character = serializers.SerializerMethodField()
   class Meta:
     model = SpellCast
     fields = ('id', 'timestamp', 'spell', 'character', 'cast_level', 'notes', 'episode')
-    depth = 1
 
+  def get_character(self, instance):
+    char = instance.character
+    return {
+      'id': char.id,
+      'name': char.name,
+    }
+  
   def get_episode(self, instance):
     ep = instance.episode
     ep_info = {
@@ -41,6 +61,22 @@ class SpellCastSerializer(serializers.ModelSerializer):
   def setup_eager_loading(queryset):
     queryset = queryset.prefetch_related('character', 'spell', 'episode', 'skills')
     return queryset
+
+class SpellCastInEpSerializer(serializers.ModelSerializer):
+  character = serializers.SerializerMethodField()
+  spell = SpellSerializer('spell', fields=('id', 'name'))
+  
+  class Meta:
+    model = SpellCast
+    fields = ('timestamp', 'spell', 'character', 'cast_level', 'notes')
+
+  def get_character(self, instance):
+    char = instance.character
+    return {
+      'id': char.id,
+      'name': char.name,
+    }
+
 
 class LearnedSpellSerializer(serializers.ModelSerializer):
   class Meta:
