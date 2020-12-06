@@ -250,7 +250,7 @@ function CharacterDetail({character}) {
 }
 
 export async function getStaticPaths() {
-  const data = (await axios.get('http://127.0.0.1:8000/characters/api/character')).data
+  const data = (await axios.get('https://critroledb-api.herokuapp.com/characters/api/character')).data
   const paths = data.results.map((character) => ({
     params: {id: character.id.toString()},
   }))
@@ -258,7 +258,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}){
-  const character = (await axios.get(`http://127.0.0.1:8000/characters/api/character/${params.id}`)).data
+  const character = (await axios.get(`https://critroledb-api.herokuapp.com/characters/api/character/${params.id}`)).data
   return { props: {character},revalidate: 120 }
 } 
 

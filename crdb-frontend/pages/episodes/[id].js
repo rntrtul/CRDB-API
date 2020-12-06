@@ -154,7 +154,7 @@ function EpisodeDetail({episode, roll_type}) {
 }
 
 export async function getStaticPaths() {
-  const data = (await axios.get('http://127.0.0.1:8000/episodes/api/episode')).data
+  const data = (await axios.get('https://critroledb-api.herokuapp.com/episodes/api/episode')).data
   const paths = data.results.map((episode) => ({
     params: {id: episode.id.toString()},
   }))
@@ -163,7 +163,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}){
-  const episode = (await axios.get(`http://127.0.0.1:8000/episodes/api/episode/${params.id}`)).data
+  const episode = (await axios.get(`https://critroledb-api.herokuapp.com/episodes/api/episode/${params.id}`)).data
   return { props: { episode } }
 } 
 

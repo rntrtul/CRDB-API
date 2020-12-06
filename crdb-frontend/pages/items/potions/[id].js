@@ -47,7 +47,7 @@ function PotionDetail({potion}) {
 }
 
 export async function getStaticPaths() {
-  const data = (await axios.get('http://127.0.0.1:8000/items/api/potion')).data
+  const data = (await axios.get('https://critroledb-api.herokuapp.com/items/api/potion')).data
   const paths = data.results.map((potion) => ({
     params: {id: potion.id.toString()},
   }))
@@ -55,7 +55,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}){
-  const potion = (await axios.get(`http://127.0.0.1:8000/items/api/potion/${params.id}`)).data
+  const potion = (await axios.get(`https://critroledb-api.herokuapp.com/items/api/potion/${params.id}`)).data
   return { props: {potion},revalidate: 600 }
 } 
 

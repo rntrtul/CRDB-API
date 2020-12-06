@@ -16,7 +16,7 @@ function slot_count(lvl, sheet){
 
 const StatSheet = (props) => {
   const [query, setQuery] = useState('');
-  const url = query && `http://127.0.0.1:8000/characters/api/statsheet/${query}`
+  const url = query && `https://critroledb-api.herokuapp.com/characters/api/statsheet/${query}`
   const {status, data, error} = useFetch(url)
   
   const sheet = data

@@ -10,7 +10,7 @@ function RollType ({roll_type}){
 }
 
 export async function getStaticPaths() {
-  const data = (await axios.get('http://127.0.0.1:8000/rolls/api/rolltype')).data
+  const data = (await axios.get('https://critroledb-api.herokuapp.com/rolls/api/rolltype')).data
   const paths = data.results.map((type) => ({
     params: {id: type.id.toString()},
   }))
@@ -20,7 +20,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({params}){
   console.log(params)
-  const roll_type = (await axios.get(`http://127.0.0.1:8000/rolls/api/rolltype/${params.id}`)).data
+  const roll_type = (await axios.get(`https://critroledb-api.herokuapp.com/rolls/api/rolltype/${params.id}`)).data
   return { props: {roll_type } }
 } 
 

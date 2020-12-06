@@ -4,7 +4,7 @@ import axios from 'axios'
 
 // eventually change charactype from 1 to pc (use name not int id)
 // change to using api (witch will call fetcher
-const fetchData = async () => await axios.get('http://127.0.0.1:8000/spells/api/spell').then(
+const fetchData = async () => await axios.get('https://critroledb-api.herokuapp.com/spells/api/spell').then(
   res => ({
     error: false,
     spells: res.data.results,

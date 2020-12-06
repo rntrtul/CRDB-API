@@ -62,7 +62,7 @@ function SpellDetail({spell}) {
 }
 
 export async function getStaticPaths() {
-  const data = (await axios.get('http://127.0.0.1:8000/spells/api/spell')).data
+  const data = (await axios.get('https://critroledb-api.herokuapp.com/spells/api/spell')).data
   const paths = data.results.map((spell) => ({
     params: {id: spell.id.toString()},
   }))
@@ -70,7 +70,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}){
-  const spell = (await axios.get(`http://127.0.0.1:8000/spells/api/spell/${params.id}`)).data
+  const spell = (await axios.get(`https://critroledb-api.herokuapp.com/spells/api/spell/${params.id}`)).data
   return { props: { spell},revalidate: 3 }
 } 
 

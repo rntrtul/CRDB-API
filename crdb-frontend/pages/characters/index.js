@@ -3,7 +3,7 @@ import Head from 'next/head'
 import axios from 'axios'
 
 // eventually change charactype from 1 to pc (use name not int id)
-const fetchData = async () => await axios.get('http://127.0.0.1:8000/characters/api/charactertype/1').then(
+const fetchData = async () => await axios.get('https://critroledb-api.herokuapp.com/characters/api/charactertype/1').then(
   res => ({
     error: false,
     characters: res.data,
