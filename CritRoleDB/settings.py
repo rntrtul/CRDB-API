@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import django_heroku
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -166,3 +167,5 @@ SILKY_META = True
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
+
+django_heroku.settings(locals())
