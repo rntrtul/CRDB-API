@@ -56,10 +56,11 @@ INSTALLED_APPS = [
     'encounters.apps.EncountersConfig',
     'damages.apps.DamagesConfig',
     'django_filters',
+    'silk',
 ]
 
-if DEBUG:
-    INSTALLED_APPS.append('silk')
+#if DEBUG:
+#    INSTALLED_APPS.append('silk')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,10 +72,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
-if DEBUG:
-    MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
+#if DEBUG:
+    #MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
 
 ROOT_URLCONF = 'CritRoleDB.urls'
 
@@ -180,5 +182,7 @@ SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+
+SILKY_INTERCEPT_PERCENT = 0 if not DEBUG else 100
 
 django_heroku.settings(locals())
