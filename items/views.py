@@ -15,7 +15,7 @@ class PotionViewSet(viewsets.ModelViewSet):
     elif self.action == 'retrieve':
       return PotionDetailSerializer
 
-  queryset = Potion.objects.all()
+  queryset = Potion.objects.all().order_by('name')
 
 class PotionUsageViewSet(viewsets.ModelViewSet):
   queryset = PotionUsage.objects.all()
@@ -28,7 +28,8 @@ class WeaponViewSet(viewsets.ModelViewSet):
     elif self.action == 'retrieve':
       return WeaponDetailSerializer
       
-  queryset = Weapon.objects.all()
+  queryset = Weapon.objects.all().order_by('name')
+
 
 class WeaponDamageViewSet(viewsets.ModelViewSet):
   queryset = WeaponDamage.objects.all()
