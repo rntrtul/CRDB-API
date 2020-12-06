@@ -9,7 +9,7 @@ function PotionDetail({potion}) {
     <div className = "content">
       <h1>{potion.name}</h1>
       <p className="subtitle">{potion.description} (should be description here)</p>
-
+      <h4>All Uses ({potion.uses.length}):</h4>
       <table className='table is-striped is-fullwidth'>
         <thead>
           <tr>
@@ -31,8 +31,12 @@ function PotionDetail({potion}) {
               <td>
                 <a href = {get_yt_link(use.timestamp, use.notes, use.episode.vod_links)}>{timeFormat(use.timestamp)}</a>
               </td>
-              <td>{use.by.name}</td>
-              <td>{use.to.name}</td>
+              <td>
+                <Link href = "/characters/[id]" as = {`/characters/${use.by.id}`}><a>{use.by.name}</a></Link>
+              </td>
+              <td>
+                <Link href = "/characters/[id]" as = {`/characters/${use.to.id}`}><a>{use.to.name}</a></Link>  
+              </td>
               <td>{use.notes}</td>
             </tr>
           )}
