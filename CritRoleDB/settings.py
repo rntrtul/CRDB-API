@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import django_heroku
+import environ
 
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,11 +25,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$_#)-72^5f!fahwf7ge3=i_p()zs&ado8!4#*qr+ipx%r!lx=$'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+DEBUG = env("ENV") == "DEV"
 ALLOWED_HOSTS = []
 
 
@@ -53,9 +55,11 @@ INSTALLED_APPS = [
     'languages.apps.LanguagesConfig',
     'encounters.apps.EncountersConfig',
     'damages.apps.DamagesConfig',
-    'silk',
     'django_filters',
 ]
+
+if DEBUG:
+    INSTALLED_APPS.append('silk')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,10 +69,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'silk.middleware.SilkyMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
+
+if DEBUG:
+    MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
 
 ROOT_URLCONF = 'CritRoleDB.urls'
 
@@ -99,11 +105,11 @@ WSGI_APPLICATION = 'CritRoleDB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'crdb',
-        'USER': 'critroledb',
-        'PASSWORD': 'mangroove',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT'),
     }
 }
 
@@ -161,11 +167,18 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 250
 }
 
-SILKY_PYTHON_PROFILER = True
-SILKY_META = True
+SILKY_PYTHON_PROFILER = DEBUG
+SILKY_META = DEBUG
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]
+
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_HSTS_SECONDS = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 
 django_heroku.settings(locals())
