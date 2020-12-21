@@ -40,7 +40,7 @@ def makeCombatApperance():
   ces = CombatEncounter.objects.all()
 
   for encounter in ces:
-    encounter_rolls = Rolls.objects.filter(ep=encounter.episode,time_stamp__range=(encounter.start,encounter.end))
+    encounter_rolls = Rolls.objects.filter(ep=encounter.episode,timestamp__range=(encounter.start,encounter.end))
     for roll in encounter_rolls:
       ch = roll.character
       apperance = CombatApperance.objects.get_or_create(encounter=encounter,character=ch)
@@ -56,7 +56,7 @@ def makeInitiative():
 
   for encounter in ces:
     order = {}
-    encounter_initative_rolls = Rolls.objects.filter(ep=encounter.episode,time_stamp__range=(encounter.start,encounter.end),roll_type=initiative)
+    encounter_initative_rolls = Rolls.objects.filter(ep=encounter.episode,timestamp__range=(encounter.start,encounter.end),roll_type=initiative)
     
     for roll in encounter_initative_rolls:
       if roll.character in order:

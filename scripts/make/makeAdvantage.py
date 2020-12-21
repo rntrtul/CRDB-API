@@ -12,7 +12,7 @@ rolls = Rolls.objects.all()
 
 for ep in eps.all():
   ep_count = 0
-  ep_rolls =  rolls.filter(ep=ep).order_by('time_stamp')
+  ep_rolls =  rolls.filter(ep=ep).order_by('timestamp')
   for roll in ep_rolls.all():
     adv_ratio = fuzz.partial_ratio('advantage', roll.notes)
     dis_ratio = fuzz.partial_ratio('disadvantage', roll.notes)
@@ -21,7 +21,7 @@ for ep in eps.all():
 
     if frag_ratio >= 95:
       count = ep_rolls.filter(character= roll.character, roll_type = roll.roll_type,
-                              time_stamp__lte=(roll.time_stamp + 2), time_stamp__gte=(roll.time_stamp - 2))
+                              timestamp__lte=(roll.timestamp + 2), timestamp__gte=(roll.timestamp - 2))
       for adjc in count:
         if len(roll_que) == 0 or len(roll_que) == 1:
           ep_count += 1
@@ -30,7 +30,7 @@ for ep in eps.all():
           ep_count += 1
           roll_que.append(adjc)
     elif frag_ratio >= 80:
-      print(roll.ep.title, ' ', roll.time_stamp, ' ' ,roll.notes)
+      print(roll.ep.title, ' ', roll.timestamp, ' ' ,roll.notes)
 
 
 length = len(roll_que)
@@ -54,7 +54,7 @@ while True:
   
   ahead = roll_que[-1]
 
-  if top.character == ahead.character and abs(top.time_stamp - ahead.time_stamp) <= TIMEDIFF :
+  if top.character == ahead.character and abs(top.timestamp - ahead.timestamp) <= TIMEDIFF :
     now = roll_que.pop()
     miss_ratio = max(fuzz.partial_ratio('disregarded', top.notes), fuzz.partial_ratio('ignored', top.notes))
 
@@ -78,8 +78,8 @@ while True:
     
     if adv_relate[1]:
       print("Linked following as ", type.name)
-      print(used.ep.title, ' ',used.time_stamp, ' ' ,used.character.name , ' ' ,used.final_value, ' ', used.notes)
-      print(missed.ep.title, ' ',missed.time_stamp, ' ' ,missed.character.name , ' ' ,missed.final_value, ' ', missed.notes)
+      print(used.ep.title, ' ',used.timestamp, ' ' ,used.character.name , ' ' ,used.final_value, ' ', used.notes)
+      print(missed.ep.title, ' ',missed.timestamp, ' ' ,missed.character.name , ' ' ,missed.final_value, ' ', missed.notes)
 
     matches += 1
   else :

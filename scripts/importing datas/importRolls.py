@@ -126,13 +126,13 @@ for dirpath,dirnames,files in os.walk(curr):
       #print(row)
       #print(str(ep.num), str(timeStamp), character.name, str(totalVal),  str(natVal), notes)
       try:
-        roll = Rolls.objects.get(ep=ep,time_stamp=timeStamp,character = character,notes=notes,natural_value=natVal, final_value=totalVal, damage=damage)
+        roll = Rolls.objects.get(ep=ep,timestamp=timeStamp,character = character,notes=notes,natural_value=natVal, final_value=totalVal, damage=damage)
       except: 
         if not valid_nat:
           natVal = None
         if not valid_total:
           totalVal = None
-        roll = Rolls.objects.get(ep=ep,time_stamp=timeStamp,character = character,notes=notes,natural_value=natVal, final_value=totalVal, damage=damage)
+        roll = Rolls.objects.get(ep=ep,timestamp=timeStamp,character = character,notes=notes,natural_value=natVal, final_value=totalVal, damage=damage)
 
       if not valid_nat:
         ukNat+=1   

@@ -8,13 +8,13 @@ class RollTypeSerializer(serializers.ModelSerializer):
     fields = ('id', 'name')
 
 class RollsSerializer(serializers.ModelSerializer):
-  ep = serializers.SerializerMethodField()
+  episode = serializers.SerializerMethodField()
   character = serializers.SerializerMethodField()
   roll_type = RollTypeSerializer('roll_type')
 
   class Meta:
     model = Rolls
-    fields = ('id', 'ep', 'time_stamp','character', 'roll_type','natural_value', 'final_value', 'notes', 'damage', 'kill_count')
+    fields = ('id', 'episode', 'timestamp','character', 'roll_type','natural_value', 'final_value', 'notes', 'damage', 'kill_count')
     
   
   def get_ep(self, instance):

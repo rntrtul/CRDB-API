@@ -108,7 +108,7 @@ class WeaponDetailSerializer(serializers.ModelSerializer):
   
   def get_uses (self, instance):
     qs = instance.uses.prefetch_related('roll', 'roll__ep', 'roll__character', 'roll__roll_type', 'roll__ep__campaign', 'roll__ep__vod_links')
-    qs = qs.order_by('roll__ep__campaign', 'roll__ep__num', 'roll__time_stamp')
+    qs = qs.order_by('roll__ep__campaign', 'roll__ep__num', 'roll__timestamp')
     return WeaponUsageSerializer(qs, many=True).data
   
   def get_owners(self, instance):

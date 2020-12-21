@@ -18,8 +18,8 @@ class RollFilter(filters.FilterSet):
   max_final_value = filters.NumberFilter(field_name="final_value", lookup_expr='lte')
   episode_start = filters.NumberFilter(field_name="ep__num", lookup_expr='gte')
   episode_end = filters.NumberFilter(field_name="ep__num", lookup_expr='lte')
-  min_timestamp = filters.NumberFilter(field_name="time_stamp", lookup_expr='gte')
-  max_timestamp = filters.NumberFilter(field_name="time_stamp", lookup_expr='lte')
+  min_timestamp = filters.NumberFilter(field_name="time_tamp", lookup_expr='gte')
+  max_timestamp = filters.NumberFilter(field_name="timestamp", lookup_expr='lte')
   min_kills = filters.NumberFilter(field_name="kill_count", lookup_expr='gte')
   max_kills = filters.NumberFilter(field_name="kill_count", lookup_expr='lte')
 
@@ -82,7 +82,7 @@ class IndexView(generic.ListView):
   paginate_by = 100
 
   def get_queryset(self):
-    return Rolls.objects.order_by('ep','time_stamp')#only get first 100 otherwise too many
+    return Rolls.objects.order_by('ep','timestamp')#only get first 100 otherwise too many
 
 class DetailView(generic.DetailView):
   model = Rolls
@@ -101,7 +101,7 @@ class TypeDetailView(generic.DetailView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    context['roll_list'] = context['object'].rolls.order_by('ep__num', 'time_stamp')[:100]
+    context['roll_list'] = context['object'].rolls.order_by('ep__num', 'timestamp')[:100]
     context['c1_count'] = context['object'].rolls.filter(ep__campaign_id=5).count()
     context['c2_count'] = context['object'].rolls.filter(ep__campaign_id=6).count()
     return context

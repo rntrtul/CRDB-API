@@ -40,5 +40,5 @@ class DetailView(generic.DetailView):
     context['apperances'] = context['object'].apperances.order_by('character__name')
     context['initiative_order'] = context['object'].initiatievs.order_by('rank')
     encounter = context['object']
-    context['rolls_list'] = Rolls.objects.filter(ep=encounter.episode,time_stamp__range=(encounter.start,encounter.end)).order_by('time_stamp')
+    context['rolls_list'] = Rolls.objects.filter(ep=encounter.episode,timestamp__range=(encounter.start,encounter.end)).order_by('timestamp')
     return context

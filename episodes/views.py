@@ -11,6 +11,7 @@ from .models import Episode, Apperance, LevelProg, VodType, Attendance, Apperanc
 from rolls.models import Rolls
 # Create your views here.
 
+
 #REST API views
 class EpisodeViewSet(viewsets.ModelViewSet):
   def get_serializer_class(self):
@@ -20,7 +21,7 @@ class EpisodeViewSet(viewsets.ModelViewSet):
       return EpisodeDetailSerializer
 
   def get_queryset(self):
-    queryset = Episode.objects.order_by('campaign','num')
+    queryset = Episode.objects.order_by('campaign', 'num')
     if self.action == 'retrieve':
       queryset = self.get_serializer_class().setup_eager_loading(queryset)
     else:
@@ -28,29 +29,36 @@ class EpisodeViewSet(viewsets.ModelViewSet):
 
     return queryset
 
+
 class ApperanceViewSet(viewsets.ModelViewSet):
   queryset = Apperance.objects.all()
   serializer_class = ApperanceSerializer
+
 
 class ApperanceTypeViewSet(viewsets.ModelViewSet):
   queryset = ApperanceType.objects.order_by('name')
   serializer_class = ApperanceTypeSerializer
 
+
 class AttendanceViewSet(viewsets.ModelViewSet):
   queryset = Attendance.objects.all()
   serializer_class = AttendanceSerializer
+
 
 class AttendanceTypeViewSet(viewsets.ModelViewSet):
   queryset = AttendanceType.objects.order_by('name')
   serializer_class = AttendanceTypeSerializer
 
+
 class LiveViewSet(viewsets.ModelViewSet):
   queryset = Live.objects.order_by('episode')
   serializer_class = LiveSerializer
 
+
 class VodTypeViewSet(viewsets.ModelViewSet):
   queryset = VodType.objects.order_by('name')
   serializer_class = VodTypeSerializer
+
 
 class VodLinksViewSet(viewsets.ModelViewSet):
   queryset = VodLinks.objects.all()
@@ -79,9 +87,9 @@ class DetailView(generic.DetailView):
     if context['object'].campaign.num == 1 and (context['object'].num == 31 or context['object'].num == 33 or context['object'].num == 35):
       context['yt_link'] = "https://youtu.be/" + yt_links[0].link_key + "?t="
       context['yt_link_p2'] = "https://youtu.be/" + yt_links[1].link_key + "?t="
-      context['rolls'] = chain(context['object'].rolls.filter(notes__startswith='p1').order_by('time_stamp'),context['object'].rolls.filter(notes__startswith='p2').order_by('time_stamp'))
+      context['rolls'] = chain(context['object'].rolls.filter(notes__startswith='p1').order_by('timestamp'),context['object'].rolls.filter(notes__startswith='p2').order_by('timestamp'))
     else:
-      context['rolls'] = context['object'].rolls.order_by('time_stamp')
+      context['rolls'] = context['object'].rolls.order_by('timestamp')
       context['yt_link'] = "https://youtu.be/" + yt_links[0].link_key + "?t="
     return context
 

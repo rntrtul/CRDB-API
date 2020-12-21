@@ -14,7 +14,7 @@ def makeKills():
   charMatch = re.compile(r"to [a-zA-Z', ]+")
   npc = CharacterType.objects.get(name="NPC")
   uk = Race.objects.get(name="unknown")
-  for roll in kill_rolls.order_by('ep__title', 'time_stamp'):
+  for roll in kill_rolls.order_by('ep__title', 'timestamp'):
     title = roll.ep.title
     if roll.kill_count == 1:
       if roll.damage == "":
@@ -28,20 +28,20 @@ def makeKills():
           ch = Character.objects.get(name="Goblin")
           kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
         elif title == "Skyward":
-          if roll.time_stamp == 10846 or roll.time_stamp == 11885:
+          if roll.timestamp == 10846 or roll.timestamp == 11885:
             ch = Character.objects.get(name="Rider")
             kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
-          elif roll.time_stamp == 11422 or roll.time_stamp == 12218:
+          elif roll.timestamp == 11422 or roll.timestamp == 12218:
             ch = Character.objects.get(name="Wyvern")
             kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
         elif title == "Crimson Diplomacy":
           ch = Character.objects.get(name="Broker")
           kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
         elif title == "Omens":
-          if roll.time_stamp == 5081:
+          if roll.timestamp == 5081:
             ch = Character.objects.get(name="Purple worm")
             kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
-          elif roll.time_stamp == 5669:
+          elif roll.timestamp == 5669:
             ch = Character.objects.get(name="Frost worm")
             kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
         elif title == "In Ruins":
@@ -51,20 +51,20 @@ def makeKills():
           ch = Character.objects.get(name="Suda")
           kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
         elif title == "Cloak and Dagger":
-          if roll.time_stamp == 11498:
+          if roll.timestamp == 11498:
             ch = Character.objects.get(name="Luska")
             kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
-          elif roll.time_stamp == 15805:
+          elif roll.timestamp == 15805:
             ch = Character.objects.get(name="Orthax")
             kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
           else:
             ch = Character.objects.get(name="Ripley")
             kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
         elif title == "Vorugal":
-          if roll.time_stamp == 15891:
+          if roll.timestamp == 15891:
             ch = Character.objects.get(name="Yenk")
             kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
-          if roll.time_stamp == 16515:
+          if roll.timestamp == 16515:
             ch = Character.objects.get(name="Vorugal")
             kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
         elif title == "Clash at Daxio":
@@ -80,7 +80,7 @@ def makeKills():
           ch = Character.objects.get(name="Duergar")
           kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
         elif title == "Denouement":
-          if roll.time_stamp == 2616:
+          if roll.timestamp == 2616:
             ch = Character.objects.get_or_create(name="Countess",char_type=npc,race=uk)
             kill = Kill.objects.get_or_create(roll=roll,killed=ch[0],count=1)
           else:
@@ -102,7 +102,7 @@ def makeKills():
           ch = Character.objects.get(name="Ghost")
           kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
         else:
-          print(roll.ep.title, roll.damage, roll.time_stamp, roll.kill_count, roll.character.name)   
+          print(roll.ep.title, roll.damage, roll.timestamp, roll.kill_count, roll.character.name)
     elif roll.kill_count > 1:
       if roll.damage != "":
         if title == "The Climb Within":
@@ -116,13 +116,13 @@ def makeKills():
           kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 2)
         elif title == "Cindergrove Revisited":
           ch = Character.objects.get_or_create(name="Fire elemental")
-          if roll.time_stamp == 7404:
+          if roll.timestamp == 7404:
             kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 2)
-          elif roll.time_stamp == 8842:
+          elif roll.timestamp == 8842:
             kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 1)
             ch = Character.objects.get_or_create(name="Lfe")
             kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 1)
-          elif roll.time_stamp == 3960:
+          elif roll.timestamp == 3960:
             ch = Character.objects.get_or_create(name="Salamander", char_type=npc, race = uk)
             kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 2)
             ch = Character.objects.get_or_create(name="Fatty Albanker", char_type=npc, race = uk)
@@ -143,13 +143,13 @@ def makeKills():
           kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 2)
         elif title == "Unfinished Business":
             ch = Character.objects.get_or_create(name="Skeleton")
-            if roll.time_stamp == 16903:
+            if roll.timestamp == 16903:
               kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 1)
               ch = Character.objects.get_or_create(name="Minotaur skeleton")
               kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 1)
-            elif roll.time_stamp == 7213:
+            elif roll.timestamp == 7213:
               kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 4)
-            elif roll.time_stamp == 14970:
+            elif roll.timestamp == 14970:
               kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 5)
         elif title == "Enter Vasselheim":
           ch = Character.objects.get_or_create(name="Spiders")
@@ -166,10 +166,10 @@ def makeKills():
           ch = Character.objects.get_or_create(name="Soldiers")
           kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 3)
         elif title == "K'Varn Revealed":
-          if roll.time_stamp == 1980:
+          if roll.timestamp == 1980:
             ch = Character.objects.get_or_create(name="Ghoul", char_type=npc, race=uk)
             kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 3)
-          elif roll.time_stamp == 6703:
+          elif roll.timestamp == 6703:
             ch = Character.objects.get_or_create(name="Gricks")
             kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 5)
         elif title == "The Sunken Tomb":
@@ -194,9 +194,9 @@ def makeKills():
           kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 5)
         elif title == "Against the Tide of Bone":
           ch = Character.objects.get_or_create(name="Skeletons")
-          if roll.time_stamp == 2391:
+          if roll.timestamp == 2391:
             kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 5)
-          elif roll.time_stamp == 1792:
+          elif roll.timestamp == 1792:
             kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 12)
         elif title == "Arrival at Kraghammer":
           ch = Character.objects.get_or_create(name="Goblin")
@@ -225,7 +225,7 @@ def makeKills():
           ch = Character.objects.get_or_create(name="Skeletons")
           kill = Kill.objects.get_or_create(roll=roll, killed = ch[0], count = 7)
         else:
-          print(roll.ep.title, roll.damage, roll.time_stamp, roll.kill_count, roll.character.name)   
+          print(roll.ep.title, roll.damage, roll.timestamp, roll.kill_count, roll.character.name)
 
 
 #makeKills()
@@ -233,18 +233,18 @@ def makeKills():
 npc = CharacterType.objects.get(name="NPC")
 uk = Race.objects.get(name="unknown")
 
-for roll in Rolls.objects.filter(kill_count__gte = 1).order_by('ep__num', 'time_stamp'):
+for roll in Rolls.objects.filter(kill_count__gte = 1).order_by('ep__num', 'timestamp'):
   recorded = Kill.objects.filter(roll=roll)
   if len(recorded) == 0:
     title = roll.ep.title
     if title == "Into the Greyspine Mines":
-      if roll.time_stamp == 8525 or roll.time_stamp == 9090:
+      if roll.timestamp == 8525 or roll.timestamp == 9090:
         ch = Character.objects.get_or_create(name="Umberhulk", char_type=npc, race = uk)
         kill = Kill.objects.get_or_create(roll=roll,killed=ch[0],count=1)
-      elif roll.time_stamp == 9985:
+      elif roll.timestamp == 9985:
         ch = Character.objects.get(name="Intellect Devourer")
         kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
-      elif roll.time_stamp == 10105:
+      elif roll.timestamp == 10105:
         ch = Character.objects.get(name="Duergar")
         kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
     elif title == "Umbrasyl":
@@ -255,4 +255,4 @@ for roll in Rolls.objects.filter(kill_count__gte = 1).order_by('ep__num', 'time_
       kill = Kill.objects.get_or_create(roll=roll,killed=ch,count=1)
 
         
-    print(roll.ep.title, roll.time_formated(),roll.time_stamp, roll.damage) 
+    print(roll.ep.title, roll.time_formated(),roll.timestamp, roll.damage)

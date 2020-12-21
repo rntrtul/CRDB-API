@@ -214,7 +214,7 @@ def get_characters(dmg):
   return characters, count
 
 
-all_rolls = Rolls.objects.filter(roll_type = RollType.objects.get(name="Damage")).order_by('ep__num','time_stamp').all()
+all_rolls = Rolls.objects.filter(roll_type = RollType.objects.get(name="Damage")).order_by('ep__num','timestamp').all()
 
 count = 0
 type_count = 0
