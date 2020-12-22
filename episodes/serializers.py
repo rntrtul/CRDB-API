@@ -147,7 +147,7 @@ class VodLinksSerializer(serializers.ModelSerializer):
 
 class EpisodeDetailSerializer(serializers.ModelSerializer):
     level_ups = serializers.SerializerMethodField()
-    apperances = serializers.SerializerMethodField()
+    appearances = serializers.SerializerMethodField()
     attendance = serializers.SerializerMethodField()
     rolls = serializers.SerializerMethodField()
     casts = serializers.SerializerMethodField()
@@ -156,11 +156,11 @@ class EpisodeDetailSerializer(serializers.ModelSerializer):
         model = Episode
         fields = ('id', 'campaign', 'num', 'title', 'air_date','description', 'length',
                   'first_half_start', 'first_half_end', 'second_half_start','second_half_end',
-                  'rolls', 'apperances', 'level_ups', 'combat_encounters', 'vod_links', 'attendance', 'casts')
+                  'rolls', 'appearances', 'level_ups', 'combat_encounters', 'vod_links', 'attendance', 'casts')
         depth = 1
 
     @staticmethod
-    def get_apperances(instance):
+    def get_appearances(instance):
         qs = instance.apperances.prefetch_related('apperance_type', 'character').order_by('character__name')
         return ApperanceSerializer(qs, many=True, fields=('apperance_type', 'character')).data
 

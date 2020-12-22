@@ -6,6 +6,7 @@ from rest_framework import generics, viewsets
 from .serializers import SpellSerializer,SpellDetailSerializer, SpellCastSerializer, LearnedSpellSerializer
 from .models import Spell, SpellCast, LearnedSpell
 
+
 # REST views
 class SpellViewSet(viewsets.ModelViewSet):
   def get_serializer_class(self):
@@ -27,9 +28,11 @@ class SpellCastViewSet(viewsets.ModelViewSet):
   queryset = SpellCast.objects.all()
   serializer_class = SpellCastSerializer
 
+
 class LearnedSpellViewSet(viewsets.ModelViewSet):
   queryset = LearnedSpell.objects.all()
   serializer_class = LearnedSpellSerializer
+
 
 # django template views
 class IndexView(generic.ListView):
@@ -39,6 +42,7 @@ class IndexView(generic.ListView):
   def get_queryset(self):
     #return Character.objects.order_by('first_name')
     return Spell.objects.all()
+
 
 class DetailView(generic.DetailView):
   model = Spell
@@ -52,6 +56,7 @@ class DetailView(generic.DetailView):
     context = super().get_context_data(**kwargs)
     context['cast_list'] = context['object'].casts.order_by('episode_id')
     return context
+
 
 class CastDetailView(generic.DetailView):
   model = SpellCast

@@ -141,7 +141,7 @@ class StatSheetDetailSerializer(serializers.ModelSerializer):
 
 class CharacterDetailSerializer(serializers.ModelSerializer):
     sheets = serializers.SerializerMethodField()
-    apperances = serializers.SerializerMethodField()
+    appearances = serializers.SerializerMethodField()
     roll_counts = serializers.SerializerMethodField()
     damage_total = serializers.SerializerMethodField()
     top_roll_types = serializers.SerializerMethodField()
@@ -156,13 +156,13 @@ class CharacterDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
         fields = ('id', 'full_name', 'name', 'race', 'player', 'char_type',
-                  'sheets', 'apperances', 'roll_counts', 'damage_total',
+                  'sheets', 'appearances', 'roll_counts', 'damage_total',
                   'top_roll_types', 'kill_count', 'nat_ones', 'nat_twenty', 'top_spells', 'hdywt_count', 'campaign',
                   'ep_totals')
         depth = 1
 
     @staticmethod
-    def get_apperances(instance):
+    def get_appearances(instance):
         ep_list = []
         queryset = instance.apperances.prefetch_related('episode').order_by('episode__num')
 
@@ -252,7 +252,7 @@ class CharacterDetailSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_damage_total(instance):
-        return instance.rolls.filter(roll_type__name='Damage').aggregate(Sum('final_value'))
+        return instance.rolls.filter(roll_type__name='Damage').aggregate(Sum('final_value'))['final_value__sum']
 
     @staticmethod
     def get_top_roll_types(instance):
@@ -261,7 +261,7 @@ class CharacterDetailSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_kill_count(instance):
-        return instance.rolls.aggregate(Sum('kill_count'))
+        return instance.rolls.aggregate(Sum('kill_count'))['kill_count__sum']
 
     @staticmethod
     def get_nat_ones(instance):
