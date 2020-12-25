@@ -6,7 +6,8 @@ from spells.serializers import SpellSerializer
 from episodes.serializers import LevelProgSerializer, ApperanceSerializer
 from languages.serializers import LearnedLanguageSerializer
 from items.serializers import WeaponOwnedSerializer
-from spells.serializers import LearnedSpellSerializer
+from spells.serializers import LearnedSpellSerializer, SpellCastSerializer
+from rolls.serializers import RollsSerializer
 from episodes.models import Episode
 from rolls.models import RollType
 
@@ -140,25 +141,27 @@ class StatSheetDetailSerializer(serializers.ModelSerializer):
 
 
 class CharacterDetailSerializer(serializers.ModelSerializer):
-    sheets = serializers.SerializerMethodField()
     appearances = serializers.SerializerMethodField()
-    roll_counts = serializers.SerializerMethodField()
+    campaign = serializers.SerializerMethodField()
+    casts = serializers.SerializerMethodField()
     damage_total = serializers.SerializerMethodField()
-    top_roll_types = serializers.SerializerMethodField()
+    ep_totals = serializers.SerializerMethodField()
+    hdywt_count = serializers.SerializerMethodField()
     kill_count = serializers.SerializerMethodField()
     nat_ones = serializers.SerializerMethodField()
     nat_twenty = serializers.SerializerMethodField()
+    rolls = serializers.SerializerMethodField()
+    roll_counts = serializers.SerializerMethodField()
+    sheets = serializers.SerializerMethodField()
+    top_roll_types = serializers.SerializerMethodField()
     top_spells = serializers.SerializerMethodField()
-    hdywt_count = serializers.SerializerMethodField()
-    campaign = serializers.SerializerMethodField()
-    ep_totals = serializers.SerializerMethodField()
 
     class Meta:
         model = Character
         fields = ('id', 'full_name', 'name', 'race', 'player', 'char_type',
                   'sheets', 'appearances', 'roll_counts', 'damage_total',
                   'top_roll_types', 'kill_count', 'nat_ones', 'nat_twenty', 'top_spells', 'hdywt_count', 'campaign',
-                  'ep_totals')
+                  'ep_totals', 'rolls', 'casts')
         depth = 1
 
     @staticmethod
@@ -284,7 +287,21 @@ class CharacterDetailSerializer(serializers.ModelSerializer):
         return instance.rolls.filter(notes__contains="HDYWTDT").count()
 
     @staticmethod
+    def get_rolls(instance):
+        queryset = instance.rolls.order_by('ep__num', 'timestamp')
+        queryset = RollsSerializer.setup_eager_loading(queryset)
+
+        return RollsSerializer(queryset, many=True, read_only=True).data
+
+    @staticmethod
+    def get_casts(instance):
+        queryset = instance.casts.order_by('episode__num', 'timestamp')
+        queryset = SpellCastSerializer.setup_eager_loading(queryset)
+
+        return SpellCastSerializer(queryset, many=True, read_only=True).data
+
+    @staticmethod
     def setup_eager_loading(queryset):
         queryset = queryset.select_related('race', 'player', 'char_type')
-        queryset = queryset.prefetch_related('stat_sheets', 'apperances')
+        queryset = queryset.prefetch_related('stat_sheets', 'apperances', 'rolls', 'casts')
         return queryset

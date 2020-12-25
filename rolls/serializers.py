@@ -62,15 +62,19 @@ class RollsSerializer(serializers.ModelSerializer):
 
 
 class RollTypeDetailSerializer(serializers.ModelSerializer):
-    count = serializers.SerializerMethodField()
+    rolls = serializers.SerializerMethodField()
 
     class Meta:
         model = RollType
-        fields = ('id', 'name', 'count', 'rolls')
+        fields = ('id', 'name', 'rolls')
+        depth = 2
 
     @staticmethod
-    def get_count(instance):
-        return instance.rolls.count()
+    def get_rolls(instance):
+        queryset = instance.rolls.order_by('ep__campaign', 'ep__num', 'timestamp')
+        queryset = RollsSerializer.setup_eager_loading(queryset)
+
+        return RollsSerializer(queryset, many=True, read_only=True).data
 
 
 class AdvantageTypeSerializer(serializers.ModelSerializer):

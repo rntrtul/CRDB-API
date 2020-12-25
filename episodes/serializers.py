@@ -182,10 +182,10 @@ class EpisodeDetailSerializer(serializers.ModelSerializer):
             p1_queryset = quersyet.filter(notes__startswith='p1')
             p1 = RollsSerializer(p1_queryset, many=True, fields=fields_wanted).data
             p2_queryset = quersyet.filter(notes__startswith='p2')
-            p2 = RollsSerializer(p2_queryset, many=True, fields = fields_wanted).data
+            p2 = RollsSerializer(p2_queryset, many=True, fields=fields_wanted).data
             return list(chain(p1, p2))
         else:
-            return RollsSerializer(quersyet, many=True, fields = fields_wanted).data
+            return RollsSerializer(quersyet, many=True, fields=fields_wanted).data
 
     @staticmethod
     def get_casts(instance):
