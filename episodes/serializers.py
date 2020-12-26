@@ -178,16 +178,16 @@ class EpisodeDetailSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_rolls(instance):
-        quersyet = instance.rolls.prefetch_related('character', 'roll_type').order_by('timestamp')
+        queryset = instance.rolls.prefetch_related('character', 'roll_type').order_by('timestamp')
         fields_wanted = ('id', 'timestamp', 'character', 'roll_type', 'natural_value', 'final_value', 'notes', 'damage','kill_count')
         if instance.campaign.num == 1 and (instance.num == 31 or instance.num == 33 or instance.num == 35):
-            p1_queryset = quersyet.filter(notes__startswith='p1')
+            p1_queryset = queryset.filter(notes__startswith='p1')
             p1 = RollsSerializer(p1_queryset, many=True, fields=fields_wanted).data
-            p2_queryset = quersyet.filter(notes__startswith='p2')
+            p2_queryset = queryset.filter(notes__startswith='p2')
             p2 = RollsSerializer(p2_queryset, many=True, fields=fields_wanted).data
             return list(chain(p1, p2))
         else:
-            return RollsSerializer(quersyet, many=True, fields=fields_wanted).data
+            return RollsSerializer(queryset, many=True, fields=fields_wanted).data
 
     @staticmethod
     def get_casts(instance):
@@ -204,6 +204,9 @@ class EpisodeDetailSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_next_episode(instance):
         if instance.num != instance.campaign.length:
+            if instance.num == 11 and instance.campaign.num == 1:
+                # campaign 1 episode 12 was some guide and isn't a core episode so it is skipped
+                return Episode.objects.get(campaign=instance.campaign, num=13).id
             return Episode.objects.get(campaign=instance.campaign, num=(instance.num + 1)).id
         else:
             return None
@@ -211,6 +214,10 @@ class EpisodeDetailSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_prev_episode(instance):
         if instance.num != 1:
+            if instance.num == 13 and instance.campaign.num == 1:
+                # campaign 1 episode 12 was some guide and isn't a core episode so it is skipped
+                return Episode.objects.get(campaign=instance.campaign, num=11).id
+
             return Episode.objects.get(campaign=instance.campaign, num=(instance.num - 1)).id
         else:
             return None
