@@ -191,7 +191,9 @@ class EpisodeDetailSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_casts(instance):
-        queryset = instance.casts.prefetch_related('character', 'episode', 'spell').order_by('timestamp')
+        update serializers for more info and better performance.
+
+Also did style updatesqueryset = instance.casts.prefetch_related('character', 'episode', 'spell').order_by('timestamp')
         if instance.campaign.num == 1 and (instance.num == 31 or instance.num == 33 or instance.num == 35):
             p1_queryset = queryset.filter(notes__startswith='p1')
             p1 = SpellCastInEpSerializer(p1_queryset, many=True).data
