@@ -146,15 +146,17 @@ class VodLinksSerializer(serializers.ModelSerializer):
 
 
 class EpisodeDetailSerializer(serializers.ModelSerializer):
-    level_ups = serializers.SerializerMethodField()
     appearances = serializers.SerializerMethodField()
     attendance = serializers.SerializerMethodField()
-    rolls = serializers.SerializerMethodField()
     casts = serializers.SerializerMethodField()
+    level_ups = serializers.SerializerMethodField()
+    next_episode = serializers.SerializerMethodField()
+    prev_episode = serializers.SerializerMethodField()
+    rolls = serializers.SerializerMethodField()
 
     class Meta:
         model = Episode
-        fields = ('id', 'campaign', 'num', 'title', 'air_date','description', 'length',
+        fields = ('id', 'campaign', 'num', 'title', 'air_date','description', 'length', 'next_episode', 'prev_episode',
                   'first_half_start', 'first_half_end', 'second_half_start','second_half_end',
                   'rolls', 'appearances', 'level_ups', 'combat_encounters', 'vod_links', 'attendance', 'casts')
         depth = 1
@@ -198,6 +200,20 @@ class EpisodeDetailSerializer(serializers.ModelSerializer):
             return list(chain(p1, p2))
         else:
             return SpellCastInEpSerializer(queryset, many=True).data
+
+    @staticmethod
+    def get_next_episode(instance):
+        if instance.num != instance.campaign.length:
+            return Episode.objects.get(campaign=instance.campaign, num=(instance.num + 1)).id
+        else:
+            return None
+
+    @staticmethod
+    def get_prev_episode(instance):
+        if instance.num != 1:
+            return Episode.objects.get(campaign=instance.campaign, num=(instance.num - 1)).id
+        else:
+            return None
 
     @staticmethod
     def setup_eager_loading(queryset):
