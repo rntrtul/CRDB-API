@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.db.models import Count
+from rest_framework.pagination import PageNumberPagination
+
 from .models import Rolls, RollType, Advantage, AdvantageType, Kill, Die
 from .serializers import RollsSerializer, RollTypeSerializer, RollTypeDetailSerializer, AdvantageSerializer, \
     AdvantageTypeSerializer, KillSerializer, DieSerializer
@@ -32,15 +34,20 @@ class RollFilter(filters.FilterSet):
                   'episode_end',
                   'min_timestamp', 'max_timestamp', 'min_kills', 'max_kills']
 
+class StandardRollsPagination(PageNumberPagination):
+    page_size = 1000
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 class RollsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
-        queryset = Rolls.objects.all()
+        queryset = Rolls.objects.order_by('ep__campaign', 'ep__num', 'timestamp')
         queryset = self.get_serializer_class().setup_eager_loading(queryset)
         return queryset
 
     filterset_class = RollFilter
     serializer_class = RollsSerializer
+    pagination_class = StandardRollsPagination
 
 
 class RollTypeViewSet(viewsets.ModelViewSet):

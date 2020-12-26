@@ -160,7 +160,6 @@ STATICFILES_DIRS = [
 ]
 
 REST_FRAMEWORK = {
-    
     'DEFAULT_PARSER_CLASSES': (
         'drf_ujson.parsers.UJSONParser',
     ),

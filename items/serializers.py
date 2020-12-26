@@ -137,4 +137,7 @@ class WeaponDetailSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_dmg_total(instance):
         qs = instance.uses.prefetch_related('roll')
-        return qs.aggregate(final_total=Sum('roll__final_value')), qs.aggregate(nat_total=Sum('roll__natural_value'))
+        return {
+            'final_total': qs.aggregate(final_total=Sum('roll__final_value'))['final_total'],
+            'nat_total': qs.aggregate(nat_total=Sum('roll__natural_value'))['nat_total'],
+        }
