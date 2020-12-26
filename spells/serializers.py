@@ -10,7 +10,8 @@ class SpellSerializer(serializers.ModelSerializer):
         model = Spell
         fields = ('id', 'name', 'level', 'cantrip', 'cast_count')
 
-    def get_cast_count(self, instance):
+    @staticmethod
+    def get_cast_count(instance):
         return instance.casts.count()
 
     def __init__(self, *args, **kwargs):
@@ -39,14 +40,16 @@ class SpellCastSerializer(serializers.ModelSerializer):
         fields = ('id', 'timestamp', 'spell', 'character', 'cast_level', 'notes', 'episode')
         depth = 1
 
-    def get_character(self, instance):
+    @staticmethod
+    def get_character(instance):
         char = instance.character
         return {
             'id': char.id,
             'name': char.name,
         }
 
-    def get_episode(self, instance):
+    @staticmethod
+    def get_episode(instance):
         ep = instance.episode
         ep_info = {
             'id': ep.id,
@@ -75,7 +78,8 @@ class SpellCastInEpSerializer(serializers.ModelSerializer):
         model = SpellCast
         fields = ('timestamp', 'spell', 'character', 'cast_level', 'notes')
 
-    def get_character(self, instance):
+    @staticmethod
+    def get_character(instance):
         char = instance.character
         return {
             'id': char.id,
@@ -98,12 +102,14 @@ class SpellDetailSerializer(serializers.ModelSerializer):
         model = Spell
         fields = ('id', 'name', 'level', 'cantrip', 'casts', 'top_users')
 
-    def get_casts(self, instance):
+    @staticmethod
+    def get_casts(instance):
         queryset = instance.casts.prefetch_related("character", "episode").prefetch_related("episode__campaign",
                                                                                             "episode__vod_links")
         queryset = queryset.order_by('episode__campaign', 'episode__num')
         return SpellCastSerializer(queryset, many=True).data
 
-    def get_top_users(self, instance):
+    @staticmethod
+    def get_top_users(instance):
         return instance.casts.values_list('character__name').annotate(character_uses=Count('character')).order_by(
             '-character_uses')[:10]

@@ -12,7 +12,7 @@ class CharacterType(models.Model):
 
 class Character(models.Model):
     full_name = models.TextField(blank=True)
-    name = models.TextField(blank=True)  # generaly use first name or nickName like Percy.
+    name = models.TextField(blank=True)  # generally use first name or nickName like Percy.
     # background = models.TextField() OR models.ForeignKey(Background)
     race = models.ForeignKey(Race, related_name='characters', on_delete=models.CASCADE)
     player = models.ForeignKey(Player, related_name='characters', on_delete=models.CASCADE, blank= True, null = True)
@@ -43,8 +43,8 @@ class Skill(models.Model):
 
 class StatSheet(models.Model):
     # probably get rid of some null foreign key settings after data ingest
-    character = models.ForeignKey(Character,related_name='stat_sheets', on_delete=models.CASCADE)
-    alignment = models.ForeignKey(Alignment,related_name='stat_sheets', on_delete=models.CASCADE, null=True)
+    character = models.ForeignKey(Character, related_name='stat_sheets', on_delete=models.CASCADE)
+    alignment = models.ForeignKey(Alignment, related_name='stat_sheets', on_delete=models.CASCADE, null=True)
     max_health = models.IntegerField(default=0)
     level = models.IntegerField(default=0)
     armour_class = models.IntegerField(default=0)
@@ -52,7 +52,7 @@ class StatSheet(models.Model):
     initiative_bonus = models.IntegerField(default=0)
     proficiency_bonus = models.IntegerField(default=0)  # remove since always based on total level
     hit_die = models.CharField(max_length=50)  # remove since can be calculated from level + class
-    inspiration_die = models.IntegerField(default=0)  # remove can be calcualted from calss
+    inspiration_die = models.IntegerField(default=0)  # remove can be calculated from class
     equipment = models.TextField(blank=True)
     features_traits = models.TextField(blank=True)
     attacks = models.TextField(blank=True)

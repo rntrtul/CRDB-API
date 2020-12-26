@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404,  render
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
@@ -73,7 +73,7 @@ class SkillListViewSet(viewsets.ModelViewSet):
     serializer_class = SkillListSerializer
 
 
-class StatSheetViewSet (viewsets.ModelViewSet):
+class StatSheetViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return StatSheetSerializer
