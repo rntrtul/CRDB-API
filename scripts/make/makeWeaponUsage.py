@@ -14,27 +14,27 @@ ls = {}
 total = 0
 count = 0
 for weapon in wpns:
-  #skip dagger since it shows up in like 4 different weapon names
-  if weapon.name == 'Dagger':
-    continue
-  wpn_notes = Rolls.objects.filter(notes__contains=weapon.name)
-  for roll in wpn_notes:
-    #print(str(roll.time_stamp))
-    usage = WeaponUsage.objects.get_or_create(weapon=weapon, roll=roll)
-    if usage[1]:
-      print("created usage for", weapon.name)
-  
-  length = len(wpn_notes)
-  total += length
-  count += 1
-  ls[weapon.name] = length
+    # skip dagger since it shows up in like 4 different weapon names
+    if weapon.name == 'Dagger':
+        continue
+    wpn_notes = Rolls.objects.filter(notes__contains=weapon.name)
+    for roll in wpn_notes:
+        # print(str(roll.time_stamp))
+        usage = WeaponUsage.objects.get_or_create(weapon=weapon, roll=roll)
+        if usage[1]:
+            print("created usage for", weapon.name)
+
+    length = len(wpn_notes)
+    total += length
+    count += 1
+    ls[weapon.name] = length
 
 lsorted = {k: v for k, v in sorted(ls.items(), key=lambda item: item[1])}
 for wpn in lsorted.items():
-  print(wpn[0] + " was used: " + str(wpn[1]))
+    print(wpn[0] + " was used: " + str(wpn[1]))
 
 print(str(total) + " total rolls with wepaon name in the notes field")
 print(str(count) + " total weapons")
 
-#for roll in pepper_notes:
+# for roll in pepper_notes:
 #  print(roll.roll_type.name + ": " + roll.damage + " (" + roll.notes + ")")

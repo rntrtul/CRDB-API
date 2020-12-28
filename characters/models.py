@@ -15,7 +15,7 @@ class Character(models.Model):
     name = models.TextField(blank=True)  # generally use first name or nickName like Percy.
     # background = models.TextField() OR models.ForeignKey(Background)
     race = models.ForeignKey(Race, related_name='characters', on_delete=models.CASCADE)
-    player = models.ForeignKey(Player, related_name='characters', on_delete=models.CASCADE, blank= True, null = True)
+    player = models.ForeignKey(Player, related_name='characters', on_delete=models.CASCADE, blank=True, null=True)
     char_type = models.ForeignKey(CharacterType, related_name='characters', on_delete=models.CASCADE)
 
     def curr_sheet(self):
@@ -60,20 +60,20 @@ class StatSheet(models.Model):
     proficiencies = models.TextField(blank=True)
 
     casting_ability = models.ForeignKey(Ability, on_delete=models.CASCADE, null=True)
-    casting_class = models.TextField(blank=True) # maybe make foreignkey
-    spell_attack_bonus = models.IntegerField(default=0, blank=True, null =True)
-    spell_save = models.IntegerField(default=0, blank=True, null =True)
+    casting_class = models.TextField(blank=True)  # maybe make foreignkey
+    spell_attack_bonus = models.IntegerField(default=0, blank=True, null=True)
+    spell_save = models.IntegerField(default=0, blank=True, null=True)
     # spell slots
-    cantrips    = models.IntegerField(default=0)
-    slots_one   = models.IntegerField(default=0)
-    slots_two   = models.IntegerField(default=0)
+    cantrips = models.IntegerField(default=0)
+    slots_one = models.IntegerField(default=0)
+    slots_two = models.IntegerField(default=0)
     slots_three = models.IntegerField(default=0)
-    slots_four  = models.IntegerField(default=0)
-    slots_five  = models.IntegerField(default=0)
-    slots_six   = models.IntegerField(default=0)
+    slots_four = models.IntegerField(default=0)
+    slots_five = models.IntegerField(default=0)
+    slots_six = models.IntegerField(default=0)
     slots_seven = models.IntegerField(default=0)
     slots_eight = models.IntegerField(default=0)
-    slots_nine  = models.IntegerField(default=0)
+    slots_nine = models.IntegerField(default=0)
 
     def get_level(self):
         lvl = 0
@@ -103,7 +103,7 @@ class AbilityScore(models.Model):
     score = models.IntegerField(default=10)
 
     def get_modifier(self):
-        return math.floor((self.score-10)/2)
+        return math.floor((self.score - 10) / 2)
 
 
 class SavingThrow(models.Model):
@@ -115,5 +115,5 @@ class SavingThrow(models.Model):
 
 class ClassTaken(models.Model):
     stat_sheet = models.ForeignKey(StatSheet, related_name="classes", on_delete=models.CASCADE, null=True)
-    class_id = models.ForeignKey(Class, related_name = 'sheets', on_delete=models.CASCADE)
+    class_id = models.ForeignKey(Class, related_name='sheets', on_delete=models.CASCADE)
     level = models.IntegerField(default=0)
