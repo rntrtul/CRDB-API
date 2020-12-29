@@ -7,7 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from .models import Rolls, RollType, Advantage, AdvantageType, Kill, Die
 from .serializers import RollsSerializer, RollTypeSerializer, RollTypeDetailSerializer, AdvantageSerializer, \
-    AdvantageTypeSerializer, KillSerializer, DieSerializer
+    AdvantageTypeSerializer, KillSerializer, DieSerializer, RankingSerializer
 from rest_framework import generics, viewsets
 from rest_framework import filters as rf_filters
 from django_filters import rest_framework as filters
@@ -34,10 +34,12 @@ class RollFilter(filters.FilterSet):
                   'episode_end',
                   'min_timestamp', 'max_timestamp', 'min_kills', 'max_kills']
 
+
 class StandardRollsPagination(PageNumberPagination):
     page_size = 1000
     page_size_query_param = 'page_size'
     max_page_size = 1000
+
 
 class RollsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
@@ -97,6 +99,10 @@ class DieViewSet(viewsets.ModelViewSet):
     queryset = Die.objects.order_by('sides')
     serializer_class = DieSerializer
 
+
+class RankingViewSet(viewsets.ModelViewSet):
+    queryset = Rolls.objects.all()[0:1]
+    serializer_class = RankingSerializer
 
 # django template views
 class IndexView(generic.ListView):
