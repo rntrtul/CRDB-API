@@ -5,8 +5,12 @@ import csv
 
 
 def makeCombatEncounter(camp_num):
+    def get_sec(time_str):
+        h, m, s = time_str.split(':')
+        return int(h) * 3600 + int(m) * 60 + int(s)
+
     C1DIR = "/home/lightbulb/CritRoleDB/zdata/C1/C1 Times + Attendance/TD Combat Times.csv"
-    C2DIR = "/home/lightbulb/CritRoleDB/zdata/C2/C2 Times + Attendance/WM Combat Times.csv"
+    C2DIR = "./WM Combat Times.csv"
 
     from episodes.models import Episode
     from campaigns.models import Campaign
@@ -22,12 +26,12 @@ def makeCombatEncounter(camp_num):
     next(reader)
     for row in reader:
         name = row[0]
-        ep_num = int(row[1])
+        ep_num = int(row[1][3:])
         ep = Episode.objects.get(campaign=campaign, num=ep_num)
 
-        start = int(float(row[3]))
-        end = int(float(row[4]))
-        rounds = int(row[5])
+        start = get_sec(row[3])
+        end = get_sec(row[4])
+        rounds = int(row[5]) if row[5] else 0
         note = row[8]
 
         ce = CombatEncounter.objects.get_or_create(episode=ep, name=name, start=start, end=end, rounds=rounds,
@@ -53,7 +57,7 @@ def makeCombatApperance():
 def makeInitiative():
     from encounters.models import CombatEncounter, CombatApperance, InitiativeOrder
     from rolls.models import Rolls, RollType
-    ces = CombatEncounter.objects.all()
+    ces = CombatEncounter.objects.all().filter(episode__num__gte=99)
     initiative = RollType.objects.get(name='Initiative')
 
     for encounter in ces:
@@ -64,7 +68,8 @@ def makeInitiative():
 
         for roll in encounter_initative_rolls:
             if roll.character in order:
-                if roll.final_value > order[roll.character].final_value:
+                if (order[roll.character].final_value is None and roll.final_value) or (
+                        roll.final_value and roll.final_value > order[roll.character].final_value):
                     order[roll.character] = roll
             else:
                 order[roll.character] = roll
@@ -80,4 +85,6 @@ def makeInitiative():
                     print("CREATED: " + ord[0].name + " " + str(rank))
 
 
+# makeCombatEncounter(2)
+# makeCombatApperance()
 makeInitiative()

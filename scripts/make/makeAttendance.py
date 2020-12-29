@@ -31,9 +31,13 @@ def readAttendance(reader):
     for row in reader:
         camp = Campaign.objects.get(num=int(row[0][1]))
         ep = Episode.objects.get(campaign=camp, num=int(row[0][3:]))
-        date = datetime.strptime(row[1], '%Y/%m/%d')
-        # ep.air_date = date.date()
-        # ep.save()
+        print(ep.title)
+
+        date_format = '%Y/%m/%d' if ep.num <= 99 or camp.num == 1 else '%m/%d/%Y'
+        date = date.strptime(row[1], date_format)
+
+        ep.air_date = date.date()
+        ep.save()
 
         if camp.num == 1:
             COLEND = 9
@@ -70,7 +74,7 @@ def readGuests(reader):
                     guest = Player.objects.get(full_name=row[col])
                     attendance = Attendance.objects.get_or_create(episode=ep, player=guest, attendance_type=GUEST)
                     if attendance[1]:
-                        print("CREATED: ", guest.full_name, " in ", ep.title)
+                        print("CREATED GUES: ", guest.full_name, " in ", ep.title)
 
         if row[2] == "1":
             # get the skype players and update og attendance,7,8
@@ -80,7 +84,7 @@ def readGuests(reader):
                     currAtten = Attendance.objects.update_or_create(episode=ep, player=skyper,
                                                                     defaults={'attendance_type': SKYPE})
                     if currAtten[1]:
-                        print("CREATED: ", skyper.full_name)
+                        print("CREATED SKYPE: ", skyper.full_name)
 
         if row[3] == "1":
             liveEp = Live.objects.get_or_create(episode=ep, venue=row[9])
@@ -90,16 +94,16 @@ def readGuests(reader):
 
 C1A = "/home/lightbulb/CritRoleDB/zdata/C1/C1 Times + Attendance/TD CR Attendance.csv"
 C1G = "/home/lightbulb/CritRoleDB/zdata/C1/C1 Times + Attendance/TD guest list .csv"
-C2A = "/home/lightbulb/CritRoleDB/zdata/C2/C2 Times + Attendance/WM CR Attendance.csv"
+C2A = "./WM CR Attendance.csv"
 C2G = "/home/lightbulb/CritRoleDB/zdata/C2/C2 Times + Attendance/WM guest list.csv"
 
-C1Areader = csv.reader(open(C1A))
+# C1Areader = csv.reader(open(C1A))
 C2Areader = csv.reader(open(C2A))
-C1Greader = csv.reader(open(C1G))
-C2Greader = csv.reader(open(C2G))
+# C1Greader = csv.reader(open(C1G))
+# C2Greader = csv.reader(open(C2G))
 
 # readAttendance(C1Areader)
-# readAttendance(C2Areader)
+readAttendance(C2Areader)
 
 # readGuests(C1Greader)
 # readGuests(C2Greader)
