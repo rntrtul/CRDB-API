@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include,  path
 from django.conf.urls import url
+from django.conf import settings
 
 urlpatterns = [
     path('languages/', include('languages.urls')),
@@ -33,4 +34,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+if settings.DEBUG:
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]

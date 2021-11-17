@@ -1,7 +1,10 @@
-from django.db import models
-from episodes.models import Episode
-from characters.models import Character
+import platform
 import time
+
+from django.db import models
+
+from characters.models import Character
+from episodes.models import Episode
 
 
 # Create your models here.
@@ -31,7 +34,10 @@ class Rolls(models.Model):
     kill_count = models.IntegerField(default=0)  # might be a temp column until, all kills in kills table
 
     def time_formated(self):
-        return time.strftime("%-H:%M:%S", time.gmtime(self.timestamp))
+        if platform.system() == 'Linux':
+            return time.strftime("%-H:%M:%S", time.gmtime(self.timestamp))
+        else:
+            return time.strftime("%#H:%M:%S", time.gmtime(self.timestamp))
 
 
 class AdvantageType(models.Model):
